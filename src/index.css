@@ -186,7 +186,7 @@
   
   /* Search bar - the primary interaction */
   .search-container {
-    @apply bg-card border border-border rounded-2xl;
+    @apply bg-card border border-border rounded-full;
     @apply shadow-lg shadow-foreground/5;
     @apply transition-all duration-300 ease-out;
     @apply focus-within:shadow-xl focus-within:shadow-primary/10 focus-within:border-primary/30;
