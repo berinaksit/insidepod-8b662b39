@@ -1,60 +1,35 @@
 import { useState } from 'react';
 import { Header } from '@/components/Header';
-import { Sidebar } from '@/components/Sidebar';
 import { HomeView } from '@/views/HomeView';
 import { GoalsView } from '@/views/GoalsView';
 import { AgentsView } from '@/views/AgentsView';
 import { SettingsView } from '@/views/SettingsView';
 import { AnimatePresence, motion } from 'framer-motion';
 
-type View = 'home' | 'goals' | 'agents' | 'settings';
+export type View = 'home' | 'goals' | 'agents' | 'settings';
 
 const Index = () => {
   const [currentView, setCurrentView] = useState<View>('home');
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const renderView = () => {
     switch (currentView) {
       case 'home':
-        return <HomeView />;
+        return <HomeView currentTab={currentView} onTabChange={setCurrentView} />;
       case 'goals':
-        return <GoalsView />;
+        return <HomeView currentTab={currentView} onTabChange={setCurrentView} />;
       case 'agents':
-        return <AgentsView />;
+        return <HomeView currentTab={currentView} onTabChange={setCurrentView} />;
       case 'settings':
         return <SettingsView />;
       default:
-        return <HomeView />;
+        return <HomeView currentTab={currentView} onTabChange={setCurrentView} />;
     }
   };
 
   return (
     <div className="flex min-h-screen bg-background">
-      {/* Sidebar - hidden on mobile by default */}
-      <div className="hidden lg:block">
-        <Sidebar
-          currentView={currentView}
-          onViewChange={setCurrentView}
-          isOpen={true}
-          onClose={() => {}}
-        />
-      </div>
-      
-      {/* Mobile sidebar */}
-      <AnimatePresence>
-        {isSidebarOpen && (
-          <Sidebar
-            currentView={currentView}
-            onViewChange={setCurrentView}
-            isOpen={isSidebarOpen}
-            onClose={() => setIsSidebarOpen(false)}
-          />
-        )}
-      </AnimatePresence>
-      
-      {/* Main content */}
       <div className="flex-1 flex flex-col min-h-screen">
-        <Header onMenuClick={() => setIsSidebarOpen(true)} />
+        <Header onSettingsClick={() => setCurrentView('settings')} />
         
         <main className="flex-1 overflow-auto">
           <AnimatePresence mode="wait">
