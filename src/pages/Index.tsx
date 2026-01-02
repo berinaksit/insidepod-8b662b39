@@ -6,7 +6,7 @@ import { AgentsView } from '@/views/AgentsView';
 import { SettingsView } from '@/views/SettingsView';
 import { AnimatePresence, motion } from 'framer-motion';
 
-export type View = 'home' | 'goals' | 'agents' | 'settings';
+export type View = 'home' | 'goals' | 'agents' | 'dashboard' | 'settings';
 
 const Index = () => {
   const [currentView, setCurrentView] = useState<View>('home');

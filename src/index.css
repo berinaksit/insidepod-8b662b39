@@ -80,6 +80,11 @@
     /* Animation timing - calm, deliberate */
     --transition-calm: 300ms cubic-bezier(0.4, 0, 0.2, 1);
     --transition-subtle: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* Highlight purple for featured cards */
+    --highlight: 270 70% 70%;
+    --highlight-foreground: 270 60% 15%;
+    --highlight-surface: 270 60% 85%;
   }
 
   .dark {
@@ -128,6 +133,11 @@
     --sidebar-accent-foreground: 40 15% 95%;
     --sidebar-border: 220 15% 18%;
     --sidebar-ring: 150 30% 55%;
+    
+    /* Highlight purple for featured cards - dark mode */
+    --highlight: 270 60% 65%;
+    --highlight-foreground: 270 60% 95%;
+    --highlight-surface: 270 40% 35%;
   }
 }
 
