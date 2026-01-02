@@ -51,7 +51,7 @@ export function Sidebar({
       duration: 0.3,
       ease: [0.4, 0, 0.2, 1]
     }} className="fixed left-0 top-0 bottom-0 w-64 bg-sidebar border-r border-sidebar-border z-50 lg:translate-x-0 lg:static lg:z-auto">
-        <div className="flex-col h-full p-4 flex items-start justify-start">
+        <div className="flex flex-col h-full p-4">
           <div className="flex items-center justify-between mb-8 lg:hidden">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-xl bg-primary flex items-center justify-center">
