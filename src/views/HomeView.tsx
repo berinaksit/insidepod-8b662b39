@@ -99,7 +99,6 @@ export function HomeView({ currentTab, onTabChange }: HomeViewProps) {
       <section className="px-6 pb-12">
         <div className="flex items-center gap-4 mb-6 border-b border-border/50">
           {tabs.map((tab) => {
-            const Icon = tab.icon;
             const isActive = currentTab === tab.id;
             return (
               <button
@@ -111,7 +110,6 @@ export function HomeView({ currentTab, onTabChange }: HomeViewProps) {
                     : 'border-transparent text-muted-foreground hover:text-foreground'
                 }`}
               >
-                <Icon className="w-5 h-5" />
                 <span className="font-medium">{tab.label}</span>
                 {tab.id === 'home' && (
                   <span className="ml-1 px-2 py-0.5 text-xs bg-secondary/10 text-secondary rounded-full">
