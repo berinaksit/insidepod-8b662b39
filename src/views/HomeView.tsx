@@ -60,7 +60,7 @@ export function HomeView({ currentTab, onTabChange }: HomeViewProps) {
             transition={{ duration: 0.5, delay: 0.1 }}
             className="font-display text-3xl md:text-4xl text-foreground mb-3"
           >
-            {greeting()}
+            Clarity at a glance
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
