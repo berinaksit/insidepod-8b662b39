@@ -21,7 +21,7 @@ export function Header({
         </button>
         
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-xl flex items-center justify-center bg-slate-950">
+          <div className="w-5 h-5 rounded-xl flex items-center justify-center bg-slate-950">
             <span className="text-primary-foreground font-display text-lg">
           </span>
           </div>
