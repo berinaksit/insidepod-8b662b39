@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { AnalysisView } from '@/types';
 import { ArrowRight, X, FileText, BarChart3 } from 'lucide-react';
+import { useState } from 'react';
 
 interface AnalysisPanelProps {
   analysis: AnalysisView;
@@ -13,7 +14,22 @@ const themeClasses = {
   tertiary: 'analysis-panel-tertiary',
 };
 
+// Mock chart data for onboarding completion rate
+const weeklyData = [
+  { week: 'Week 1', value: 72 },
+  { week: 'Week 2', value: 78 },
+  { week: 'Week 3', value: 74 },
+  { week: 'Week 4', value: 82 },
+  { week: 'Week 5', value: 68 },
+  { week: 'Week 6', value: 61 },
+];
+
+const timeRanges = ['3 months', '1 month', '7 days'] as const;
+
 export function AnalysisPanel({ analysis, onClose }: AnalysisPanelProps) {
+  const [selectedRange, setSelectedRange] = useState<typeof timeRanges[number]>('1 month');
+  const maxValue = Math.max(...weeklyData.map(d => d.value));
+
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.98 }}
@@ -31,7 +47,7 @@ export function AnalysisPanel({ analysis, onClose }: AnalysisPanelProps) {
         </button>
       )}
       
-      <div className="max-w-3xl">
+      <div className="max-w-4xl">
         <p className="text-sm font-medium opacity-70 mb-4 uppercase tracking-wider">
           Analysis
         </p>
@@ -43,6 +59,96 @@ export function AnalysisPanel({ analysis, onClose }: AnalysisPanelProps) {
         <p className="text-lg md:text-xl leading-relaxed mb-8 opacity-90">
           {analysis.synthesis}
         </p>
+
+        {/* Data Visualization Section */}
+        <div className="mb-10 p-6 rounded-2xl bg-card/60 backdrop-blur-sm border border-border/30">
+          <div className="flex items-start justify-between mb-6">
+            <div>
+              <h3 className="font-display text-xl md:text-2xl mb-1">
+                A closer look at <span className="text-highlight">onboarding completion</span>
+              </h3>
+              <p className="text-muted-foreground">
+                Showing data from the past 30 days.
+              </p>
+            </div>
+            <div className="flex gap-2">
+              {timeRanges.map((range) => (
+                <button
+                  key={range}
+                  onClick={() => setSelectedRange(range)}
+                  className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
+                    selectedRange === range
+                      ? 'bg-highlight text-highlight-foreground'
+                      : 'bg-muted/50 text-muted-foreground hover:bg-muted'
+                  }`}
+                >
+                  {range}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Bar Chart */}
+          <div className="flex items-end gap-3 h-48 mb-4">
+            {weeklyData.map((data, index) => (
+              <div key={index} className="flex-1 flex flex-col items-center gap-2">
+                <motion.div
+                  initial={{ height: 0 }}
+                  animate={{ height: `${(data.value / maxValue) * 100}%` }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  className="w-full rounded-t-lg bg-highlight/80 hover:bg-highlight transition-colors cursor-pointer relative group min-h-[20px]"
+                >
+                  <div className="absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-popover text-popover-foreground px-2 py-1 rounded text-xs font-medium whitespace-nowrap">
+                    {data.value}%
+                  </div>
+                </motion.div>
+              </div>
+            ))}
+          </div>
+          <div className="flex gap-3">
+            {weeklyData.map((data, index) => (
+              <div key={index} className="flex-1 text-center">
+                <span className="text-xs text-muted-foreground">{data.week}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* Metric Cards */}
+          <div className="grid grid-cols-3 gap-4 mt-6">
+            <div className="p-4 rounded-xl bg-card border border-border/30">
+              <p className="text-sm text-muted-foreground mb-1">Completion Rate</p>
+              <p className="font-display text-sm font-medium mb-2">Current average</p>
+              <div className="flex items-baseline gap-3">
+                <span className="text-3xl font-display font-bold">68%</span>
+                <span className="text-xs px-2 py-0.5 rounded bg-destructive/20 text-destructive">
+                  -14 pp from peak
+                </span>
+              </div>
+            </div>
+            <div className="p-4 rounded-xl bg-card border border-border/30">
+              <p className="text-sm text-muted-foreground mb-1">Drop-off Point</p>
+              <p className="font-display text-sm font-medium mb-2">Most common exit</p>
+              <div className="flex items-baseline gap-3">
+                <span className="text-3xl font-display font-bold">Step 3</span>
+                <span className="text-xs px-2 py-0.5 rounded bg-muted text-muted-foreground">
+                  Profile setup
+                </span>
+              </div>
+            </div>
+            <div className="p-4 rounded-xl bg-card border border-border/30">
+              <p className="text-xs text-muted-foreground flex items-center gap-1.5 mb-2">
+                <FileText className="w-3 h-3" />
+                Suggested task
+              </p>
+              <p className="font-display text-sm font-medium mb-3">
+                Simplify profile setup flow
+              </p>
+              <button className="text-xs text-highlight hover:underline flex items-center gap-1">
+                Create backlog item <ArrowRight className="w-3 h-3" />
+              </button>
+            </div>
+          </div>
+        </div>
         
         <div className="space-y-4 mb-8">
           <p className="text-sm font-medium opacity-70 uppercase tracking-wider">
