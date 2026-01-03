@@ -14,15 +14,15 @@
 @layer base {
   :root {
     /* Core surfaces - warm, calm neutrals */
-    --background: 0 0% 100%;
+    --background: 0 0% 97%;
     --foreground: 265 4% 12.9%;
 
     /* Card surfaces - soft containment */
-    --card: 0 0% 100%;
+    --card: 0 0% 97%;
     --card-foreground: 265 4% 12.9%;
 
     /* Popover */
-    --popover: 0 0% 100%;
+    --popover: 0 0% 97%;
     --popover-foreground: 265 4% 12.9%;
 
     /* Primary - Soft sage green for focus moments */
@@ -66,7 +66,7 @@
     --radius: 0.375rem;
 
     /* Sidebar - not used prominently */
-    --sidebar-background: 40 15% 97%;
+    --sidebar-background: 0 0% 97%;
     --sidebar-foreground: 265 4% 12.9%;
     --sidebar-primary: 266 4% 20.8%;
     --sidebar-primary-foreground: 248 0.3% 98.4%;
