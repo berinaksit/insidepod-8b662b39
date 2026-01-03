@@ -4,6 +4,8 @@
 
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=DM+Serif+Display&display=swap');
 
+@import url("https://fonts.googleapis.com/css2?family=Inter&display=swap");
+
 /* Inside Pōd Design System
    Calm, editorial, decision-oriented
    Sana Labs-inspired restraint
@@ -14,55 +16,55 @@
     /* Core surfaces - warm, calm neutrals */
     --background: 0 0% 97%;
     --foreground: 220 15% 15%;
-    
+
     /* Card surfaces - soft containment */
     --card: 40 15% 99%;
     --card-foreground: 220 15% 15%;
-    
+
     /* Popover */
     --popover: 40 15% 99%;
     --popover-foreground: 220 15% 15%;
-    
+
     /* Primary - Soft sage green for focus moments */
-    --primary: 150 25% 45%;
+    --primary: 217 91.2195% 59.8039%;
     --primary-foreground: 150 15% 98%;
-    
+
     /* Primary surface - large colored panels */
     --primary-surface: 0 0% 10%;
     --primary-surface-foreground: 0 0% 90%;
-    
+
     /* Secondary - Soft coral/peach for secondary moments */
-    --secondary: 15 45% 60%;
+    --secondary: 217 91.2195% 59.8039%;
     --secondary-foreground: 15 10% 98%;
-    
+
     /* Secondary surface */
     --secondary-surface: 15 50% 94%;
     --secondary-surface-foreground: 15 40% 30%;
-    
+
     /* Tertiary - Soft blue for info */
     --tertiary-surface: 210 40% 94%;
     --tertiary-surface-foreground: 210 35% 30%;
-    
+
     /* Muted - subdued elements */
     --muted: 40 10% 95%;
-    --muted-foreground: 220 10% 50%;
-    
+    --muted-foreground: 0 0% 49%;
+
     /* Accent - minimal use */
     --accent: 40 10% 93%;
     --accent-foreground: 220 15% 15%;
-    
+
     /* Destructive */
-    --destructive: 0 60% 55%;
+    --destructive: 0 84.2365% 60.1961%;
     --destructive-foreground: 0 0% 100%;
-    
+
     /* Borders - subtle, almost invisible */
     --border: 40 10% 90%;
     --input: 40 10% 90%;
-    --ring: 150 25% 45%;
-    
+    --ring: 221 83.1933% 53.3333%;
+
     /* Radius - soft, not aggressive */
     --radius: 1rem;
-    
+
     /* Sidebar - not used prominently */
     --sidebar-background: 40 15% 97%;
     --sidebar-foreground: 220 15% 25%;
@@ -72,15 +74,15 @@
     --sidebar-accent-foreground: 220 15% 15%;
     --sidebar-border: 40 10% 90%;
     --sidebar-ring: 150 25% 45%;
-    
+
     /* Typography scale */
     --font-sans: 'DM Sans', system-ui, sans-serif;
     --font-display: 'DM Serif Display', Georgia, serif;
-    
+
     /* Animation timing - calm, deliberate */
     --transition-calm: 300ms cubic-bezier(0.4, 0, 0.2, 1);
     --transition-subtle: 200ms cubic-bezier(0.4, 0, 0.2, 1);
-    
+
     /* Highlight purple for featured cards */
     --highlight: 270 70% 70%;
     --highlight-foreground: 270 60% 15%;
@@ -90,41 +92,41 @@
   .dark {
     --background: 220 15% 8%;
     --foreground: 40 15% 95%;
-    
+
     --card: 220 15% 10%;
     --card-foreground: 40 15% 95%;
-    
+
     --popover: 220 15% 10%;
     --popover-foreground: 40 15% 95%;
-    
+
     --primary: 150 30% 55%;
     --primary-foreground: 220 15% 8%;
-    
+
     --primary-surface: 150 20% 15%;
     --primary-surface-foreground: 150 30% 85%;
-    
+
     --secondary: 15 40% 55%;
     --secondary-foreground: 220 15% 8%;
-    
+
     --secondary-surface: 15 25% 15%;
     --secondary-surface-foreground: 15 40% 85%;
-    
+
     --tertiary-surface: 210 25% 15%;
     --tertiary-surface-foreground: 210 35% 85%;
-    
+
     --muted: 220 15% 15%;
     --muted-foreground: 220 10% 60%;
-    
+
     --accent: 220 15% 15%;
     --accent-foreground: 40 15% 95%;
-    
+
     --destructive: 0 60% 45%;
     --destructive-foreground: 0 0% 100%;
-    
+
     --border: 220 15% 18%;
     --input: 220 15% 18%;
     --ring: 150 30% 55%;
-    
+
     --sidebar-background: 220 15% 6%;
     --sidebar-foreground: 40 15% 90%;
     --sidebar-primary: 150 30% 55%;
@@ -133,7 +135,7 @@
     --sidebar-accent-foreground: 40 15% 95%;
     --sidebar-border: 220 15% 18%;
     --sidebar-ring: 150 30% 55%;
-    
+
     /* Highlight purple for featured cards - dark mode */
     --highlight: 270 60% 65%;
     --highlight-foreground: 270 60% 95%;
@@ -157,21 +159,21 @@
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     line-height: 1.28;
   }
-  
+
   /* Tighter line heights for editorial feel */
   p, span, div {
     line-height: 1.28;
   }
-  
+
   h1, h2, h3, h4, h5, h6 {
     line-height: 1.15;
   }
-  
+
   /* Display typography - for headlines */
   .font-display {
     font-family: var(--font-display);
   }
-  
+
   /* Calm focus states */
   *:focus-visible {
     @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
@@ -185,25 +187,25 @@
     @apply transition-all duration-300 ease-out;
     @apply hover:shadow-lg hover:shadow-primary/5;
   }
-  
+
   /* Large analysis panels - the color moments */
   .analysis-panel {
     @apply rounded-3xl p-7 md:p-10;
     @apply transition-all duration-300 ease-out;
   }
-  
+
   .analysis-panel-primary {
     @apply bg-primary-surface text-primary-surface-foreground;
   }
-  
+
   .analysis-panel-secondary {
     @apply bg-secondary-surface text-secondary-surface-foreground;
   }
-  
+
   .analysis-panel-tertiary {
     @apply bg-tertiary-surface text-tertiary-surface-foreground;
   }
-  
+
   /* Search bar - borderless, relies on background contrast */
   .search-container {
     @apply bg-card rounded-full;
@@ -211,32 +213,32 @@
     @apply transition-all duration-300 ease-out;
     @apply focus-within:shadow-xl focus-within:shadow-primary/10;
   }
-  
+
   /* Agent list items - tighter spacing */
   .agent-item {
     @apply flex items-center gap-3 p-3 rounded-xl;
     @apply transition-all duration-200 ease-out;
     @apply hover:bg-muted cursor-pointer;
   }
-  
+
   /* Badge variants - tighter padding */
   .badge-pulse {
     @apply bg-primary/10 text-primary px-2.5 py-0.5 rounded-full text-xs font-medium;
   }
-  
+
   .badge-insight {
     @apply bg-secondary/10 text-secondary px-2.5 py-0.5 rounded-full text-xs font-medium;
   }
-  
+
   .badge-signal {
     @apply bg-tertiary-surface text-tertiary-surface-foreground px-2.5 py-0.5 rounded-full text-xs font-medium;
   }
-  
+
   /* Source attribution */
   .source-tag {
     @apply text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded font-medium;
   }
-  
+
   /* Calm loading state */
   .loading-pulse {
     @apply animate-pulse bg-muted rounded;
@@ -248,25 +250,25 @@
   .text-balance {
     text-wrap: balance;
   }
-  
+
   /* Calm animations */
   .animate-fade-in {
     animation: fadeIn 0.5s ease-out forwards;
   }
-  
+
   .animate-slide-up {
     animation: slideUp 0.5s ease-out forwards;
   }
-  
+
   .animate-scale-in {
     animation: scaleIn 0.3s ease-out forwards;
   }
-  
+
   @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
   }
-  
+
   @keyframes slideUp {
     from { 
       opacity: 0;
@@ -277,7 +279,7 @@
       transform: translateY(0);
     }
   }
-  
+
   @keyframes scaleIn {
     from { 
       opacity: 0;
