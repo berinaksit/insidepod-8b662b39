@@ -61,7 +61,7 @@ export function AnalysisPanel({ analysis, onClose }: AnalysisPanelProps) {
         </p>
 
         {/* Data Visualization Section */}
-        <div className="mb-10 p-6 rounded-2xl bg-card/60 backdrop-blur-sm border border-border/30">
+        <div className="mb-10 p-6 rounded-2xl bg-[#222222] border border-border/30">
           <div className="flex items-start justify-between mb-6">
             <div>
               <h3 className="font-display text-xl md:text-2xl mb-1">
