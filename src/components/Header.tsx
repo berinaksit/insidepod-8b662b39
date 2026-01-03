@@ -1,25 +1,21 @@
 import { motion } from 'framer-motion';
 import { Bell, User, Settings, LogOut } from 'lucide-react';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 interface HeaderProps {
   onSettingsClick?: () => void;
 }
-
-export function Header({ onSettingsClick }: HeaderProps) {
-  return (
-    <motion.header
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4 }}
-      className="flex items-center justify-between px-6 py-4 border-b border-border/50"
-    >
+export function Header({
+  onSettingsClick
+}: HeaderProps) {
+  return <motion.header initial={{
+    opacity: 0,
+    y: -20
+  }} animate={{
+    opacity: 1,
+    y: 0
+  }} transition={{
+    duration: 0.4
+  }} className="flex items-center justify-between px-6 py-4 border-b border-[#e8e6e3]/0">
       <div className="flex items-center gap-2">
         <div className="w-5 h-5 rounded-xl flex items-center justify-center bg-slate-950">
           <span className="text-primary-foreground font-display text-lg"></span>
@@ -52,6 +48,5 @@ export function Header({ onSettingsClick }: HeaderProps) {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-    </motion.header>
-  );
+    </motion.header>;
 }
