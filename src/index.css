@@ -28,8 +28,8 @@
     --primary-foreground: 150 15% 98%;
     
     /* Primary surface - large colored panels */
-    --primary-surface: 150 30% 92%;
-    --primary-surface-foreground: 150 30% 25%;
+    --primary-surface: 0 0% 10%;
+    --primary-surface-foreground: 0 0% 90%;
     
     /* Secondary - Soft coral/peach for secondary moments */
     --secondary: 15 45% 60%;
