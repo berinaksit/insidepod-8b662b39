@@ -26,7 +26,7 @@
     --popover-foreground: 220 15% 15%;
 
     /* Primary - Soft sage green for focus moments */
-    --primary: 150 25% 45%;
+    --primary: 224 71.4286% 4.1176%;
     --primary-foreground: 150 15% 98%;
 
     /* Primary surface - large colored panels */
@@ -34,7 +34,7 @@
     --primary-surface-foreground: 0 0% 90%;
 
     /* Secondary - Soft coral/peach for secondary moments */
-    --secondary: 224 71.4286% 4.1176%;
+    --secondary: 15 45% 60%;
     --secondary-foreground: 15 10% 98%;
 
     /* Secondary surface */
