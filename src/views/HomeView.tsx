@@ -7,7 +7,7 @@ import { GoalCard } from '@/components/GoalCard';
 import { AgentsList } from '@/components/AgentsList';
 import { mockInsights, mockAnalysisViews, mockGoals, mockAgents } from '@/data/mockData';
 import { AnalysisView } from '@/types';
-import { Sparkles, Target, Bot, Plus, Play, LayoutDashboard, CircleDot, FileText, Link2, Code2, FileUp, Scan, Calendar, Activity, MessageSquare, TrendingUp, MonitorCheck } from 'lucide-react';
+import { Sparkles, Target, Bot, Plus, Play, LayoutDashboard, CircleDot, FileText, Link2, Code2, FileUp, Scan, Calendar, Activity, MessageSquare, TrendingUp, MonitorCheck, Search } from 'lucide-react';
 import { View } from '@/pages/Index';
 interface HomeViewProps {
   currentTab: View;
@@ -327,7 +327,8 @@ export function HomeView({
                       </div>)}
                   </div>
                   <div className="relative mt-auto pb-0">
-                    <input type="text" placeholder="Search for documents" className="w-full bg-muted/50 border border-border/50 rounded-lg px-4 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring" />
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <input type="text" placeholder="Search for documents" className="w-full bg-muted/50 rounded-full pl-10 pr-4 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring" />
                   </div>
                 </div>
 
