@@ -182,7 +182,7 @@ export function AnalysisPanel({ analysis, onClose }: AnalysisPanelProps) {
             {analysis.suggestedActions.map((action, i) => (
               <button
                 key={i}
-                className="flex items-center gap-3 w-full p-4 rounded-xl bg-foreground/5 hover:bg-foreground/10 transition-colors text-left group"
+                className="flex items-center gap-3 w-full p-4 rounded-xl bg-[#222222] hover:bg-[#2a2a2a] transition-colors text-left group"
               >
                 <span className="text-sm">{action}</span>
                 <ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity ml-auto flex-shrink-0" />
