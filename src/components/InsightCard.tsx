@@ -32,8 +32,8 @@ export function InsightCard({
     delay: index * 0.1,
     ease: [0.4, 0, 0.2, 1]
   }} className="insight-card cursor-pointer group" onClick={onClick}>
-      <div className="flex items-start justify-between gap-4 mb-4">
-        <div className="flex items-center gap-2">
+      <div className="flex items-start justify-between gap-3 mb-3">
+        <div className="flex items-center gap-1.5">
           <span className={typeBadgeClasses[insight.type]}>
             {typeLabels[insight.type]}
           </span>
@@ -42,19 +42,19 @@ export function InsightCard({
         <span className="source-tag">{insight.source.name}</span>
       </div>
       
-      <h3 className="text-lg font-medium mb-3 transition-colors duration-200 text-card-foreground">
+      <h3 className="text-lg font-semibold mb-2 transition-colors duration-200 text-card-foreground">
         {insight.title}
       </h3>
       
-      <p className="text-muted-foreground text-sm leading-relaxed mb-4">
+      <p className="text-muted-foreground text-sm mb-3">
         {insight.synthesis}
       </p>
       
-      <div className="flex items-center justify-between text-xs text-muted-foreground">
+      <div className="flex items-center justify-between text-xs text-muted-foreground font-medium">
         <span>{formatDistanceToNow(insight.timestamp, {
           addSuffix: true
         })}</span>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           <span>{insight.evidenceCount} sources</span>
           <span className="flex items-center gap-1">
             <span className="w-1.5 h-1.5 rounded-full bg-primary/60" />

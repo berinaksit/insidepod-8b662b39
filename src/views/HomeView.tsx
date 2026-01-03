@@ -152,13 +152,13 @@ export function HomeView({
       </AnimatePresence>
 
       {/* Tabs */}
-      <section className="px-6 pb-12">
-        <div className="flex items-center gap-4 mb-6 border-b border-border/50">
+      <section className="px-6 pb-10">
+        <div className="flex items-center gap-3 mb-5">
           {tabs.map(tab => {
           const isActive = currentTab === tab.id;
-          return <button key={tab.id} onClick={() => onTabChange(tab.id)} className={`flex items-center gap-2 px-1 py-3 border-b-2 transition-colors ${isActive ? 'border-primary text-foreground' : 'border-transparent text-muted-foreground hover:text-foreground'}`}>
-                <span className="font-medium">{tab.label}</span>
-                {tab.id === 'home' && <span className="ml-1 px-2 py-0.5 text-xs bg-secondary/10 text-secondary rounded-full">
+          return <button key={tab.id} onClick={() => onTabChange(tab.id)} className={`flex items-center gap-1.5 px-1 py-2.5 border-b-2 transition-colors ${isActive ? 'border-primary text-foreground' : 'border-transparent text-muted-foreground hover:text-foreground'}`}>
+                <span className="font-semibold">{tab.label}</span>
+                {tab.id === 'home' && <span className="ml-0.5 px-1.5 py-0.5 text-xs bg-secondary/10 text-secondary rounded-full font-medium">
                     {mockInsights.filter(i => i.isNew).length} new
                   </span>}
               </button>;
@@ -190,10 +190,10 @@ export function HomeView({
           opacity: 0,
           y: -10
         }}>
-              <div className="flex items-center justify-between mb-6">
-                <p className="text-muted-foreground">Track progress toward your product objectives</p>
-                <button className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors">
-                  <Plus className="w-4 h-4" />
+              <div className="flex items-center justify-between mb-5">
+                <p className="text-muted-foreground font-medium">Track progress toward your product objectives</p>
+                <button className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors">
+                  <Plus className="w-4 h-4 stroke-[2.5]" />
                   Add Goal
                 </button>
               </div>
@@ -212,56 +212,56 @@ export function HomeView({
           opacity: 0,
           y: -10
         }}>
-              <div className="flex items-center justify-between mb-6">
-                <p className="text-muted-foreground">AI agents continuously monitoring your product signals</p>
-                <button className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors">
-                  <Play className="w-4 h-4" />
+              <div className="flex items-center justify-between mb-5">
+                <p className="text-muted-foreground font-medium">AI agents continuously monitoring your product signals</p>
+                <button className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors">
+                  <Play className="w-4 h-4 stroke-[2.5]" />
                   Run All
                 </button>
               </div>
               
               {/* Summary cards */}
-              <div className="grid gap-4 md:grid-cols-3 mb-6">
+              <div className="grid gap-3.5 md:grid-cols-3 mb-5">
                 <div className="insight-card">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                      <Bot className="w-5 h-5 text-primary" />
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center">
+                      <Bot className="w-4.5 h-4.5 text-primary stroke-[2.5]" />
                     </div>
                     <div>
-                      <p className="text-2xl font-medium text-foreground">{mockAgents.length}</p>
-                      <p className="text-sm text-muted-foreground">Active agents</p>
+                      <p className="text-2xl font-semibold text-foreground">{mockAgents.length}</p>
+                      <p className="text-sm text-muted-foreground font-medium">Active agents</p>
                     </div>
                   </div>
                 </div>
                 <div className="insight-card">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-secondary/10 flex items-center justify-center">
-                      <Bot className="w-5 h-5 text-secondary" />
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-secondary/10 flex items-center justify-center">
+                      <Bot className="w-4.5 h-4.5 text-secondary stroke-[2.5]" />
                     </div>
                     <div>
-                      <p className="text-2xl font-medium text-foreground">
+                      <p className="text-2xl font-semibold text-foreground">
                         {mockAgents.reduce((sum, a) => sum + a.outputCount, 0)}
                       </p>
-                      <p className="text-sm text-muted-foreground">Total outputs</p>
+                      <p className="text-sm text-muted-foreground font-medium">Total outputs</p>
                     </div>
                   </div>
                 </div>
                 <div className="insight-card">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center">
-                      <Bot className="w-5 h-5 text-muted-foreground" />
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-muted flex items-center justify-center">
+                      <Bot className="w-4.5 h-4.5 text-muted-foreground stroke-[2.5]" />
                     </div>
                     <div>
-                      <p className="text-2xl font-medium text-foreground">
+                      <p className="text-2xl font-semibold text-foreground">
                         {mockAgents.filter(a => a.status === 'running').length}
                       </p>
-                      <p className="text-sm text-muted-foreground">Currently running</p>
+                      <p className="text-sm text-muted-foreground font-medium">Currently running</p>
                     </div>
                   </div>
                 </div>
               </div>
               
-              <div className="bg-card border border-border/50 rounded-2xl p-4">
+              <div className="bg-card rounded-2xl p-3.5">
                 <AgentsList agents={mockAgents} />
               </div>
             </motion.div>}
@@ -276,88 +276,88 @@ export function HomeView({
           opacity: 0,
           y: -10
         }}>
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              <div className="grid gap-3.5 md:grid-cols-2 lg:grid-cols-3">
                 {/* Featured Insight Card - Purple */}
-                <div className="bg-highlight-surface rounded-2xl p-6 text-highlight-foreground">
-                  <div className="w-8 h-8 rounded-full bg-highlight/20 flex items-center justify-center mb-4">
-                    <CircleDot className="w-4 h-4" />
+                <div className="bg-highlight-surface rounded-2xl p-5 text-highlight-foreground">
+                  <div className="w-7 h-7 rounded-full bg-highlight/20 flex items-center justify-center mb-3">
+                    <CircleDot className="w-3.5 h-3.5 stroke-[2.5]" />
                   </div>
-                  <p className="text-xl font-medium leading-relaxed mb-6">
+                  <p className="text-xl font-semibold mb-5">
                     Users aren't returning as often, fewer complete the first key action, and more exit at checkout, indicating blockers in onboarding and purchase steps.
                   </p>
-                  <div className="flex items-center gap-3">
-                    <span className="px-3 py-1.5 bg-highlight/20 rounded-full text-sm font-medium">
+                  <div className="flex items-center gap-2.5">
+                    <span className="px-2.5 py-1 bg-highlight/20 rounded-full text-sm font-semibold">
                       Semi structured interviews
                     </span>
                     <div className="flex -space-x-2">
-                      <div className="w-6 h-6 rounded-full bg-highlight/30 border-2 border-highlight-surface" />
-                      <div className="w-6 h-6 rounded-full bg-highlight/40 border-2 border-highlight-surface" />
-                      <div className="w-6 h-6 rounded-full bg-highlight/50 border-2 border-highlight-surface" />
+                      <div className="w-5.5 h-5.5 rounded-full bg-highlight/30" />
+                      <div className="w-5.5 h-5.5 rounded-full bg-highlight/40" />
+                      <div className="w-5.5 h-5.5 rounded-full bg-highlight/50" />
                     </div>
-                    <span className="text-sm text-highlight-foreground/70">+41</span>
+                    <span className="text-sm text-highlight-foreground/70 font-medium">+41</span>
                   </div>
                 </div>
 
                 {/* Suggested Task Card */}
                 <div className="insight-card flex flex-col">
-                  <div className="flex items-center gap-2 text-muted-foreground mb-3">
-                    <FileText className="w-4 h-4" />
-                    <span className="text-sm">Suggested task</span>
+                  <div className="flex items-center gap-1.5 text-muted-foreground mb-2.5">
+                    <FileText className="w-4 h-4 stroke-[2.5]" />
+                    <span className="text-sm font-medium">Suggested task</span>
                   </div>
-                  <h3 className="text-xl font-medium text-foreground leading-relaxed">
+                  <h3 className="text-xl font-semibold text-foreground">
                     Review today's drop in step-two activation.
                   </h3>
-                  <div className="gap-2 mt-auto pb-0 text-muted-foreground flex items-end justify-start">
-                    <Link2 className="w-4 h-4" />
-                    <span className="text-sm">Select data source</span>
-                    <span className="text-sm">›</span>
+                  <div className="gap-1.5 mt-auto pb-0 text-muted-foreground flex items-end justify-start">
+                    <Link2 className="w-4 h-4 stroke-[2.5]" />
+                    <span className="text-sm font-medium">Select data source</span>
+                    <span className="text-sm font-medium">›</span>
                   </div>
                 </div>
 
                 {/* Connected Sources Card */}
                 <div className="insight-card flex flex-col">
-                  <div className="flex items-center gap-2 text-muted-foreground mb-4">
-                    <Link2 className="w-4 h-4" />
-                    <span className="text-sm">Connected sources</span>
+                  <div className="flex items-center gap-1.5 text-muted-foreground mb-3">
+                    <Link2 className="w-4 h-4 stroke-[2.5]" />
+                    <span className="text-sm font-medium">Connected sources</span>
                   </div>
-                  <div className="space-y-3 flex-1">
-                    {connectedSources.map(source => <div key={source.name} className="flex items-center gap-3">
-                        <span className="text-lg">{source.icon}</span>
-                        <span className="text-foreground">{source.name}</span>
+                  <div className="space-y-2.5 flex-1">
+                    {connectedSources.map(source => <div key={source.name} className="flex items-center gap-2.5">
+                        <span className="text-base">{source.icon}</span>
+                        <span className="text-foreground font-medium">{source.name}</span>
                       </div>)}
                   </div>
                   <div className="relative mt-auto pb-0">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                    <input type="text" placeholder="Search for documents" className="w-full bg-muted/50 rounded-full pl-10 pr-4 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring" />
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground stroke-[2.5]" />
+                    <input type="text" placeholder="Search for documents" className="w-full bg-muted/50 rounded-full pl-9 pr-3.5 py-1.5 text-sm placeholder:text-muted-foreground focus:outline-none font-medium" />
                   </div>
                 </div>
 
                 {/* Suggested Prompt Card */}
                 <div className="insight-card flex flex-col">
-                  <div className="flex items-center gap-2 text-muted-foreground mb-3">
-                    <Code2 className="w-4 h-4" />
-                    <span className="text-sm">Suggested prompt</span>
+                  <div className="flex items-center gap-1.5 text-muted-foreground mb-2.5">
+                    <Code2 className="w-4 h-4 stroke-[2.5]" />
+                    <span className="text-sm font-medium">Suggested prompt</span>
                   </div>
-                  <h3 className="text-xl font-medium text-foreground leading-relaxed">
+                  <h3 className="text-xl font-semibold text-foreground">
                     What's driving this month's performance changes?
                   </h3>
-                  <div className="flex items-center gap-2 mt-auto pb-0 text-muted-foreground">
-                    <Link2 className="w-4 h-4" />
-                    <span className="text-sm">Select data source</span>
-                    <span className="text-xs">›</span>
+                  <div className="flex items-center gap-1.5 mt-auto pb-0 text-muted-foreground">
+                    <Link2 className="w-4 h-4 stroke-[2.5]" />
+                    <span className="text-sm font-medium">Select data source</span>
+                    <span className="text-xs font-medium">›</span>
                   </div>
                 </div>
 
                 {/* Recently Uploaded Card */}
                 <div className="insight-card flex flex-col">
-                  <div className="flex items-center gap-2 text-muted-foreground mb-3">
-                    <FileUp className="w-4 h-4" />
-                    <span className="text-sm">Recently uploaded</span>
+                  <div className="flex items-center gap-1.5 text-muted-foreground mb-2.5">
+                    <FileUp className="w-4 h-4 stroke-[2.5]" />
+                    <span className="text-sm font-medium">Recently uploaded</span>
                   </div>
-                  <h3 className="text-xl font-medium text-foreground leading-relaxed">
+                  <h3 className="text-xl font-semibold text-foreground">
                     Which emerging patterns matter for our next release?
                   </h3>
-                  <div className="flex items-center gap-2 mt-auto pb-0 text-muted-foreground">
+                  <div className="flex items-center gap-1.5 mt-auto pb-0 text-muted-foreground">
                     <span className="text-red-400">📕</span>
                     <span className="text-sm">E-commerce Trends_2025  ›</span>
                   </div>
@@ -365,15 +365,15 @@ export function HomeView({
 
                 {/* Active Agents Card */}
                 <div className="insight-card">
-                  <div className="flex items-center gap-2 text-muted-foreground mb-4">
-                    <Bot className="w-4 h-4" />
-                    <span className="text-sm">Active Agents</span>
+                  <div className="flex items-center gap-1.5 text-muted-foreground mb-3">
+                    <Bot className="w-4 h-4 stroke-[2.5]" />
+                    <span className="text-sm font-medium">Active Agents</span>
                   </div>
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid grid-cols-2 gap-1.5">
                     {activeAgents.map(agent => {
                   const Icon = agent.icon;
-                  return <button key={agent.name} className="flex items-center gap-2 px-3 py-2.5 bg-muted/50 hover:bg-muted rounded-xl text-sm text-foreground transition-colors">
-                          <Icon className="w-4 h-4 text-muted-foreground" />
+                  return <button key={agent.name} className="flex items-center gap-1.5 px-2.5 py-2 bg-muted/50 hover:bg-muted rounded-xl text-sm text-foreground transition-colors font-medium">
+                          <Icon className="w-4 h-4 text-muted-foreground stroke-[2.5]" />
                           <span>{agent.name}</span>
                         </button>;
                 })}

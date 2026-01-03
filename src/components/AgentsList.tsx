@@ -44,30 +44,30 @@ export function AgentsList({ agents, onAgentClick }: AgentsListProps) {
             onClick={() => onAgentClick?.(agent)}
             className="agent-item w-full text-left"
           >
-            <div className={`p-2.5 rounded-xl ${statusColors[agent.status]}`}>
+            <div className={`p-2 rounded-xl ${statusColors[agent.status]}`}>
               {agent.status === 'running' ? (
-                <Loader2 className="w-5 h-5 animate-spin" />
+                <Loader2 className="w-4.5 h-4.5 animate-spin stroke-[2.5]" />
               ) : (
-                <Icon className="w-5 h-5" />
+                <Icon className="w-4.5 h-4.5 stroke-[2.5]" />
               )}
             </div>
             
             <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2">
-                <h4 className="font-medium text-foreground truncate">
+              <div className="flex items-center gap-1.5">
+                <h4 className="font-semibold text-foreground truncate">
                   {agent.name}
                 </h4>
-                <span className="text-xs text-muted-foreground">
+                <span className="text-xs text-muted-foreground font-medium">
                   {agent.outputCount} outputs
                 </span>
               </div>
-              <p className="text-sm text-muted-foreground truncate">
+              <p className="text-sm text-muted-foreground truncate font-medium">
                 {agent.description}
               </p>
             </div>
             
             {agent.lastRun && (
-              <span className="text-xs text-muted-foreground flex-shrink-0">
+              <span className="text-xs text-muted-foreground flex-shrink-0 font-medium">
                 {formatDistanceToNow(agent.lastRun, { addSuffix: true })}
               </span>
             )}

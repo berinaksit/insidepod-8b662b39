@@ -153,8 +153,18 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-medium;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    line-height: 1.28;
+  }
+  
+  /* Tighter line heights for editorial feel */
+  p, span, div {
+    line-height: 1.28;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    line-height: 1.15;
   }
   
   /* Display typography - for headlines */
@@ -169,16 +179,16 @@
 }
 
 @layer components {
-  /* Insight cards - contained, calm surfaces */
+  /* Insight cards - contained, calm surfaces - borderless */
   .insight-card {
-    @apply bg-card rounded-2xl p-6 border border-border/50;
+    @apply bg-card rounded-2xl p-5;
     @apply transition-all duration-300 ease-out;
-    @apply hover:shadow-lg hover:shadow-primary/5 hover:border-border;
+    @apply hover:shadow-lg hover:shadow-primary/5;
   }
   
   /* Large analysis panels - the color moments */
   .analysis-panel {
-    @apply rounded-3xl p-8 md:p-12;
+    @apply rounded-3xl p-7 md:p-10;
     @apply transition-all duration-300 ease-out;
   }
   
@@ -194,37 +204,37 @@
     @apply bg-tertiary-surface text-tertiary-surface-foreground;
   }
   
-  /* Search bar - the primary interaction */
+  /* Search bar - borderless, relies on background contrast */
   .search-container {
-    @apply bg-card border border-border rounded-full;
+    @apply bg-card rounded-full;
     @apply shadow-none;
     @apply transition-all duration-300 ease-out;
-    @apply focus-within:shadow-xl focus-within:shadow-primary/10 focus-within:border-primary/30;
+    @apply focus-within:shadow-xl focus-within:shadow-primary/10;
   }
   
-  /* Agent list items */
+  /* Agent list items - tighter spacing */
   .agent-item {
-    @apply flex items-center gap-4 p-4 rounded-xl;
+    @apply flex items-center gap-3 p-3 rounded-xl;
     @apply transition-all duration-200 ease-out;
     @apply hover:bg-muted cursor-pointer;
   }
   
-  /* Badge variants */
+  /* Badge variants - tighter padding */
   .badge-pulse {
-    @apply bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-medium;
+    @apply bg-primary/10 text-primary px-2.5 py-0.5 rounded-full text-xs font-medium;
   }
   
   .badge-insight {
-    @apply bg-secondary/10 text-secondary px-3 py-1 rounded-full text-xs font-medium;
+    @apply bg-secondary/10 text-secondary px-2.5 py-0.5 rounded-full text-xs font-medium;
   }
   
   .badge-signal {
-    @apply bg-tertiary-surface text-tertiary-surface-foreground px-3 py-1 rounded-full text-xs font-medium;
+    @apply bg-tertiary-surface text-tertiary-surface-foreground px-2.5 py-0.5 rounded-full text-xs font-medium;
   }
   
   /* Source attribution */
   .source-tag {
-    @apply text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded;
+    @apply text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded font-medium;
   }
   
   /* Calm loading state */

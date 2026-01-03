@@ -38,21 +38,21 @@ export function GoalCard({ goal, index, onClick }: GoalCardProps) {
       onClick={onClick}
       className="insight-card cursor-pointer group"
     >
-      <div className="flex items-start justify-between gap-4 mb-4">
-        <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium ${status.className}`}>
-          <StatusIcon className="w-3.5 h-3.5" />
+      <div className="flex items-start justify-between gap-3 mb-3">
+        <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${status.className}`}>
+          <StatusIcon className="w-3.5 h-3.5 stroke-[2.5]" />
           {status.label}
         </div>
-        <span className="text-sm text-muted-foreground font-medium">
+        <span className="text-sm text-muted-foreground font-semibold">
           {goal.progress}%
         </span>
       </div>
       
-      <h3 className="text-lg font-medium text-foreground mb-2 group-hover:text-primary transition-colors">
+      <h3 className="text-lg font-semibold text-foreground mb-1.5 group-hover:text-primary transition-colors">
         {goal.title}
       </h3>
       
-      <p className="text-sm text-muted-foreground mb-4">
+      <p className="text-sm text-muted-foreground mb-3">
         {goal.description}
       </p>
       
