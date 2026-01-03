@@ -31,7 +31,7 @@ const Index = () => {
       <div className="flex-1 flex flex-col min-h-screen">
         <Header onSettingsClick={() => setCurrentView('settings')} />
         
-        <main className="flex-1 overflow-auto">
+        <main className="flex-1 overflow-auto px-[200px]">
           <AnimatePresence mode="wait">
             <motion.div
               key={currentView}
