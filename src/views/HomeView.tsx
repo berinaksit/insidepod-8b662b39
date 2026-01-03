@@ -299,7 +299,7 @@ export function HomeView({
                 </div>
 
                 {/* Suggested Task Card */}
-                <div className="insight-card flex flex-col min-h-[220px]">
+                <div className="insight-card flex flex-col">
                   <div className="flex items-center gap-1.5 text-muted-foreground mb-2.5">
                     <FileText className="w-4 h-4 stroke-[2.5]" />
                     <span className="text-sm font-medium">Suggested task</span>
@@ -307,7 +307,7 @@ export function HomeView({
                   <h3 className="text-xl font-semibold text-foreground">
                     Review today's drop in step-two activation.
                   </h3>
-                  <div className="gap-1.5 mt-auto text-muted-foreground flex items-end justify-start">
+                  <div className="gap-1.5 mt-auto pb-0 text-muted-foreground flex items-end justify-start">
                     <Link2 className="w-4 h-4 stroke-[2.5]" />
                     <span className="text-sm font-medium">Select data source</span>
                     <span className="text-sm font-medium">›</span>
@@ -315,7 +315,7 @@ export function HomeView({
                 </div>
 
                 {/* Connected Sources Card */}
-                <div className="insight-card flex flex-col min-h-[220px]">
+                <div className="insight-card flex flex-col">
                   <div className="flex items-center gap-1.5 text-muted-foreground mb-3">
                     <Link2 className="w-4 h-4 stroke-[2.5]" />
                     <span className="text-sm font-medium">Connected sources</span>
@@ -326,14 +326,14 @@ export function HomeView({
                         <span className="text-foreground font-medium">{source.name}</span>
                       </div>)}
                   </div>
-                  <div className="relative mt-auto">
+                  <div className="relative mt-auto pb-0">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground stroke-[2.5]" />
                     <input type="text" placeholder="Search for documents" className="w-full bg-muted/50 rounded-full pl-9 pr-3.5 py-1.5 text-sm placeholder:text-muted-foreground focus:outline-none font-medium" />
                   </div>
                 </div>
 
                 {/* Suggested Prompt Card */}
-                <div className="insight-card flex flex-col min-h-[220px]">
+                <div className="insight-card flex flex-col">
                   <div className="flex items-center gap-1.5 text-muted-foreground mb-2.5">
                     <Code2 className="w-4 h-4 stroke-[2.5]" />
                     <span className="text-sm font-medium">Suggested prompt</span>
@@ -341,7 +341,7 @@ export function HomeView({
                   <h3 className="text-xl font-semibold text-foreground">
                     What's driving this month's performance changes?
                   </h3>
-                  <div className="flex items-center gap-1.5 mt-auto text-muted-foreground">
+                  <div className="flex items-center gap-1.5 mt-auto pb-0 text-muted-foreground">
                     <Link2 className="w-4 h-4 stroke-[2.5]" />
                     <span className="text-sm font-medium">Select data source</span>
                     <span className="text-xs font-medium">›</span>
@@ -349,7 +349,7 @@ export function HomeView({
                 </div>
 
                 {/* Recently Uploaded Card */}
-                <div className="insight-card flex flex-col min-h-[220px]">
+                <div className="insight-card flex flex-col">
                   <div className="flex items-center gap-1.5 text-muted-foreground mb-2.5">
                     <FileUp className="w-4 h-4 stroke-[2.5]" />
                     <span className="text-sm font-medium">Recently uploaded</span>
@@ -357,23 +357,23 @@ export function HomeView({
                   <h3 className="text-xl font-semibold text-foreground">
                     Which emerging patterns matter for our next release?
                   </h3>
-                  <div className="flex items-center gap-1.5 mt-auto text-muted-foreground">
+                  <div className="flex items-center gap-1.5 mt-auto pb-0 text-muted-foreground">
                     <span className="text-red-400">📕</span>
                     <span className="text-sm">E-commerce Trends_2025  ›</span>
                   </div>
                 </div>
 
                 {/* Active Agents Card */}
-                <div className="insight-card flex flex-col min-h-[220px]">
+                <div className="insight-card">
                   <div className="flex items-center gap-1.5 text-muted-foreground mb-3">
                     <Bot className="w-4 h-4 stroke-[2.5]" />
                     <span className="text-sm font-medium">Active Agents</span>
                   </div>
-                  <div className="grid grid-cols-2 gap-1 mt-auto">
+                  <div className="grid grid-cols-2 gap-1.5">
                     {activeAgents.map(agent => {
                   const Icon = agent.icon;
-                  return <button key={agent.name} className="flex items-center gap-1 px-2 py-1.5 bg-muted/50 hover:bg-muted rounded-lg text-xs text-foreground transition-colors font-medium">
-                          <Icon className="w-3.5 h-3.5 text-muted-foreground stroke-[2.5]" />
+                  return <button key={agent.name} className="flex items-center gap-1.5 px-2.5 py-2 bg-muted/50 hover:bg-muted rounded-xl text-sm text-foreground transition-colors font-medium">
+                          <Icon className="w-4 h-4 text-muted-foreground stroke-[2.5]" />
                           <span>{agent.name}</span>
                         </button>;
                 })}
