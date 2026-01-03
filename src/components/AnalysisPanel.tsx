@@ -151,7 +151,7 @@ export function AnalysisPanel({
           <p className="text-sm font-medium opacity-70 uppercase tracking-wider">
             Evidence
           </p>
-          {analysis.evidence.map(item => <div key={item.id} className="flex items-start gap-3 p-4 rounded-xl bg-foreground/5">
+          {analysis.evidence.map(item => <div key={item.id} className="flex items-start gap-3 p-4 rounded-xl bg-[#222222]">
               <div className="flex-shrink-0 mt-0.5">
                 {item.type === 'quantitative' ? <BarChart3 className="w-4 h-4 opacity-60" /> : <FileText className="w-4 h-4 opacity-60" />}
               </div>
