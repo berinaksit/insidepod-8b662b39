@@ -29,7 +29,10 @@ const Index = () => {
   return (
     <div className="flex min-h-screen bg-background">
       <div className="flex-1 flex flex-col min-h-screen">
-        <Header onSettingsClick={() => setCurrentView('settings')} />
+        <Header 
+          onSettingsClick={() => setCurrentView('settings')} 
+          onLogoClick={() => setCurrentView('home')}
+        />
         
         <main className="flex-1 overflow-auto px-[150px]">
           <AnimatePresence mode="wait">
