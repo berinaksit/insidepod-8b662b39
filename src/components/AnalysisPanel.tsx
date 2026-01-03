@@ -61,11 +61,11 @@ export function AnalysisPanel({ analysis, onClose }: AnalysisPanelProps) {
         </p>
 
         {/* Data Visualization Section */}
-        <div className="mb-10 p-6 rounded-2xl bg-[#222222] border border-border/30">
+        <div className="mb-10 p-6 rounded-2xl bg-[#222222]">
           <div className="flex items-start justify-between mb-6">
             <div>
               <h3 className="font-display text-xl md:text-2xl mb-1">
-                A closer look at <span className="text-highlight">onboarding completion</span>
+                A closer look at <span className="text-[#9CA3AF]">onboarding completion</span>
               </h3>
               <p className="text-muted-foreground">
                 Showing data from the past 30 days.
@@ -78,8 +78,8 @@ export function AnalysisPanel({ analysis, onClose }: AnalysisPanelProps) {
                   onClick={() => setSelectedRange(range)}
                   className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
                     selectedRange === range
-                      ? 'bg-highlight text-highlight-foreground'
-                      : 'bg-muted/50 text-muted-foreground hover:bg-muted'
+                      ? 'bg-[#3B3B3B] text-[#E5E5E5]'
+                      : 'bg-[#2A2A2A] text-muted-foreground hover:bg-[#333333]'
                   }`}
                 >
                   {range}
@@ -96,9 +96,9 @@ export function AnalysisPanel({ analysis, onClose }: AnalysisPanelProps) {
                   initial={{ height: 0 }}
                   animate={{ height: `${(data.value / maxValue) * 100}%` }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
-                  className="w-full rounded-t-lg bg-highlight/80 hover:bg-highlight transition-colors cursor-pointer relative group min-h-[20px]"
+                  className="w-full rounded-t-lg bg-[#4B5563] hover:bg-[#6B7280] transition-colors cursor-pointer relative group min-h-[20px]"
                 >
-                  <div className="absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-popover text-popover-foreground px-2 py-1 rounded text-xs font-medium whitespace-nowrap">
+                  <div className="absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-[#333333] text-[#E5E5E5] px-2 py-1 rounded text-xs font-medium whitespace-nowrap">
                     {data.value}%
                   </div>
                 </motion.div>
@@ -115,27 +115,27 @@ export function AnalysisPanel({ analysis, onClose }: AnalysisPanelProps) {
 
           {/* Metric Cards */}
           <div className="grid grid-cols-3 gap-4 mt-6">
-            <div className="p-4 rounded-xl bg-card border border-border/30">
+            <div className="p-4 rounded-xl bg-[#1A1A1A]">
               <p className="text-sm text-muted-foreground mb-1">Completion Rate</p>
               <p className="font-display text-sm font-medium mb-2">Current average</p>
               <div className="flex items-baseline gap-3">
                 <span className="text-3xl font-display font-bold">68%</span>
-                <span className="text-xs px-2 py-0.5 rounded bg-destructive/20 text-destructive">
+                <span className="text-xs px-2 py-0.5 rounded bg-[#2A2A2A] text-[#9CA3AF]">
                   -14 pp from peak
                 </span>
               </div>
             </div>
-            <div className="p-4 rounded-xl bg-card border border-border/30">
+            <div className="p-4 rounded-xl bg-[#1A1A1A]">
               <p className="text-sm text-muted-foreground mb-1">Drop-off Point</p>
               <p className="font-display text-sm font-medium mb-2">Most common exit</p>
               <div className="flex items-baseline gap-3">
                 <span className="text-3xl font-display font-bold">Step 3</span>
-                <span className="text-xs px-2 py-0.5 rounded bg-muted text-muted-foreground">
+                <span className="text-xs px-2 py-0.5 rounded bg-[#2A2A2A] text-[#9CA3AF]">
                   Profile setup
                 </span>
               </div>
             </div>
-            <div className="p-4 rounded-xl bg-card border border-border/30">
+            <div className="p-4 rounded-xl bg-[#1A1A1A]">
               <p className="text-xs text-muted-foreground flex items-center gap-1.5 mb-2">
                 <FileText className="w-3 h-3" />
                 Suggested task
