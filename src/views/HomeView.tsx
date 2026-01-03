@@ -333,7 +333,7 @@ export function HomeView({
                 </div>
 
                 {/* Suggested Prompt Card */}
-                <div className="insight-card flex flex-col h-[220px]">
+                <div className="insight-card flex flex-col">
                   <div className="flex items-center gap-1.5 text-muted-foreground mb-2.5">
                     <Code2 className="w-4 h-4 stroke-[2.5]" />
                     <span className="text-sm font-medium">Suggested prompt</span>
@@ -341,7 +341,7 @@ export function HomeView({
                   <h3 className="text-xl font-semibold text-foreground">
                     What's driving this month's performance changes?
                   </h3>
-                  <div className="flex items-center gap-1.5 mt-auto pb-6 text-muted-foreground">
+                  <div className="flex items-center gap-1.5 mt-auto pb-0 text-muted-foreground">
                     <Link2 className="w-4 h-4 stroke-[2.5]" />
                     <span className="text-sm font-medium">Select data source</span>
                     <span className="text-xs font-medium">›</span>
@@ -349,7 +349,7 @@ export function HomeView({
                 </div>
 
                 {/* Recently Uploaded Card */}
-                <div className="insight-card flex flex-col h-[220px]">
+                <div className="insight-card flex flex-col">
                   <div className="flex items-center gap-1.5 text-muted-foreground mb-2.5">
                     <FileUp className="w-4 h-4 stroke-[2.5]" />
                     <span className="text-sm font-medium">Recently uploaded</span>
@@ -357,23 +357,23 @@ export function HomeView({
                   <h3 className="text-xl font-semibold text-foreground">
                     Which emerging patterns matter for our next release?
                   </h3>
-                  <div className="flex items-center gap-1.5 mt-auto pb-6 text-muted-foreground">
+                  <div className="flex items-center gap-1.5 mt-auto pb-0 text-muted-foreground">
                     <span className="text-red-400">📕</span>
                     <span className="text-sm">E-commerce Trends_2025  ›</span>
                   </div>
                 </div>
 
                 {/* Active Agents Card */}
-                <div className="insight-card flex flex-col h-[220px]">
+                <div className="insight-card">
                   <div className="flex items-center gap-1.5 text-muted-foreground mb-3">
                     <Bot className="w-4 h-4 stroke-[2.5]" />
                     <span className="text-sm font-medium">Active Agents</span>
                   </div>
-                  <div className="grid grid-cols-2 gap-1 mt-auto pb-6">
+                  <div className="grid grid-cols-2 gap-1.5">
                     {activeAgents.map(agent => {
                   const Icon = agent.icon;
-                  return <button key={agent.name} className="flex items-center gap-1 px-2 py-1.5 bg-muted/50 hover:bg-muted rounded-lg text-xs text-foreground transition-colors font-medium">
-                          <Icon className="w-3.5 h-3.5 text-muted-foreground stroke-[2.5]" />
+                  return <button key={agent.name} className="flex items-center gap-1.5 px-2.5 py-2 bg-muted/50 hover:bg-muted rounded-xl text-sm text-foreground transition-colors font-medium">
+                          <Icon className="w-4 h-4 text-muted-foreground stroke-[2.5]" />
                           <span>{agent.name}</span>
                         </button>;
                 })}
