@@ -10,9 +10,10 @@ import {
 
 interface HeaderProps {
   onSettingsClick?: () => void;
+  onLogoClick?: () => void;
 }
 
-export function Header({ onSettingsClick }: HeaderProps) {
+export function Header({ onSettingsClick, onLogoClick }: HeaderProps) {
   return (
     <motion.header
       initial={{ opacity: 0, y: -20 }}
@@ -20,12 +21,15 @@ export function Header({ onSettingsClick }: HeaderProps) {
       transition={{ duration: 0.4 }}
       className="flex items-center justify-between px-6 py-4 border-b border-border/50"
     >
-      <div className="flex items-center gap-2">
+      <button 
+        onClick={onLogoClick}
+        className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+      >
         <div className="w-5 h-5 rounded-xl flex items-center justify-center bg-slate-950">
           <span className="text-primary-foreground font-display text-lg"></span>
         </div>
         <span className="font-display text-xl text-foreground">Inside Pōd</span>
-      </div>
+      </button>
 
       <div className="flex items-center gap-2">
         <button className="p-2.5 rounded-xl hover:bg-muted transition-colors relative">
