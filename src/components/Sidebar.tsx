@@ -64,7 +64,7 @@ export function Sidebar({
             </button>
           </div>
           
-          <nav className="flex-1 space-y-1">
+          <nav className="flex-1 space-y-0.5">
             {navItems.map(item => {
             const Icon = item.icon;
             const isActive = currentView === item.id;
@@ -72,21 +72,21 @@ export function Sidebar({
               onViewChange(item.id);
               onClose();
             }} className={`
-                    w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200
+                    w-full flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl transition-all duration-200
                     ${isActive ? 'bg-sidebar-accent text-sidebar-foreground' : 'text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground'}
                   `}>
-                  <Icon className="w-5 h-5" />
-                  <span className="font-medium">{item.label}</span>
+                  <Icon className="w-5 h-5 stroke-[2.5]" />
+                  <span className="font-semibold">{item.label}</span>
                 </button>;
           })}
           </nav>
           
-          <div className="pt-4 border-t border-sidebar-border">
-            <div className="px-4 py-3">
-              <p className="text-xs text-sidebar-foreground/50 uppercase tracking-wider mb-1">
+          <div className="pt-3">
+            <div className="px-3.5 py-2.5">
+              <p className="text-xs text-sidebar-foreground/50 uppercase tracking-wider mb-0.5 font-medium">
                 Last sync
               </p>
-              <p className="text-sm text-sidebar-foreground/70">
+              <p className="text-sm text-sidebar-foreground/70 font-medium">
                 2 minutes ago
               </p>
             </div>

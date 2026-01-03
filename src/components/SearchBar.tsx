@@ -48,17 +48,17 @@ export function SearchBar({ onSearch, isProcessing = false, placeholder }: Searc
     <div className="relative w-full max-w-2xl mx-auto">
       <form onSubmit={handleSubmit}>
         <div className="search-container">
-          <div className="flex items-center gap-3 px-5 py-4">
+          <div className="flex items-center gap-2.5 px-4 py-3.5">
             <div className="flex-shrink-0">
               {isProcessing ? (
                 <motion.div
                   animate={{ rotate: 360 }}
                   transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
                 >
-                  <Sparkles className="w-5 h-5 text-primary" />
+                  <Sparkles className="w-5 h-5 text-primary stroke-[2.5]" />
                 </motion.div>
               ) : (
-                <Search className="w-5 h-5 text-muted-foreground" />
+                <Search className="w-5 h-5 text-muted-foreground stroke-[2.5]" />
               )}
             </div>
             
@@ -70,7 +70,7 @@ export function SearchBar({ onSearch, isProcessing = false, placeholder }: Searc
               onFocus={() => setIsFocused(true)}
               onBlur={() => setTimeout(() => setIsFocused(false), 200)}
               placeholder={placeholder || "Ask anything about your product..."}
-              className="flex-1 bg-transparent text-foreground placeholder:text-muted-foreground focus:outline-none text-base"
+              className="flex-1 bg-transparent text-foreground placeholder:text-muted-foreground focus:outline-none text-base font-medium"
               disabled={isProcessing}
             />
             
@@ -81,15 +81,15 @@ export function SearchBar({ onSearch, isProcessing = false, placeholder }: Searc
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.8 }}
                   type="submit"
-                  className="flex-shrink-0 p-2 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+                  className="flex-shrink-0 p-1.5 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
                 >
-                  <ArrowRight className="w-4 h-4" />
+                  <ArrowRight className="w-4 h-4 stroke-[2.5]" />
                 </motion.button>
               )}
             </AnimatePresence>
             
             {!query && !isFocused && (
-              <kbd className="hidden sm:inline-flex px-2 py-1 text-xs text-muted-foreground bg-muted rounded">
+              <kbd className="hidden sm:inline-flex px-2 py-0.5 text-xs text-muted-foreground bg-muted rounded font-medium">
                 /
               </kbd>
             )}
@@ -104,18 +104,18 @@ export function SearchBar({ onSearch, isProcessing = false, placeholder }: Searc
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
-            className="absolute top-full left-0 right-0 mt-2 bg-card border border-border rounded-2xl shadow-lg overflow-hidden z-50"
+            className="absolute top-full left-0 right-0 mt-2 bg-card rounded-2xl shadow-lg overflow-hidden z-50"
           >
-            <div className="p-3">
-              <p className="text-xs text-muted-foreground uppercase tracking-wider mb-2 px-2">
+            <div className="p-2.5">
+              <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1.5 px-2 font-medium">
                 Suggestions
               </p>
-              <div className="space-y-1">
+              <div className="space-y-0.5">
                 {suggestions.map((suggestion, i) => (
                   <button
                     key={i}
                     onClick={() => handleSuggestionClick(suggestion)}
-                    className="w-full text-left px-3 py-2.5 text-sm text-foreground rounded-xl hover:bg-muted transition-colors"
+                    className="w-full text-left px-2.5 py-2 text-sm text-foreground rounded-xl hover:bg-muted transition-colors font-medium"
                   >
                     {suggestion}
                   </button>
