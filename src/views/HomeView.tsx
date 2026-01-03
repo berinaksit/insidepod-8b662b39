@@ -310,7 +310,7 @@ export function HomeView({
                   <div className="gap-2 mt-auto pb-0 text-muted-foreground flex items-end justify-start">
                     <Link2 className="w-4 h-4" />
                     <span className="text-sm">Select data source</span>
-                    <span className="text-xs">▼</span>
+                    <span className="text-sm">›</span>
                   </div>
                 </div>
 
@@ -344,7 +344,7 @@ export function HomeView({
                   <div className="flex items-center gap-2 mt-auto pb-0 text-muted-foreground">
                     <Link2 className="w-4 h-4" />
                     <span className="text-sm">Select data source</span>
-                    <span className="text-xs">▼</span>
+                    <span className="text-xs">›</span>
                   </div>
                 </div>
 
@@ -359,7 +359,7 @@ export function HomeView({
                   </h3>
                   <div className="flex items-center gap-2 mt-auto pb-0 text-muted-foreground">
                     <span className="text-red-400">📕</span>
-                    <span className="text-sm">E-commerce Trends_2025</span>
+                    <span className="text-sm">E-commerce Trends_2025  ›</span>
                   </div>
                 </div>
 
