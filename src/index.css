@@ -26,7 +26,7 @@
     --popover-foreground: 220 15% 15%;
 
     /* Primary - Soft sage green for focus moments */
-    --primary: 224 71.4286% 4.1176%;
+    --primary: 229 84% 4.902%;
     --primary-foreground: 150 15% 98%;
 
     /* Primary surface - large colored panels */
@@ -34,7 +34,7 @@
     --primary-surface-foreground: 0 0% 90%;
 
     /* Secondary - Soft coral/peach for secondary moments */
-    --secondary: 15 45% 60%;
+    --secondary: 229 84% 4.902%;
     --secondary-foreground: 15 10% 98%;
 
     /* Secondary surface */
@@ -47,7 +47,7 @@
 
     /* Muted - subdued elements */
     --muted: 40 10% 95%;
-    --muted-foreground: 220 10% 50%;
+    --muted-foreground: 229 84% 4.902%;
 
     /* Accent - minimal use */
     --accent: 40 10% 93%;
@@ -60,7 +60,7 @@
     /* Borders - subtle, almost invisible */
     --border: 40 10% 90%;
     --input: 40 10% 90%;
-    --ring: 150 25% 45%;
+    --ring: 229 84% 4.902%;
 
     /* Radius - soft, not aggressive */
     --radius: 1rem;
