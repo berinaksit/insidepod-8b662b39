@@ -307,7 +307,7 @@ export function HomeView({
                   <h3 className="text-xl font-medium text-foreground leading-relaxed">
                     Review today's drop in step-two activation.
                   </h3>
-                  <div className="gap-2 mt-auto pb-6 text-muted-foreground flex items-end justify-start">
+                  <div className="gap-2 mt-auto pb-0 text-muted-foreground flex items-end justify-start">
                     <Link2 className="w-4 h-4" />
                     <span className="text-sm">Select data source</span>
                     <span className="text-xs">▼</span>
@@ -326,7 +326,7 @@ export function HomeView({
                         <span className="text-foreground">{source.name}</span>
                       </div>)}
                   </div>
-                  <div className="relative mt-auto pb-6">
+                  <div className="relative mt-auto pb-0">
                     <input type="text" placeholder="Search for documents" className="w-full bg-muted/50 border border-border/50 rounded-lg px-4 py-2 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring" />
                   </div>
                 </div>
@@ -340,7 +340,7 @@ export function HomeView({
                   <h3 className="text-xl font-medium text-foreground leading-relaxed">
                     What's driving this month's performance changes?
                   </h3>
-                  <div className="flex items-center gap-2 mt-auto pb-6 text-muted-foreground">
+                  <div className="flex items-center gap-2 mt-auto pb-0 text-muted-foreground">
                     <Link2 className="w-4 h-4" />
                     <span className="text-sm">Select data source</span>
                     <span className="text-xs">▼</span>
@@ -356,7 +356,7 @@ export function HomeView({
                   <h3 className="text-xl font-medium text-foreground leading-relaxed">
                     Which emerging patterns matter for our next release?
                   </h3>
-                  <div className="flex items-center gap-2 mt-auto pb-6 text-muted-foreground">
+                  <div className="flex items-center gap-2 mt-auto pb-0 text-muted-foreground">
                     <span className="text-red-400">📕</span>
                     <span className="text-sm">E-commerce Trends_2025</span>
                   </div>
