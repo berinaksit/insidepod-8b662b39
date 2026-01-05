@@ -94,7 +94,7 @@ export function AnalysisPanel({
           </div>
 
           {/* Bar Chart */}
-          <div className="flex items-end gap-2.5 h-30 mb-3">
+          <div className="flex items-end gap-2.5 h-30 mb-3 pt-[30px]">
             {weeklyData.map((data, index) => <div key={index} className="flex-1 flex flex-col items-center gap-1.5">
                 <motion.div initial={{
               height: 0
