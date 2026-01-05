@@ -15,22 +15,28 @@ const themeClasses = {
 // Mock chart data for onboarding completion rate
 const weeklyData = [{
   week: 'Week 1',
-  value: 72
+  value: 72,
+  barHeight: 20
 }, {
   week: 'Week 2',
-  value: 78
+  value: 78,
+  barHeight: 40
 }, {
   week: 'Week 3',
-  value: 74
+  value: 74,
+  barHeight: 60
 }, {
   week: 'Week 4',
-  value: 82
+  value: 82,
+  barHeight: 80
 }, {
   week: 'Week 5',
-  value: 68
+  value: 68,
+  barHeight: 50
 }, {
   week: 'Week 6',
-  value: 61
+  value: 61,
+  barHeight: 40
 }];
 const timeRanges = ['3 months', '1 month', '7 days'] as const;
 export function AnalysisPanel({
@@ -93,11 +99,11 @@ export function AnalysisPanel({
                 <motion.div initial={{
               height: 0
             }} animate={{
-              height: `${data.value / maxValue * 100}%`
+              height: `${data.barHeight}px`
             }} transition={{
               duration: 0.5,
               delay: index * 0.1
-            }} className="w-full rounded-t-lg bg-[#4B5563] hover:bg-[#6B7280] transition-colors cursor-pointer relative group min-h-[50px]">
+            }} className="w-full rounded-t-lg bg-[#4B5563] hover:bg-[#6B7280] transition-colors cursor-pointer relative group">
                   <div className="absolute -top-7 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-[#333333] text-[#E5E5E5] px-1.5 py-0.5 rounded text-xs font-semibold whitespace-nowrap">
                     {data.value}%
                   </div>
