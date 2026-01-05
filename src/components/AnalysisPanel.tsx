@@ -146,7 +146,7 @@ export function AnalysisPanel({
               <p className="font-display text-sm font-semibold mb-2.5">
                 Simplify profile setup flow
               </p>
-              <button className="text-xs text-highlight hover:underline flex items-center gap-0.5 my-0 py-0 font-medium">
+              <button className="text-xs hover:underline flex items-center gap-0.5 my-0 py-0 font-medium pt-[20px] text-primary-foreground">
                 Create backlog item <ArrowRight className="w-3 h-3 stroke-[2.5]" />
               </button>
             </div>
