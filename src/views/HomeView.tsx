@@ -372,7 +372,7 @@ export function HomeView({
                   <div className="grid grid-cols-2 gap-1.5">
                     {activeAgents.map(agent => {
                   const Icon = agent.icon;
-                  return <button key={agent.name} className="flex items-center gap-1.5 px-2.5 bg-muted/50 hover:bg-muted rounded-xl text-sm text-foreground transition-colors font-medium py-[28px]">
+                  return <button key={agent.name} className="flex items-center gap-1.5 bg-muted/50 hover:bg-muted rounded-xl text-sm text-foreground transition-colors font-medium py-[28px] px-[10px]">
                           <Icon className="w-4 h-4 text-muted-foreground stroke-[2.5]" />
                           <span>{agent.name}</span>
                         </button>;
