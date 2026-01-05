@@ -94,7 +94,7 @@ export function AnalysisPanel({
           </div>
 
           {/* Bar Chart */}
-          <div className="flex items-end gap-2.5 h-30 mb-3 pt-[40px]">
+          <div className="flex items-end gap-2.5 h-30 mb-3 pt-[30px]">
             {weeklyData.map((data, index) => <div key={index} className="flex-1 flex flex-col items-center gap-1.5">
                 <motion.div initial={{
               height: 0
@@ -146,7 +146,7 @@ export function AnalysisPanel({
               <p className="font-display text-sm font-semibold mb-2.5">
                 Simplify profile setup flow
               </p>
-              <button className="text-xs hover:underline flex items-center gap-0.5 my-0 py-0 font-medium pt-[20px] text-primary-foreground">
+              <button className="text-xs text-highlight hover:underline flex items-center gap-0.5 my-0 py-0 font-medium">
                 Create backlog item <ArrowRight className="w-3 h-3 stroke-[2.5]" />
               </button>
             </div>
