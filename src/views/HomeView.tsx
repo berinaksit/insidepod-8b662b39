@@ -341,7 +341,7 @@ export function HomeView({
                   <h3 className="text-xl font-semibold text-foreground">
                     What's driving this month's performance changes?
                   </h3>
-                  <div className="flex items-center gap-1.5 mt-auto pb-0 text-muted-foreground pt-[140px]">
+                  <div className="flex items-center gap-1.5 mt-auto pb-0 text-muted-foreground py-0 pt-[130px]">
                     <Link2 className="w-4 h-4 stroke-[2.5]" />
                     <span className="text-sm font-medium">Select data source</span>
                     <span className="text-xs font-medium">›</span>
@@ -372,7 +372,7 @@ export function HomeView({
                   <div className="grid grid-cols-2 gap-1.5">
                     {activeAgents.map(agent => {
                   const Icon = agent.icon;
-                  return <button key={agent.name} className="flex items-center gap-1.5 px-2.5 py-2 bg-muted/50 hover:bg-muted rounded-xl text-sm text-foreground transition-colors font-medium">
+                  return <button key={agent.name} className="flex items-center gap-1.5 px-2.5 bg-muted/50 hover:bg-muted rounded-xl text-sm text-foreground transition-colors font-medium py-[28px]">
                           <Icon className="w-4 h-4 text-muted-foreground stroke-[2.5]" />
                           <span>{agent.name}</span>
                         </button>;
