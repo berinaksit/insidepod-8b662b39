@@ -341,7 +341,7 @@ export function HomeView({
                   <h3 className="text-xl font-semibold text-foreground">
                     What's driving this month's performance changes?
                   </h3>
-                  <div className="flex items-center gap-1.5 mt-auto pb-0 text-muted-foreground">
+                  <div className="flex items-center gap-1.5 mt-auto pb-0 text-muted-foreground pt-[140px]">
                     <Link2 className="w-4 h-4 stroke-[2.5]" />
                     <span className="text-sm font-medium">Select data source</span>
                     <span className="text-xs font-medium">›</span>
