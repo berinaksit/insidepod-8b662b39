@@ -47,7 +47,7 @@
 
     /* Muted - subdued elements */
     --muted: 40 10% 95%;
-    --muted-foreground: 229 84% 4.902%;
+    --muted-foreground: 0 0% 45.098%;
 
     /* Accent - minimal use */
     --accent: 40 10% 93%;
