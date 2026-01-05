@@ -97,7 +97,7 @@ export function AnalysisPanel({
             }} transition={{
               duration: 0.5,
               delay: index * 0.1
-            }} className="w-full rounded-t-lg bg-[#4B5563] hover:bg-[#6B7280] transition-colors cursor-pointer relative group min-h-[20px]">
+            }} className="w-full rounded-t-lg bg-[#4B5563] hover:bg-[#6B7280] transition-colors cursor-pointer relative group min-h-[50px]">
                   <div className="absolute -top-7 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-[#333333] text-[#E5E5E5] px-1.5 py-0.5 rounded text-xs font-semibold whitespace-nowrap">
                     {data.value}%
                   </div>
