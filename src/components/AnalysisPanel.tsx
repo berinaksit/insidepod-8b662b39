@@ -62,7 +62,7 @@ export function AnalysisPanel({
           <X className="w-5 h-5 stroke-[2.5]" />
         </button>}
       
-      <div className="max-w-4xl">
+      <div className="w-full">
         <p className="text-sm font-semibold opacity-70 mb-3 uppercase tracking-wider">
           Analysis
         </p>
@@ -117,7 +117,7 @@ export function AnalysisPanel({
           </div>
 
           {/* Metric Cards */}
-          <div className="grid grid-cols-3 gap-3 mt-5">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-5">
             <div className="p-3.5 rounded-xl bg-[#1A1A1A]">
               <p className="text-sm text-muted-foreground mb-0.5 font-medium">Completion Rate</p>
               <p className="font-display text-sm font-semibold mb-1.5">Current average</p>
