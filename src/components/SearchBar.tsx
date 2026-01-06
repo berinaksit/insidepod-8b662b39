@@ -1,9 +1,11 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Sparkles, ArrowRight } from 'lucide-react';
+import { Search, Sparkles, ArrowRight, Plus, X } from 'lucide-react';
+import { AddDocumentsModal, UploadedDocument } from './AddDocumentsModal';
+import { AnalysisResultsModal } from './AnalysisResultsModal';
 
 interface SearchBarProps {
-  onSearch: (query: string) => void;
+  onSearch?: (query: string, documents: UploadedDocument[]) => void;
   isProcessing?: boolean;
   placeholder?: string;
 }
@@ -18,31 +20,45 @@ const suggestions = [
 export function SearchBar({ onSearch, isProcessing = false, placeholder }: SearchBarProps) {
   const [query, setQuery] = useState('');
   const [isFocused, setIsFocused] = useState(false);
+  const [documents, setDocuments] = useState<UploadedDocument[]>([]);
+  const [showDocModal, setShowDocModal] = useState(false);
+  const [showResultsModal, setShowResultsModal] = useState(false);
+  const [submittedQuery, setSubmittedQuery] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (e?: React.FormEvent) => {
+    e?.preventDefault();
     if (query.trim() && !isProcessing) {
-      onSearch(query.trim());
+      setSubmittedQuery(query.trim());
+      onSearch?.(query.trim(), documents);
+      setShowResultsModal(true);
     }
   };
 
   const handleSuggestionClick = (suggestion: string) => {
     setQuery(suggestion);
-    onSearch(suggestion);
     setIsFocused(false);
+    // Don't auto-run, just set the query
+  };
+
+  const handleDocumentsAdded = (newDocs: UploadedDocument[]) => {
+    setDocuments(prev => [...prev, ...newDocs]);
+  };
+
+  const removeDocument = (id: string) => {
+    setDocuments(prev => prev.filter(doc => doc.id !== id));
   };
 
   useEffect(() => {
     const handleKeydown = (e: KeyboardEvent) => {
-      if (e.key === '/' && !isFocused) {
+      if (e.key === '/' && !isFocused && !showDocModal && !showResultsModal) {
         e.preventDefault();
         inputRef.current?.focus();
       }
     };
     document.addEventListener('keydown', handleKeydown);
     return () => document.removeEventListener('keydown', handleKeydown);
-  }, [isFocused]);
+  }, [isFocused, showDocModal, showResultsModal]);
 
   return (
     <div className="relative w-full max-w-2xl mx-auto">
@@ -81,7 +97,7 @@ export function SearchBar({ onSearch, isProcessing = false, placeholder }: Searc
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.8 }}
                   type="submit"
-                  className="flex-shrink-0 p-1.5 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+                  className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-colors flex items-center justify-center"
                 >
                   <ArrowRight className="w-4 h-4 stroke-[2.5]" />
                 </motion.button>
@@ -96,7 +112,48 @@ export function SearchBar({ onSearch, isProcessing = false, placeholder }: Searc
           </div>
         </div>
       </form>
+
+      {/* Document attachment area */}
+      <div className="mt-3 flex items-center gap-2 flex-wrap">
+        {/* Add documents button */}
+        <button
+          onClick={() => setShowDocModal(true)}
+          className="w-8 h-8 rounded-full bg-muted/60 hover:bg-muted flex items-center justify-center transition-colors"
+          title="Add documents"
+        >
+          <Plus className="w-4 h-4 text-muted-foreground stroke-[2.5]" />
+        </button>
+
+        {/* Document badges */}
+        <AnimatePresence>
+          {documents.map((doc) => (
+            <motion.div
+              key={doc.id}
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-muted/80 rounded-full group"
+            >
+              <span className="text-sm text-foreground font-medium">{doc.aiTitle}</span>
+              <button
+                onClick={() => removeDocument(doc.id)}
+                className="w-4 h-4 rounded-full hover:bg-muted-foreground/20 flex items-center justify-center opacity-60 group-hover:opacity-100 transition-opacity"
+              >
+                <X className="w-3 h-3 text-muted-foreground" />
+              </button>
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </div>
+
+      {/* Documents attached indicator */}
+      {documents.length > 0 && (
+        <p className="mt-2 text-xs text-muted-foreground">
+          {documents.length} document{documents.length !== 1 ? 's' : ''} attached
+        </p>
+      )}
       
+      {/* Suggestions dropdown */}
       <AnimatePresence>
         {isFocused && !query && (
           <motion.div
@@ -125,6 +182,21 @@ export function SearchBar({ onSearch, isProcessing = false, placeholder }: Searc
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Modals */}
+      <AddDocumentsModal
+        open={showDocModal}
+        onOpenChange={setShowDocModal}
+        onDocumentsAdded={handleDocumentsAdded}
+        existingDocuments={documents}
+      />
+
+      <AnalysisResultsModal
+        open={showResultsModal}
+        onOpenChange={setShowResultsModal}
+        query={submittedQuery}
+        documents={documents}
+      />
     </div>
   );
 }
