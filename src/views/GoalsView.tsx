@@ -1,21 +1,39 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { GoalCard } from '@/components/GoalCard';
-import { EmptyState } from '@/components/EmptyState';
+import { GoalsEmptyState } from '@/components/GoalsEmptyState';
+import { AddGoalSheet, GoalFormData } from '@/components/AddGoalSheet';
 import { mockGoals } from '@/data/mockData';
-import { Target, Plus } from 'lucide-react';
+import { Plus } from 'lucide-react';
+import { Goal } from '@/types';
 
 export function GoalsView() {
-  if (mockGoals.length === 0) {
+  const [isAddGoalOpen, setIsAddGoalOpen] = useState(false);
+  const [goals, setGoals] = useState<Goal[]>(mockGoals);
+
+  const handleSaveGoal = (formData: GoalFormData) => {
+    const newGoal: Goal = {
+      id: `goal-${Date.now()}`,
+      title: formData.title,
+      description: `Target: ${formData.targetValue}${formData.targetUnit} ${formData.metric}`,
+      status: 'on-track',
+      progress: 0,
+      signals: [],
+      insights: [],
+    };
+    setGoals([...goals, newGoal]);
+  };
+
+  if (goals.length === 0) {
     return (
-      <EmptyState
-        icon={Target}
-        title="No goals defined yet"
-        description="Set up your product goals to track progress and receive AI-powered insights on how to achieve them."
-        action={{
-          label: 'Create your first goal',
-          onClick: () => console.log('Create goal'),
-        }}
-      />
+      <>
+        <GoalsEmptyState onCreateGoal={() => setIsAddGoalOpen(true)} />
+        <AddGoalSheet 
+          open={isAddGoalOpen} 
+          onOpenChange={setIsAddGoalOpen}
+          onSave={handleSaveGoal}
+        />
+      </>
     );
   }
 
@@ -34,14 +52,17 @@ export function GoalsView() {
           </p>
         </div>
         
-        <button className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors">
+        <button 
+          onClick={() => setIsAddGoalOpen(true)}
+          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors"
+        >
           <Plus className="w-4 h-4" />
           Add Goal
         </button>
       </motion.div>
       
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {mockGoals.map((goal, index) => (
+        {goals.map((goal, index) => (
           <GoalCard
             key={goal.id}
             goal={goal}
@@ -49,6 +70,12 @@ export function GoalsView() {
           />
         ))}
       </div>
+
+      <AddGoalSheet 
+        open={isAddGoalOpen} 
+        onOpenChange={setIsAddGoalOpen}
+        onSave={handleSaveGoal}
+      />
     </div>
   );
 }
