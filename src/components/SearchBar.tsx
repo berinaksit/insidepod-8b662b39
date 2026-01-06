@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Sparkles, ArrowRight, Plus, X } from 'lucide-react';
 import { AddDocumentsModal, UploadedDocument } from './AddDocumentsModal';
-import { AnalysisResultsModal } from './AnalysisResultsModal';
 
 interface SearchBarProps {
   onSearch?: (query: string, documents: UploadedDocument[]) => void;
@@ -18,20 +18,18 @@ const suggestions = [
 ];
 
 export function SearchBar({ onSearch, isProcessing = false, placeholder }: SearchBarProps) {
+  const navigate = useNavigate();
   const [query, setQuery] = useState('');
   const [isFocused, setIsFocused] = useState(false);
   const [documents, setDocuments] = useState<UploadedDocument[]>([]);
   const [showDocModal, setShowDocModal] = useState(false);
-  const [showResultsModal, setShowResultsModal] = useState(false);
-  const [submittedQuery, setSubmittedQuery] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleSubmit = async (e?: React.FormEvent) => {
     e?.preventDefault();
     if (query.trim() && !isProcessing) {
-      setSubmittedQuery(query.trim());
       onSearch?.(query.trim(), documents);
-      setShowResultsModal(true);
+      navigate('/analysis', { state: { query: query.trim(), documents } });
     }
   };
 
@@ -51,14 +49,14 @@ export function SearchBar({ onSearch, isProcessing = false, placeholder }: Searc
 
   useEffect(() => {
     const handleKeydown = (e: KeyboardEvent) => {
-      if (e.key === '/' && !isFocused && !showDocModal && !showResultsModal) {
+      if (e.key === '/' && !isFocused && !showDocModal) {
         e.preventDefault();
         inputRef.current?.focus();
       }
     };
     document.addEventListener('keydown', handleKeydown);
     return () => document.removeEventListener('keydown', handleKeydown);
-  }, [isFocused, showDocModal, showResultsModal]);
+  }, [isFocused, showDocModal]);
 
   return (
     <div className="relative w-full max-w-2xl mx-auto">
@@ -183,19 +181,12 @@ export function SearchBar({ onSearch, isProcessing = false, placeholder }: Searc
         )}
       </AnimatePresence>
 
-      {/* Modals */}
+      {/* Document modal */}
       <AddDocumentsModal
         open={showDocModal}
         onOpenChange={setShowDocModal}
         onDocumentsAdded={handleDocumentsAdded}
         existingDocuments={documents}
-      />
-
-      <AnalysisResultsModal
-        open={showResultsModal}
-        onOpenChange={setShowResultsModal}
-        query={submittedQuery}
-        documents={documents}
       />
     </div>
   );
