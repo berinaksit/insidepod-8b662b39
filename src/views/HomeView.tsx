@@ -206,8 +206,8 @@ export function HomeView({
                 </div>
                 <div className="insight-card">
                   <div className="flex items-center gap-2.5">
-                    <div className="w-9 h-9 rounded-xl bg-secondary/10 flex items-center justify-center">
-                      <Bot className="w-4.5 h-4.5 text-secondary stroke-[2.5]" />
+                    <div className="w-9 h-9 rounded-xl bg-muted flex items-center justify-center">
+                      <FileUp className="w-4.5 h-4.5 text-muted-foreground stroke-[2.5]" />
                     </div>
                     <div>
                       <p className="text-2xl font-semibold text-foreground">
