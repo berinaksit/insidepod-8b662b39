@@ -32,8 +32,8 @@ export function AgentsView() {
       >
         <div className="bg-card border border-border/50 rounded-2xl px-6 py-5">
           <div className="flex items-start gap-4">
-            <div className="w-12 h-12 rounded-full bg-muted/80 flex items-center justify-center flex-shrink-0">
-              <Bot className="w-5 h-5 text-muted-foreground" strokeWidth={1.75} />
+            <div className="w-14 h-14 rounded-full bg-muted/50 flex items-center justify-center flex-shrink-0">
+              <Bot className="w-6 h-6 text-muted-foreground" strokeWidth={1.5} />
             </div>
             <div>
               <p className="text-4xl font-semibold text-foreground leading-none">{mockAgents.length}</p>
@@ -44,8 +44,8 @@ export function AgentsView() {
         
         <div className="bg-card border border-border/50 rounded-2xl px-6 py-5">
           <div className="flex items-start gap-4">
-            <div className="w-12 h-12 rounded-full bg-muted/80 flex items-center justify-center flex-shrink-0">
-              <FileText className="w-5 h-5 text-muted-foreground" strokeWidth={1.75} />
+            <div className="w-14 h-14 rounded-full bg-muted/50 flex items-center justify-center flex-shrink-0">
+              <FileText className="w-6 h-6 text-muted-foreground" strokeWidth={1.5} />
             </div>
             <div>
               <p className="text-4xl font-semibold text-foreground leading-none">
@@ -58,8 +58,8 @@ export function AgentsView() {
         
         <div className="bg-card border border-border/50 rounded-2xl px-6 py-5">
           <div className="flex items-start gap-4">
-            <div className="w-12 h-12 rounded-full bg-muted/80 flex items-center justify-center flex-shrink-0">
-              <RefreshCw className="w-5 h-5 text-muted-foreground" strokeWidth={1.75} />
+            <div className="w-14 h-14 rounded-full bg-muted/50 flex items-center justify-center flex-shrink-0">
+              <RefreshCw className="w-6 h-6 text-muted-foreground" strokeWidth={1.5} />
             </div>
             <div>
               <p className="text-4xl font-semibold text-foreground leading-none">
