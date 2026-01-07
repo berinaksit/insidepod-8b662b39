@@ -23,32 +23,32 @@ export function AgentsView() {
         </button>
       </motion.div>
       
-      {/* Summary cards */}
+      {/* Summary cards - icon left, number right, label below number */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.1 }}
         className="grid gap-4 md:grid-cols-3 mb-8"
       >
-        <div className="insight-card">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center flex-shrink-0">
+        <div className="bg-card border border-border/50 rounded-2xl px-6 py-5">
+          <div className="flex items-start gap-4">
+            <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center flex-shrink-0">
               <Bot className="w-5 h-5 text-muted-foreground" />
             </div>
             <div>
-              <p className="text-3xl font-semibold text-foreground leading-none">{mockAgents.length}</p>
+              <p className="text-4xl font-semibold text-foreground leading-none">{mockAgents.length}</p>
               <p className="text-sm text-muted-foreground mt-1">Active agents</p>
             </div>
           </div>
         </div>
         
-        <div className="insight-card">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center flex-shrink-0">
+        <div className="bg-card border border-border/50 rounded-2xl px-6 py-5">
+          <div className="flex items-start gap-4">
+            <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center flex-shrink-0">
               <FileText className="w-5 h-5 text-muted-foreground" />
             </div>
             <div>
-              <p className="text-3xl font-semibold text-foreground leading-none">
+              <p className="text-4xl font-semibold text-foreground leading-none">
                 {mockAgents.reduce((sum, a) => sum + a.outputCount, 0)}
               </p>
               <p className="text-sm text-muted-foreground mt-1">Total outputs</p>
@@ -56,13 +56,13 @@ export function AgentsView() {
           </div>
         </div>
         
-        <div className="insight-card">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-[hsl(145,60%,92%)] flex items-center justify-center flex-shrink-0">
+        <div className="bg-card border border-border/50 rounded-2xl px-6 py-5">
+          <div className="flex items-start gap-4">
+            <div className="w-10 h-10 rounded-full bg-[hsl(145,60%,90%)] flex items-center justify-center flex-shrink-0">
               <RefreshCw className="w-5 h-5 text-[hsl(145,60%,40%)]" />
             </div>
             <div>
-              <p className="text-3xl font-semibold text-foreground leading-none">
+              <p className="text-4xl font-semibold text-foreground leading-none">
                 {mockAgents.filter(a => a.status === 'running').length}
               </p>
               <p className="text-sm text-muted-foreground mt-1">Currently running</p>
@@ -76,7 +76,7 @@ export function AgentsView() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.2 }}
-        className="insight-card !p-0 overflow-hidden"
+        className="bg-card border border-border/50 rounded-2xl"
       >
         <AgentsList agents={mockAgents} />
       </motion.div>
