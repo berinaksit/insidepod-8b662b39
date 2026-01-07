@@ -5,7 +5,7 @@ import { SearchBar } from '@/components/SearchBar';
 import { GoalCard } from '@/components/GoalCard';
 import { AgentsList } from '@/components/AgentsList';
 import { mockInsights, mockGoals, mockAgents } from '@/data/mockData';
-import { Sparkles, Target, Bot, Plus, Play, LayoutDashboard, CircleDot, FileText, Link2, Code2, FileUp, Scan, Calendar, Activity, MessageSquare, TrendingUp, MonitorCheck, Search } from 'lucide-react';
+import { Sparkles, Target, Bot, Plus, Play, LayoutDashboard, CircleDot, FileText, Link2, Code2, FileUp, Scan, Calendar, Activity, MessageSquare, TrendingUp, MonitorCheck, Search, RefreshCw } from 'lucide-react';
 import { View } from '@/pages/Index';
 interface HomeViewProps {
   currentTab: View;
@@ -219,8 +219,8 @@ export function HomeView({
                 </div>
                 <div className="insight-card">
                   <div className="flex items-center gap-2.5">
-                    <div className="w-9 h-9 rounded-xl bg-muted flex items-center justify-center">
-                      <Bot className="w-4.5 h-4.5 text-muted-foreground stroke-[2.5]" />
+                    <div className="w-9 h-9 rounded-xl bg-[hsl(145,60%,90%)] flex items-center justify-center">
+                      <RefreshCw className="w-4.5 h-4.5 text-[hsl(145,60%,40%)] stroke-[2.5]" />
                     </div>
                     <div>
                       <p className="text-2xl font-semibold text-foreground">
