@@ -23,51 +23,39 @@ export function AgentsView() {
         </button>
       </motion.div>
       
-      {/* Summary cards - horizontal layout with icon left, text right */}
+      {/* Summary cards - icon top-left, number and label stacked */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: 0.1 }}
         className="grid gap-4 md:grid-cols-3 mb-8"
       >
-        <div className="bg-card border border-border/50 rounded-2xl p-5">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center">
-              <Bot className="w-5 h-5 text-muted-foreground" />
-            </div>
-            <div>
-              <p className="text-3xl font-semibold text-foreground">{mockAgents.length}</p>
-              <p className="text-sm text-muted-foreground">Active agents</p>
-            </div>
+        <div className="bg-card border border-border/50 rounded-2xl p-6">
+          <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center mb-4">
+            <Bot className="w-5 h-5 text-muted-foreground" />
           </div>
+          <p className="text-4xl font-semibold text-foreground mb-1">{mockAgents.length}</p>
+          <p className="text-sm text-muted-foreground">Active agents</p>
         </div>
         
-        <div className="bg-card border border-border/50 rounded-2xl p-5">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center">
-              <FileText className="w-5 h-5 text-muted-foreground" />
-            </div>
-            <div>
-              <p className="text-3xl font-semibold text-foreground">
-                {mockAgents.reduce((sum, a) => sum + a.outputCount, 0)}
-              </p>
-              <p className="text-sm text-muted-foreground">Total outputs</p>
-            </div>
+        <div className="bg-card border border-border/50 rounded-2xl p-6">
+          <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center mb-4">
+            <FileText className="w-5 h-5 text-muted-foreground" />
           </div>
+          <p className="text-4xl font-semibold text-foreground mb-1">
+            {mockAgents.reduce((sum, a) => sum + a.outputCount, 0)}
+          </p>
+          <p className="text-sm text-muted-foreground">Total outputs</p>
         </div>
         
-        <div className="bg-card border border-border/50 rounded-2xl p-5">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-tertiary-surface flex items-center justify-center">
-              <RefreshCw className="w-5 h-5 text-tertiary-surface-foreground" />
-            </div>
-            <div>
-              <p className="text-3xl font-semibold text-foreground">
-                {mockAgents.filter(a => a.status === 'running').length}
-              </p>
-              <p className="text-sm text-muted-foreground">Currently running</p>
-            </div>
+        <div className="bg-card border border-border/50 rounded-2xl p-6">
+          <div className="w-10 h-10 rounded-lg bg-tertiary-surface flex items-center justify-center mb-4">
+            <RefreshCw className="w-5 h-5 text-tertiary-surface-foreground" />
           </div>
+          <p className="text-4xl font-semibold text-foreground mb-1">
+            {mockAgents.filter(a => a.status === 'running').length}
+          </p>
+          <p className="text-sm text-muted-foreground">Currently running</p>
         </div>
       </motion.div>
       

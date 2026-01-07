@@ -39,11 +39,11 @@ export function AgentsList({ agents, onAgentClick }: AgentsListProps) {
             className="w-full text-left px-6 py-5 flex items-center gap-4 hover:bg-muted/50 transition-colors"
           >
             {/* Circular icon container */}
-            <div className={`w-11 h-11 rounded-full flex items-center justify-center flex-shrink-0 ${
+            <div className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 ${
               agent.status === 'running' 
                 ? 'bg-tertiary-surface' 
                 : agent.type === 'risk-scanner' 
-                  ? 'bg-primary/10' 
+                  ? 'bg-[hsl(210,70%,94%)]' 
                   : 'bg-muted'
             }`}>
               {agent.status === 'running' ? (
@@ -51,7 +51,7 @@ export function AgentsList({ agents, onAgentClick }: AgentsListProps) {
               ) : (
                 <Icon className={`w-5 h-5 ${
                   agent.type === 'risk-scanner' 
-                    ? 'text-primary' 
+                    ? 'text-[hsl(210,70%,50%)]' 
                     : 'text-muted-foreground'
                 }`} />
               )}
