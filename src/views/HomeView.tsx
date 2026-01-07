@@ -5,7 +5,7 @@ import { SearchBar } from '@/components/SearchBar';
 import { GoalCard } from '@/components/GoalCard';
 import { AgentsList } from '@/components/AgentsList';
 import { mockInsights, mockGoals, mockAgents } from '@/data/mockData';
-import { Sparkles, Target, Bot, Plus, Play, LayoutDashboard, CircleDot, FileText, Link2, Code2, FileUp, Scan, Calendar, Activity, MessageSquare, TrendingUp, MonitorCheck, Search, BarChart3 } from 'lucide-react';
+import { Sparkles, Target, Bot, Plus, Play, LayoutDashboard, CircleDot, FileText, Link2, Code2, FileUp, Scan, Calendar, Activity, MessageSquare, TrendingUp, MonitorCheck, Search, RefreshCw } from 'lucide-react';
 import { View } from '@/pages/Index';
 interface HomeViewProps {
   currentTab: View;
@@ -194,9 +194,9 @@ export function HomeView({
               {/* Summary cards */}
               <div className="grid gap-3.5 md:grid-cols-3 mb-5">
                 <div className="insight-card">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
-                      <TrendingUp className="w-5 h-5 text-muted-foreground stroke-[1.5]" />
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-muted flex items-center justify-center">
+                      <Bot className="w-4.5 h-4.5 text-muted-foreground stroke-[2.5]" />
                     </div>
                     <div>
                       <p className="text-2xl font-semibold text-foreground">{mockAgents.length}</p>
@@ -205,9 +205,9 @@ export function HomeView({
                   </div>
                 </div>
                 <div className="insight-card">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
-                      <Sparkles className="w-5 h-5 text-muted-foreground stroke-[1.5]" />
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-muted flex items-center justify-center">
+                      <FileUp className="w-4.5 h-4.5 text-muted-foreground stroke-[2.5]" />
                     </div>
                     <div>
                       <p className="text-2xl font-semibold text-foreground">
@@ -218,9 +218,9 @@ export function HomeView({
                   </div>
                 </div>
                 <div className="insight-card">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
-                      <BarChart3 className="w-5 h-5 text-muted-foreground stroke-[1.5]" />
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-[hsl(145,60%,90%)] flex items-center justify-center">
+                      <RefreshCw className="w-4.5 h-4.5 text-[hsl(145,60%,40%)] stroke-[2.5]" />
                     </div>
                     <div>
                       <p className="text-2xl font-semibold text-foreground">
