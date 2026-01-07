@@ -195,8 +195,8 @@ export function HomeView({
               <div className="grid gap-3.5 md:grid-cols-3 mb-5">
                 <div className="insight-card">
                   <div className="flex items-center gap-2.5">
-                    <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center">
-                      <Bot className="w-4.5 h-4.5 text-primary stroke-[2.5]" />
+                    <div className="w-9 h-9 rounded-xl bg-muted flex items-center justify-center">
+                      <Bot className="w-4.5 h-4.5 text-muted-foreground stroke-[2.5]" />
                     </div>
                     <div>
                       <p className="text-2xl font-semibold text-foreground">{mockAgents.length}</p>
