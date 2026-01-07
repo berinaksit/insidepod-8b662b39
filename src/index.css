@@ -181,11 +181,16 @@
 }
 
 @layer components {
+  /* Subtle card shadow */
+  .shadow-card {
+    box-shadow: 0 1px 3px 0 hsl(220 15% 15% / 0.04), 0 1px 2px -1px hsl(220 15% 15% / 0.04);
+  }
+
   /* Insight cards - contained, calm surfaces - borderless */
   .insight-card {
-    @apply bg-card rounded-2xl p-5;
+    @apply bg-card rounded-2xl p-5 shadow-card;
     @apply transition-all duration-300 ease-out;
-    @apply hover:shadow-lg hover:shadow-primary/5;
+    @apply hover:shadow-md;
   }
 
   /* Large analysis panels - the color moments */

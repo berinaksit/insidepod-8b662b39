@@ -232,7 +232,7 @@ export function HomeView({
                 </div>
               </div>
               
-              <div className="bg-card rounded-2xl p-3.5">
+              <div className="bg-card rounded-2xl p-3.5 shadow-card">
                 <AgentsList agents={mockAgents} />
               </div>
             </motion.div>}
