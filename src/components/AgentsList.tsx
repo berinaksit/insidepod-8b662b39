@@ -25,60 +25,72 @@ const agentIcons: Record<string, React.ElementType> = {
 
 export function AgentsList({ agents, onAgentClick }: AgentsListProps) {
   return (
-    <div className="divide-y divide-border">
+    <div className="flex flex-col space-y-8">
       {agents.map((agent, index) => {
         const Icon = agentIcons[agent.type] || Sparkles;
+        const isRiskScanner = agent.type === 'risk-scanner';
+        const isRunning = agent.status === 'running';
         
         return (
-          <motion.button
+          <motion.div
             key={agent.id}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: index * 0.05 }}
-            onClick={() => onAgentClick?.(agent)}
-            className="w-full text-left px-6 py-5 flex items-center gap-4 hover:bg-muted/50 transition-colors"
           >
-            {/* Circular icon container */}
-            <div className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 ${
-              agent.status === 'running' 
-                ? 'bg-tertiary-surface' 
-                : agent.type === 'risk-scanner' 
-                  ? 'bg-[hsl(210,70%,94%)]' 
-                  : 'bg-muted'
-            }`}>
-              {agent.status === 'running' ? (
-                <Loader2 className="w-5 h-5 text-tertiary-surface-foreground animate-spin" />
-              ) : (
-                <Icon className={`w-5 h-5 ${
-                  agent.type === 'risk-scanner' 
-                    ? 'text-[hsl(210,70%,50%)]' 
-                    : 'text-muted-foreground'
-                }`} />
-              )}
-            </div>
-            
-            {/* Content */}
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-0.5">
-                <h4 className="font-semibold text-foreground">
-                  {agent.name}
-                </h4>
-                <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-md">
-                  {agent.outputCount} outputs
-                </span>
+            <button
+              onClick={() => onAgentClick?.(agent)}
+              className="w-full text-left flex flex-col md:flex-row md:items-start justify-between gap-4 group"
+            >
+              <div className="flex gap-4">
+                {/* Rounded-xl icon container */}
+                <div className={`flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center transition-colors ${
+                  isRunning 
+                    ? 'bg-emerald-100 dark:bg-emerald-950' 
+                    : isRiskScanner 
+                      ? 'bg-blue-600 group-hover:bg-blue-700' 
+                      : 'bg-muted group-hover:bg-muted/80'
+                }`}>
+                  {isRunning ? (
+                    <Loader2 className="w-5 h-5 text-emerald-500 animate-spin" strokeWidth={1.5} />
+                  ) : (
+                    <Icon className={`w-5 h-5 ${
+                      isRiskScanner 
+                        ? 'text-white' 
+                        : 'text-muted-foreground'
+                    }`} strokeWidth={1.5} />
+                  )}
+                </div>
+                
+                {/* Content */}
+                <div>
+                  <div className="flex items-baseline gap-2 mb-1">
+                    <h3 className="text-lg font-bold text-foreground">
+                      {agent.name}
+                    </h3>
+                    <span className="text-xs font-medium text-muted-foreground px-2 py-0.5 bg-muted rounded-md">
+                      {agent.outputCount} outputs
+                    </span>
+                  </div>
+                  <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl">
+                    {agent.description}
+                  </p>
+                </div>
               </div>
-              <p className="text-sm text-muted-foreground">
-                {agent.description}
-              </p>
-            </div>
+              
+              {/* Timestamp */}
+              {agent.lastRun && (
+                <span className="flex-shrink-0 text-xs text-muted-foreground font-medium pt-1">
+                  {formatDistanceToNow(agent.lastRun, { addSuffix: true })}
+                </span>
+              )}
+            </button>
             
-            {/* Timestamp */}
-            {agent.lastRun && (
-              <span className="text-sm text-muted-foreground flex-shrink-0">
-                {formatDistanceToNow(agent.lastRun, { addSuffix: true })}
-              </span>
+            {/* Divider - hide for last item */}
+            {index < agents.length - 1 && (
+              <div className="h-px bg-border/50 w-full mt-8" />
             )}
-          </motion.button>
+          </motion.div>
         );
       })}
     </div>
