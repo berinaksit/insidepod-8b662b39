@@ -1,9 +1,13 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { AgentsList } from '@/components/AgentsList';
+import { CreateAgentFlow } from '@/components/CreateAgentFlow';
 import { mockAgents } from '@/data/mockData';
-import { Bot, Play, FileText, RefreshCw } from 'lucide-react';
+import { Bot, Plus, FileText, RefreshCw } from 'lucide-react';
 
 export function AgentsView() {
+  const [createAgentOpen, setCreateAgentOpen] = useState(false);
+  
   return (
     <div className="min-h-full px-6 py-8">
       {/* Header - subtitle only with Run All button */}
@@ -17,9 +21,12 @@ export function AgentsView() {
           AI agents continuously monitoring your product signals
         </p>
         
-        <button className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors shadow-sm">
-          <Play className="w-4 h-4 fill-current" />
-          Run All
+        <button 
+          onClick={() => setCreateAgentOpen(true)}
+          className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors shadow-sm"
+        >
+          <Plus className="w-4 h-4" strokeWidth={2} />
+          Add Agent
         </button>
       </motion.div>
       
@@ -80,6 +87,16 @@ export function AgentsView() {
       >
         <AgentsList agents={mockAgents} />
       </motion.div>
+
+      {/* Create Agent Flow */}
+      <CreateAgentFlow 
+        open={createAgentOpen} 
+        onOpenChange={setCreateAgentOpen}
+        onSave={(agent) => {
+          console.log('Created agent:', agent);
+          // TODO: Add to agents list
+        }}
+      />
     </div>
   );
 }
