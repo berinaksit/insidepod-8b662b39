@@ -1,23 +1,12 @@
-import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { AgentsList } from '@/components/AgentsList';
 import { mockAgents } from '@/data/mockData';
-import { Bot, Plus, FileText, RefreshCw } from 'lucide-react';
-import { CreateAgentFlow } from '@/components/CreateAgentFlow';
-import { toast } from 'sonner';
+import { Bot, Play, FileText, RefreshCw } from 'lucide-react';
 
 export function AgentsView() {
-  const [showCreateAgent, setShowCreateAgent] = useState(false);
-
-  const handleAgentCreated = (agentData: any) => {
-    toast.success(`${agentData.name} created`, {
-      description: 'This agent will continuously build context over time.',
-    });
-  };
-
   return (
     <div className="min-h-full px-6 py-8">
-      {/* Header - subtitle only with Add Agent button */}
+      {/* Header - subtitle only with Run All button */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -28,20 +17,11 @@ export function AgentsView() {
           AI agents continuously monitoring your product signals
         </p>
         
-        <button 
-          onClick={() => setShowCreateAgent(true)}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors shadow-sm"
-        >
-          <Plus className="w-4 h-4" strokeWidth={2} />
-          Add Agent
+        <button className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors shadow-sm">
+          <Play className="w-4 h-4 fill-current" />
+          Run All
         </button>
       </motion.div>
-
-      <CreateAgentFlow 
-        open={showCreateAgent} 
-        onOpenChange={setShowCreateAgent}
-        onAgentCreated={handleAgentCreated}
-      />
       
       {/* Summary cards - icon left, number right, label below number */}
       <motion.div
