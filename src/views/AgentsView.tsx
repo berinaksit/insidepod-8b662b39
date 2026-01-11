@@ -1,12 +1,9 @@
 import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
 import { AgentsList } from '@/components/AgentsList';
 import { mockAgents } from '@/data/mockData';
-import { Bot, Plus, FileText, RefreshCw } from 'lucide-react';
+import { Bot, Play, FileText, RefreshCw } from 'lucide-react';
 
 export function AgentsView() {
-  const navigate = useNavigate();
-  
   return (
     <div className="min-h-full px-6 py-8">
       {/* Header - subtitle only with Run All button */}
@@ -16,19 +13,13 @@ export function AgentsView() {
         transition={{ duration: 0.4 }}
         className="flex items-center justify-between mb-8"
       >
-        <div>
-          <h1 className="text-2xl font-semibold text-foreground">Agents</h1>
-          <p className="text-muted-foreground mt-1">
-            AI agents continuously monitor your product signals.
-          </p>
-        </div>
+        <p className="text-xl text-muted-foreground font-normal">
+          AI agents continuously monitoring your product signals
+        </p>
         
-        <button 
-          onClick={() => navigate('/agents/new')}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors shadow-sm"
-        >
-          <Plus className="w-4 h-4" strokeWidth={2} />
-          + Add Agent
+        <button className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors shadow-sm">
+          <Play className="w-4 h-4 fill-current" />
+          Run All
         </button>
       </motion.div>
       
@@ -89,7 +80,6 @@ export function AgentsView() {
       >
         <AgentsList agents={mockAgents} />
       </motion.div>
-
     </div>
   );
 }
