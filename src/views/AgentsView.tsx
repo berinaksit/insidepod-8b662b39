@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { AgentsList } from '@/components/AgentsList';
 import { mockAgents } from '@/data/mockData';
-import { Bot, Play, FileText, RefreshCw } from 'lucide-react';
+import { Bot, Plus, FileText, RefreshCw } from 'lucide-react';
 
 export function AgentsView() {
   return (
@@ -18,8 +18,8 @@ export function AgentsView() {
         </p>
         
         <button className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors shadow-sm">
-          <Play className="w-4 h-4 fill-current" />
-          Run All
+          <Plus className="w-4 h-4" />
+          Add Agent
         </button>
       </motion.div>
       
