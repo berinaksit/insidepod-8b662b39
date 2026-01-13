@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Upload, X } from 'lucide-react';
+import { ArrowLeft, Upload, X, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -13,6 +13,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
+import { useDocuments } from '@/contexts/DocumentsContext';
+import { toast } from 'sonner';
 
 interface CreateAgentViewProps {
   onCancel: () => void;
@@ -20,22 +22,25 @@ interface CreateAgentViewProps {
 }
 
 const agentTypes = [
-  'Risk Scanner',
-  'Retention Monitor',
-  'Adoption Tracker',
-  'Insight Synthesizer',
-  'Custom',
-];
-
-const dataSources = [
-  'Salesforce_CRM Data',
-  'Drive_User Interviews',
-  'Meeting transcript_Sales 2025',
+  { value: 'risk-scanner', label: 'Risk Scanner' },
+  { value: 'retention-monitor', label: 'Retention Monitor' },
+  { value: 'adoption-tracker', label: 'Adoption Tracker' },
+  { value: 'insight-synthesizer', label: 'Insight Synthesizer' },
+  { value: 'custom', label: 'Custom' },
 ];
 
 const frequencies = ['Daily', 'Weekly', 'Bi-weekly', 'Monthly', 'Manual'];
 
+// Default connected sources (always available)
+const defaultDataSources = [
+  { id: 'salesforce', name: 'Salesforce_CRM Data', type: 'connected' },
+  { id: 'drive', name: 'Drive_User Interviews', type: 'connected' },
+  { id: 'meeting', name: 'Meeting transcript_Sales 2025', type: 'connected' },
+];
+
 export function CreateAgentView({ onCancel, onCreate }: CreateAgentViewProps) {
+  const { documents, addAgent, openUploadModal } = useDocuments();
+  
   const [agentName, setAgentName] = useState('');
   const [agentDescription, setAgentDescription] = useState('');
   const [agentType, setAgentType] = useState('');
@@ -43,12 +48,23 @@ export function CreateAgentView({ onCancel, onCreate }: CreateAgentViewProps) {
   const [selectedDataSources, setSelectedDataSources] = useState<string[]>([]);
   const [frequency, setFrequency] = useState('');
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [isCreating, setIsCreating] = useState(false);
 
-  const handleDataSourceToggle = (source: string) => {
+  // Combine uploaded documents with default sources
+  const allDataSources = [
+    ...documents.map(doc => ({
+      id: doc.id,
+      name: doc.aiTitle || doc.name,
+      type: 'uploaded' as const,
+    })),
+    ...defaultDataSources,
+  ];
+
+  const handleDataSourceToggle = (sourceId: string) => {
     setSelectedDataSources((prev) =>
-      prev.includes(source)
-        ? prev.filter((s) => s !== source)
-        : [...prev, source]
+      prev.includes(sourceId)
+        ? prev.filter((s) => s !== sourceId)
+        : [...prev, sourceId]
     );
   };
 
@@ -70,9 +86,37 @@ export function CreateAgentView({ onCancel, onCreate }: CreateAgentViewProps) {
     setUploadedFile(null);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // For now, just navigate back - actual creation logic can be added later
+    if (!agentName.trim() || !prompt.trim()) return;
+    
+    setIsCreating(true);
+    
+    // Simulate creation delay
+    await new Promise(resolve => setTimeout(resolve, 600));
+    
+    // Get linked document IDs (only uploaded documents)
+    const linkedDocumentIds = selectedDataSources.filter(id => 
+      documents.some(doc => doc.id === id)
+    );
+    
+    // Create the agent
+    addAgent({
+      name: agentName.trim(),
+      description: agentDescription.trim(),
+      type: (agentType || 'custom') as any,
+      prompt: prompt.trim(),
+      frequency: frequency || 'Manual',
+      linkedDocumentIds,
+    });
+    
+    toast.success(`Agent "${agentName}" created successfully!`);
+    
+    if (linkedDocumentIds.length > 0) {
+      toast.info('Generating insights from your documents...', { duration: 2000 });
+    }
+    
+    setIsCreating(false);
     onCreate();
   };
 
@@ -143,8 +187,8 @@ export function CreateAgentView({ onCancel, onCreate }: CreateAgentViewProps) {
                 </SelectTrigger>
                 <SelectContent>
                   {agentTypes.map((type) => (
-                    <SelectItem key={type} value={type}>
-                      {type}
+                    <SelectItem key={type.value} value={type.value}>
+                      {type.label}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -168,23 +212,42 @@ export function CreateAgentView({ onCancel, onCreate }: CreateAgentViewProps) {
 
             {/* Data Source */}
             <div className="space-y-3">
-              <Label className="text-sm font-medium">Data source</Label>
-              <div className="space-y-2">
-                {dataSources.map((source) => (
-                  <div key={source} className="flex items-center gap-3">
+              <div className="flex items-center justify-between">
+                <Label className="text-sm font-medium">Data source</Label>
+                <button
+                  type="button"
+                  onClick={() => openUploadModal('create-agent')}
+                  className="text-xs text-primary hover:underline font-medium"
+                >
+                  + Upload new document
+                </button>
+              </div>
+              <div className="space-y-2 max-h-48 overflow-y-auto">
+                {allDataSources.map((source) => (
+                  <div key={source.id} className="flex items-center gap-3">
                     <Checkbox
-                      id={source}
-                      checked={selectedDataSources.includes(source)}
-                      onCheckedChange={() => handleDataSourceToggle(source)}
+                      id={source.id}
+                      checked={selectedDataSources.includes(source.id)}
+                      onCheckedChange={() => handleDataSourceToggle(source.id)}
                     />
                     <label
-                      htmlFor={source}
-                      className="text-sm text-foreground cursor-pointer"
+                      htmlFor={source.id}
+                      className="text-sm text-foreground cursor-pointer flex items-center gap-2"
                     >
-                      {source}
+                      {source.name}
+                      {source.type === 'uploaded' && (
+                        <span className="px-1.5 py-0.5 text-xs bg-primary/10 text-primary rounded">
+                          Uploaded
+                        </span>
+                      )}
                     </label>
                   </div>
                 ))}
+                {allDataSources.length === 0 && (
+                  <p className="text-sm text-muted-foreground italic">
+                    No documents uploaded yet
+                  </p>
+                )}
               </div>
             </div>
 
@@ -249,15 +312,16 @@ export function CreateAgentView({ onCancel, onCreate }: CreateAgentViewProps) {
               variant="outline"
               onClick={onCancel}
               className="px-6"
+              disabled={isCreating}
             >
               Cancel
             </Button>
             <Button
               type="submit"
-              disabled={!isFormValid}
+              disabled={!isFormValid || isCreating}
               className="px-6"
             >
-              Create Agent
+              {isCreating ? 'Creating...' : 'Create Agent'}
             </Button>
           </div>
         </form>
