@@ -3,25 +3,23 @@ import { motion } from 'framer-motion';
 import { GoalCard } from '@/components/GoalCard';
 import { GoalsEmptyState } from '@/components/GoalsEmptyState';
 import { CreateGoalSheet } from '@/components/CreateGoalSheet';
-import { mockGoals } from '@/data/mockData';
+import { useDocuments } from '@/contexts/DocumentsContext';
 import { Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export function GoalsView() {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
-  const [goals, setGoals] = useState(mockGoals);
+  const { goals, addGoal } = useDocuments();
 
   const handleCreateGoal = (goalData: any) => {
-    const newGoal = {
-      id: `goal-${Date.now()}`,
+    addGoal({
       title: goalData.title,
       description: `Target: ${goalData.targetValue}${goalData.targetUnit} by ${goalData.endDate?.toLocaleDateString() || 'TBD'}`,
       progress: 0,
       status: 'on-track' as const,
       signals: [],
       insights: [],
-    };
-    setGoals([...goals, newGoal]);
+    });
   };
 
   if (goals.length === 0) {
