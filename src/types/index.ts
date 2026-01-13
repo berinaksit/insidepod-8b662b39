@@ -2,6 +2,10 @@
 
 export type InsightType = 'pulse' | 'insight' | 'signal';
 
+export type AgentType = 'risk-scanner' | 'retention-monitor' | 'adoption-tracker' | 'insight-synthesizer' | 'trend-summarizer' | 'custom';
+
+export type AgentFrequency = 'Daily' | 'Weekly' | 'Bi-weekly' | 'Monthly' | 'Manual';
+
 export interface Source {
   id: string;
   name: string;
@@ -27,11 +31,23 @@ export interface Agent {
   id: string;
   name: string;
   description: string;
-  type: 'risk-scanner' | 'retention-monitor' | 'adoption-tracker' | 'insight-synthesizer' | 'trend-summarizer';
+  type: AgentType;
+  prompt: string;
+  dataSources: string[];
+  frequency: AgentFrequency;
+  isActive: boolean;
+  isPreset: boolean;
+  createdAt: Date;
+  updatedAt: Date;
   status: 'active' | 'idle' | 'running';
   lastRun?: Date;
   nextRun?: Date;
   outputCount: number;
+  linkedDocumentIds: string[];
+  attachedFile?: {
+    name: string;
+    type: string;
+  };
 }
 
 export interface AgentOutput {
