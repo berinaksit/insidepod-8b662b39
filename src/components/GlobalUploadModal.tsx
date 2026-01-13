@@ -15,6 +15,7 @@ interface StagedDocument {
   id: string;
   name: string;
   type: string;
+  size: number;
   aiTitle: string;
 }
 
@@ -73,6 +74,7 @@ export function GlobalUploadModal({
           id: `staged-${Date.now()}-${i}`,
           name: file.name,
           type: extension,
+          size: file.size,
           aiTitle: generateAITitle(file.name),
         });
       }
@@ -112,8 +114,11 @@ export function GlobalUploadModal({
     addDocuments(stagedDocuments.map(doc => ({
       name: doc.name,
       type: doc.type,
+      size: doc.size,
       source: 'upload' as const,
+      sourceLabel: 'File upload',
       aiTitle: doc.aiTitle,
+      contentText: `Uploaded file: ${doc.name}. Parsing pending.`,
     })));
     
     toast.success(`${stagedDocuments.length} document${stagedDocuments.length > 1 ? 's' : ''} uploaded successfully`);

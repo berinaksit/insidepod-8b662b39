@@ -1,15 +1,65 @@
-import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useCallback, useEffect, ReactNode } from 'react';
 import { Insight, Agent, AgentType, AgentFrequency } from '@/types';
 import { mockAgents } from '@/data/mockData';
+
+// localStorage keys
+const STORAGE_KEYS = {
+  documents: 'insidepod_documents',
+  agents: 'insidepod_agents',
+  insights: 'insidepod_insights',
+  hasSeenFirstDocumentModal: 'insidepod_has_seen_first_doc_modal',
+};
 
 // Document type stored in context
 export interface StoredDocument {
   id: string;
   name: string;
   type: string;
+  size?: number;
   source: 'upload' | 'connected';
+  sourceLabel?: string;
   uploadedAt: Date;
   aiTitle?: string;
+  contentText?: string; // Parsed content or placeholder
+}
+
+// Helper functions for localStorage
+function loadFromStorage<T>(key: string, defaultValue: T): T {
+  try {
+    const stored = localStorage.getItem(key);
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      return parsed;
+    }
+  } catch (e) {
+    console.warn(`Failed to load ${key} from localStorage:`, e);
+  }
+  return defaultValue;
+}
+
+function saveToStorage<T>(key: string, value: T): void {
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch (e) {
+    console.warn(`Failed to save ${key} to localStorage:`, e);
+  }
+}
+
+// Hydrate dates from JSON (converts ISO strings back to Date objects)
+function hydrateDates<T>(obj: T, dateFields: string[]): T {
+  if (Array.isArray(obj)) {
+    return obj.map(item => hydrateDates(item, dateFields)) as T;
+  }
+  if (obj && typeof obj === 'object') {
+    const hydrated = { ...obj } as any;
+    for (const field of dateFields) {
+      if (hydrated[field] && typeof hydrated[field] === 'string') {
+        hydrated[field] = new Date(hydrated[field]);
+      }
+    }
+    return hydrated;
+  }
+  return obj;
 }
 
 interface DocumentsContextType {
@@ -47,21 +97,80 @@ interface DocumentsContextType {
 
 const DocumentsContext = createContext<DocumentsContextType | undefined>(undefined);
 
+// Initialize agents: merge stored custom agents with preset agents
+function initializeAgents(): Agent[] {
+  const storedAgents = loadFromStorage<Agent[]>(STORAGE_KEYS.agents, []);
+  const hydratedStoredAgents = hydrateDates(storedAgents, ['createdAt', 'updatedAt', 'lastRun', 'nextRun']);
+  
+  // Get custom agents from storage (non-preset)
+  const customAgents = hydratedStoredAgents.filter(a => !a.isPreset);
+  
+  // Get preset agents from storage (to preserve any updates) or fallback to mock
+  const storedPresetAgents = hydratedStoredAgents.filter(a => a.isPreset);
+  
+  // If we have stored preset agents, use them; otherwise use mock
+  const presetAgents = storedPresetAgents.length > 0 ? storedPresetAgents : mockAgents;
+  
+  return [...customAgents, ...presetAgents];
+}
+
+// Initialize documents from storage
+function initializeDocuments(): StoredDocument[] {
+  const stored = loadFromStorage<StoredDocument[]>(STORAGE_KEYS.documents, []);
+  return hydrateDates(stored, ['uploadedAt']);
+}
+
+// Initialize insights from storage
+function initializeInsights(): Insight[] {
+  const stored = loadFromStorage<Insight[]>(STORAGE_KEYS.insights, []);
+  return hydrateDates(stored, ['timestamp']);
+}
+
 export function DocumentsProvider({ children }: { children: ReactNode }) {
-  const [documents, setDocuments] = useState<StoredDocument[]>([]);
-  // Initialize with preset agents from mockData
-  const [agents, setAgents] = useState<Agent[]>(mockAgents);
-  const [generatedInsights, setGeneratedInsights] = useState<Insight[]>([]);
+  // Initialize state from localStorage
+  const [documents, setDocuments] = useState<StoredDocument[]>(initializeDocuments);
+  const [agents, setAgents] = useState<Agent[]>(initializeAgents);
+  const [generatedInsights, setGeneratedInsights] = useState<Insight[]>(initializeInsights);
   const [showFirstDocumentModal, setShowFirstDocumentModal] = useState(false);
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [uploadModalSource, setUploadModalSource] = useState('');
-  const [isFirstDocument, setIsFirstDocument] = useState(true);
+  
+  // Check if user has seen first document modal before
+  const [isFirstDocument, setIsFirstDocument] = useState(() => {
+    const hasSeenModal = loadFromStorage<boolean>(STORAGE_KEYS.hasSeenFirstDocumentModal, false);
+    const hasStoredDocs = loadFromStorage<StoredDocument[]>(STORAGE_KEYS.documents, []).length > 0;
+    return !hasSeenModal && !hasStoredDocs;
+  });
+
+  // Persist documents to localStorage
+  useEffect(() => {
+    saveToStorage(STORAGE_KEYS.documents, documents);
+  }, [documents]);
+
+  // Persist agents to localStorage
+  useEffect(() => {
+    saveToStorage(STORAGE_KEYS.agents, agents);
+  }, [agents]);
+
+  // Persist insights to localStorage
+  useEffect(() => {
+    saveToStorage(STORAGE_KEYS.insights, generatedInsights);
+  }, [generatedInsights]);
+
+  // Persist first document modal state
+  useEffect(() => {
+    if (!isFirstDocument) {
+      saveToStorage(STORAGE_KEYS.hasSeenFirstDocumentModal, true);
+    }
+  }, [isFirstDocument]);
 
   const addDocument = useCallback((doc: Omit<StoredDocument, 'id' | 'uploadedAt'>): StoredDocument => {
     const newDoc: StoredDocument = {
       ...doc,
       id: `doc-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       uploadedAt: new Date(),
+      // Add placeholder content if not provided
+      contentText: doc.contentText || `Uploaded file: ${doc.name}. Parsing pending.`,
     };
     
     setDocuments(prev => {
@@ -81,6 +190,7 @@ export function DocumentsProvider({ children }: { children: ReactNode }) {
       ...doc,
       id: `doc-${Date.now()}-${i}-${Math.random().toString(36).substr(2, 9)}`,
       uploadedAt: new Date(),
+      contentText: doc.contentText || `Uploaded file: ${doc.name}. Parsing pending.`,
     }));
     
     setDocuments(prev => {
@@ -117,7 +227,7 @@ export function DocumentsProvider({ children }: { children: ReactNode }) {
     if (agentData.linkedDocumentIds.length > 0) {
       setTimeout(() => {
         generateMockInsights(newAgent);
-      }, 1500); // Simulate processing delay
+      }, 1500);
     }
     
     return newAgent;
@@ -137,7 +247,6 @@ export function DocumentsProvider({ children }: { children: ReactNode }) {
   const deleteAgent = useCallback((id: string) => {
     setAgents(prev => {
       const agent = prev.find(a => a.id === id);
-      // Only allow deleting non-preset agents
       if (agent?.isPreset) return prev;
       return prev.filter(a => a.id !== id);
     });
@@ -156,7 +265,6 @@ export function DocumentsProvider({ children }: { children: ReactNode }) {
     const linkedDocs = documents.filter(d => agent.linkedDocumentIds.includes(d.id));
     const docNames = linkedDocs.map(d => d.aiTitle || d.name).join(', ');
     
-    // Generate 1-2 mock insights based on the agent
     const mockInsightsToAdd: Omit<Insight, 'id'>[] = [
       {
         type: 'insight',
@@ -171,7 +279,6 @@ export function DocumentsProvider({ children }: { children: ReactNode }) {
       },
     ];
     
-    // Sometimes generate a second insight
     if (Math.random() > 0.4) {
       mockInsightsToAdd.push({
         type: 'pulse',
@@ -188,7 +295,6 @@ export function DocumentsProvider({ children }: { children: ReactNode }) {
     
     mockInsightsToAdd.forEach(insight => addInsight(insight));
     
-    // Update agent output count
     setAgents(prev => prev.map(a => 
       a.id === agent.id 
         ? { ...a, outputCount: a.outputCount + mockInsightsToAdd.length, lastRun: new Date() }
