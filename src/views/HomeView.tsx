@@ -5,8 +5,10 @@ import { SearchBar } from '@/components/SearchBar';
 import { GoalCard } from '@/components/GoalCard';
 import { AgentsList } from '@/components/AgentsList';
 import { EmptyState } from '@/components/EmptyState';
-import { mockInsights, mockGoals, mockAgents } from '@/data/mockData';
+import { EditAgentModal } from '@/components/EditAgentModal';
+import { mockInsights, mockGoals } from '@/data/mockData';
 import { useDocuments } from '@/contexts/DocumentsContext';
+import { Agent } from '@/types';
 import { Sparkles, Target, Bot, Plus, LayoutDashboard, CircleDot, FileText, Link2, Code2, FileUp, Scan, Calendar, Activity, MessageSquare, TrendingUp, MonitorCheck, Search, RefreshCw, Upload } from 'lucide-react';
 import { View } from '@/pages/Index';
 
@@ -20,26 +22,25 @@ export function HomeView({
   onTabChange
 }: HomeViewProps) {
   const [isSearching] = useState(false);
+  const [editingAgent, setEditingAgent] = useState<Agent | null>(null);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  
   const { 
     hasDocuments, 
     hasAgents, 
     generatedInsights, 
-    agents: userAgents,
+    agents,
     openUploadModal,
     documents
   } = useDocuments();
 
   // Combine mock insights with generated insights
   const allInsights = [...generatedInsights, ...mockInsights];
-  
-  // Combine mock agents with user agents
-  const allAgents = [
-    ...userAgents.map(a => ({
-      ...a,
-      type: a.type as any,
-    })),
-    ...mockAgents
-  ];
+
+  const handleAgentClick = (agent: Agent) => {
+    setEditingAgent(agent);
+    setEditModalOpen(true);
+  };
 
   const greeting = () => {
     const hour = new Date().getHours();
@@ -199,7 +200,7 @@ export function HomeView({
                 <Bot className="w-4.5 h-4.5 text-muted-foreground stroke-[2.5]" />
               </div>
               <div>
-                <p className="text-2xl font-semibold text-foreground">{allAgents.length}</p>
+                <p className="text-2xl font-semibold text-foreground">{agents.filter(a => a.isActive).length}</p>
                 <p className="text-sm text-muted-foreground font-medium">Active agents</p>
               </div>
             </div>
@@ -211,7 +212,7 @@ export function HomeView({
               </div>
               <div>
                 <p className="text-2xl font-semibold text-foreground">
-                  {allAgents.reduce((sum, a) => sum + a.outputCount, 0)}
+                  {agents.reduce((sum, a) => sum + a.outputCount, 0)}
                 </p>
                 <p className="text-sm text-muted-foreground font-medium">Total outputs</p>
               </div>
@@ -224,7 +225,7 @@ export function HomeView({
               </div>
               <div>
                 <p className="text-2xl font-semibold text-foreground">
-                  {allAgents.filter(a => a.status === 'running').length}
+                  {agents.filter(a => a.status === 'running' && a.isActive).length}
                 </p>
                 <p className="text-sm text-muted-foreground font-medium">Currently running</p>
               </div>
@@ -233,7 +234,7 @@ export function HomeView({
         </div>
         
         <div className="bg-card rounded-2xl p-3.5 shadow-card">
-          <AgentsList agents={allAgents} />
+          <AgentsList agents={agents} onAgentClick={handleAgentClick} />
         </div>
       </>
     );
@@ -470,6 +471,13 @@ export function HomeView({
           )}
         </AnimatePresence>
       </section>
+
+      {/* Edit Agent Modal */}
+      <EditAgentModal
+        agent={editingAgent}
+        open={editModalOpen}
+        onOpenChange={setEditModalOpen}
+      />
     </div>
   );
 }
