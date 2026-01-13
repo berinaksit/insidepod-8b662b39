@@ -1,12 +1,13 @@
 import React, { createContext, useContext, useState, useCallback, useEffect, ReactNode } from 'react';
-import { Insight, Agent, AgentType, AgentFrequency } from '@/types';
-import { mockAgents } from '@/data/mockData';
+import { Insight, Agent, AgentType, AgentFrequency, Goal } from '@/types';
+import { mockAgents, mockGoals } from '@/data/mockData';
 
 // localStorage keys
 const STORAGE_KEYS = {
   documents: 'insidepod_documents',
   agents: 'insidepod_agents',
   insights: 'insidepod_insights',
+  goals: 'insidepod_goals',
   hasSeenFirstDocumentModal: 'insidepod_has_seen_first_doc_modal',
 };
 
@@ -83,6 +84,13 @@ interface DocumentsContextType {
   generatedInsights: Insight[];
   addInsight: (insight: Omit<Insight, 'id'>) => Insight;
   
+  // Goals
+  goals: Goal[];
+  addGoal: (goal: Omit<Goal, 'id'>) => Goal;
+  updateGoal: (id: string, updates: Partial<Omit<Goal, 'id'>>) => void;
+  deleteGoal: (id: string) => void;
+  hasGoals: boolean;
+  
   // First-time user flow
   showFirstDocumentModal: boolean;
   setShowFirstDocumentModal: (show: boolean) => void;
@@ -126,11 +134,21 @@ function initializeInsights(): Insight[] {
   return hydrateDates(stored, ['timestamp']);
 }
 
+// Initialize goals from storage
+function initializeGoals(): Goal[] {
+  const stored = loadFromStorage<Goal[]>(STORAGE_KEYS.goals, []);
+  if (stored.length > 0) {
+    return stored;
+  }
+  return mockGoals;
+}
+
 export function DocumentsProvider({ children }: { children: ReactNode }) {
   // Initialize state from localStorage
   const [documents, setDocuments] = useState<StoredDocument[]>(initializeDocuments);
   const [agents, setAgents] = useState<Agent[]>(initializeAgents);
   const [generatedInsights, setGeneratedInsights] = useState<Insight[]>(initializeInsights);
+  const [goals, setGoals] = useState<Goal[]>(initializeGoals);
   const [showFirstDocumentModal, setShowFirstDocumentModal] = useState(false);
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [uploadModalSource, setUploadModalSource] = useState('');
@@ -156,6 +174,11 @@ export function DocumentsProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     saveToStorage(STORAGE_KEYS.insights, generatedInsights);
   }, [generatedInsights]);
+
+  // Persist goals to localStorage
+  useEffect(() => {
+    saveToStorage(STORAGE_KEYS.goals, goals);
+  }, [goals]);
 
   // Persist first document modal state
   useEffect(() => {
@@ -261,6 +284,26 @@ export function DocumentsProvider({ children }: { children: ReactNode }) {
     return newInsight;
   }, []);
 
+  const addGoal = useCallback((goal: Omit<Goal, 'id'>): Goal => {
+    const newGoal: Goal = {
+      ...goal,
+      id: `goal-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+    };
+    setGoals(prev => [...prev, newGoal]);
+    return newGoal;
+  }, []);
+
+  const updateGoal = useCallback((id: string, updates: Partial<Omit<Goal, 'id'>>) => {
+    setGoals(prev => prev.map(goal => {
+      if (goal.id !== id) return goal;
+      return { ...goal, ...updates };
+    }));
+  }, []);
+
+  const deleteGoal = useCallback((id: string) => {
+    setGoals(prev => prev.filter(goal => goal.id !== id));
+  }, []);
+
   const generateMockInsights = useCallback((agent: Agent) => {
     const linkedDocs = documents.filter(d => agent.linkedDocumentIds.includes(d.id));
     const docNames = linkedDocs.map(d => d.aiTitle || d.name).join(', ');
@@ -326,6 +369,11 @@ export function DocumentsProvider({ children }: { children: ReactNode }) {
     presetAgents,
     generatedInsights,
     addInsight,
+    goals,
+    addGoal,
+    updateGoal,
+    deleteGoal,
+    hasGoals: goals.length > 0,
     showFirstDocumentModal,
     setShowFirstDocumentModal,
     isFirstDocument,

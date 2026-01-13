@@ -6,7 +6,7 @@ import { GoalCard } from '@/components/GoalCard';
 import { AgentsList } from '@/components/AgentsList';
 import { EmptyState } from '@/components/EmptyState';
 import { EditAgentModal } from '@/components/EditAgentModal';
-import { mockInsights, mockGoals } from '@/data/mockData';
+import { mockInsights } from '@/data/mockData';
 import { useDocuments } from '@/contexts/DocumentsContext';
 import { Agent } from '@/types';
 import { Sparkles, Target, Bot, Plus, LayoutDashboard, CircleDot, FileText, Link2, Code2, FileUp, Scan, Calendar, Activity, MessageSquare, TrendingUp, MonitorCheck, Search, RefreshCw, Upload } from 'lucide-react';
@@ -31,7 +31,8 @@ export function HomeView({
     generatedInsights, 
     agents,
     openUploadModal,
-    documents
+    documents,
+    goals
   } = useDocuments();
 
   // Combine mock insights with generated insights
@@ -327,7 +328,7 @@ export function HomeView({
                 </button>
               </div>
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {mockGoals.map((goal, index) => (
+                {goals.map((goal, index) => (
                   <GoalCard key={goal.id} goal={goal} index={index} />
                 ))}
               </div>
