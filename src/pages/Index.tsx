@@ -6,11 +6,29 @@ import { AgentsView } from '@/views/AgentsView';
 import { SettingsView } from '@/views/SettingsView';
 import { CreateAgentView } from '@/views/CreateAgentView';
 import { AnimatePresence, motion } from 'framer-motion';
+import { DocumentsProvider, useDocuments } from '@/contexts/DocumentsContext';
+import { GlobalUploadModal } from '@/components/GlobalUploadModal';
+import { FirstDocumentModal } from '@/components/FirstDocumentModal';
 
 export type View = 'home' | 'goals' | 'agents' | 'dashboard' | 'settings' | 'create-agent';
 
-const Index = () => {
+function IndexContent() {
   const [currentView, setCurrentView] = useState<View>('home');
+  const { 
+    showUploadModal, 
+    setShowUploadModal, 
+    showFirstDocumentModal, 
+    setShowFirstDocumentModal 
+  } = useDocuments();
+
+  const handleFirstDocumentCreateAgent = () => {
+    setShowFirstDocumentModal(false);
+    setCurrentView('create-agent');
+  };
+
+  const handleFirstDocumentLater = () => {
+    setShowFirstDocumentModal(false);
+  };
 
   const renderView = () => {
     switch (currentView) {
@@ -24,11 +42,11 @@ const Index = () => {
         return (
           <CreateAgentView
             onCancel={() => setCurrentView('agents')}
-            onCreate={() => setCurrentView('agents')}
+            onCreate={() => setCurrentView('home')}
           />
         );
       case 'settings':
-        return <SettingsView />;
+        return <SettingsView onNavigate={setCurrentView} />;
       default:
         return <HomeView currentTab={currentView} onTabChange={setCurrentView} />;
     }
@@ -56,7 +74,29 @@ const Index = () => {
           </AnimatePresence>
         </main>
       </div>
+
+      {/* Global Upload Modal */}
+      <GlobalUploadModal
+        open={showUploadModal}
+        onOpenChange={setShowUploadModal}
+      />
+
+      {/* First Document Modal */}
+      <FirstDocumentModal
+        open={showFirstDocumentModal}
+        onOpenChange={setShowFirstDocumentModal}
+        onCreateAgent={handleFirstDocumentCreateAgent}
+        onLater={handleFirstDocumentLater}
+      />
     </div>
+  );
+}
+
+const Index = () => {
+  return (
+    <DocumentsProvider>
+      <IndexContent />
+    </DocumentsProvider>
   );
 };
 
