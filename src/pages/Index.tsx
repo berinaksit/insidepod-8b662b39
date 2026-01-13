@@ -4,9 +4,10 @@ import { HomeView } from '@/views/HomeView';
 import { GoalsView } from '@/views/GoalsView';
 import { AgentsView } from '@/views/AgentsView';
 import { SettingsView } from '@/views/SettingsView';
+import { CreateAgentView } from '@/views/CreateAgentView';
 import { AnimatePresence, motion } from 'framer-motion';
 
-export type View = 'home' | 'goals' | 'agents' | 'dashboard' | 'settings';
+export type View = 'home' | 'goals' | 'agents' | 'dashboard' | 'settings' | 'create-agent';
 
 const Index = () => {
   const [currentView, setCurrentView] = useState<View>('home');
@@ -19,6 +20,13 @@ const Index = () => {
         return <HomeView currentTab={currentView} onTabChange={setCurrentView} />;
       case 'agents':
         return <HomeView currentTab={currentView} onTabChange={setCurrentView} />;
+      case 'create-agent':
+        return (
+          <CreateAgentView
+            onCancel={() => setCurrentView('agents')}
+            onCreate={() => setCurrentView('agents')}
+          />
+        );
       case 'settings':
         return <SettingsView />;
       default:
