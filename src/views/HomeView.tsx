@@ -5,8 +5,9 @@ import { SearchBar } from '@/components/SearchBar';
 import { GoalCard } from '@/components/GoalCard';
 import { AgentsList } from '@/components/AgentsList';
 import { mockInsights, mockGoals, mockAgents } from '@/data/mockData';
-import { Sparkles, Target, Bot, Plus, Play, LayoutDashboard, CircleDot, FileText, Link2, Code2, FileUp, Scan, Calendar, Activity, MessageSquare, TrendingUp, MonitorCheck, Search, RefreshCw } from 'lucide-react';
+import { Sparkles, Target, Bot, Plus, LayoutDashboard, CircleDot, FileText, Link2, Code2, FileUp, Scan, Calendar, Activity, MessageSquare, TrendingUp, MonitorCheck, Search, RefreshCw } from 'lucide-react';
 import { View } from '@/pages/Index';
+
 interface HomeViewProps {
   currentTab: View;
   onTabChange: (tab: View) => void;
@@ -185,7 +186,10 @@ export function HomeView({
         }}>
               <div className="flex items-center justify-between mb-5">
                 <p className="text-muted-foreground font-medium">AI agents continuously monitoring your product signals</p>
-                <button className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors">
+                <button 
+                  onClick={() => onTabChange('create-agent')}
+                  className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors"
+                >
                   <Plus className="w-4 h-4 stroke-[2.5]" />
                   Add Agent
                 </button>
