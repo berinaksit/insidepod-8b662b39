@@ -186,8 +186,8 @@ export function HomeView({
               <div className="flex items-center justify-between mb-5">
                 <p className="text-muted-foreground font-medium">AI agents continuously monitoring your product signals</p>
                 <button className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors">
-                  <Play className="w-4 h-4 stroke-[2.5]" />
-                  Run All
+                  <Plus className="w-4 h-4 stroke-[2.5]" />
+                  Add Agent
                 </button>
               </div>
               
