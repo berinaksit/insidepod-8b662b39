@@ -198,7 +198,7 @@ export function HomeView({
           <div className="insight-card">
             <div className="flex items-center gap-2.5">
               <div className="w-9 h-9 rounded-xl bg-muted flex items-center justify-center">
-                <Bot className="w-4.5 h-4.5 text-muted-foreground stroke-[2.5]" />
+                <Bot className="w-4.5 h-4.5 text-muted-foreground stroke-[1.75]" />
               </div>
               <div>
                 <p className="text-2xl font-semibold text-foreground">{agents.filter(a => a.isActive).length}</p>
