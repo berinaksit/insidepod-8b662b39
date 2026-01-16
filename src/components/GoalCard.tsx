@@ -12,17 +12,17 @@ const statusConfig = {
   'on-track': {
     icon: CheckCircle,
     label: 'On Track',
-    className: 'text-[hsl(145,60%,40%)] bg-[hsl(145,60%,95%)]',
+    className: 'text-foreground/80 bg-muted',
   },
   'at-risk': {
     icon: AlertTriangle,
     label: 'At Risk',
-    className: 'text-[hsl(0,70%,50%)] bg-[hsl(0,70%,95%)]',
+    className: 'text-foreground/80 bg-muted',
   },
   'off-track': {
     icon: AlertTriangle,
     label: 'Off Track',
-    className: 'text-destructive bg-destructive/10',
+    className: 'text-foreground/80 bg-muted',
   },
 };
 
