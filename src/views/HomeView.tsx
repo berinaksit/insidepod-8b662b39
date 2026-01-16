@@ -35,11 +35,19 @@ export function HomeView({
     goals
   } = useDocuments();
 
+  // Combine mock insights with generated insights
   const allInsights = [...generatedInsights, ...mockInsights];
 
   const handleAgentClick = (agent: Agent) => {
     setEditingAgent(agent);
     setEditModalOpen(true);
+  };
+
+  const greeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Good morning';
+    if (hour < 18) return 'Good afternoon';
+    return 'Good evening';
   };
 
   const tabs = [{
@@ -64,22 +72,22 @@ export function HomeView({
     ...documents.map(doc => ({
       name: doc.aiTitle || doc.name,
       icon: doc.type === 'pdf' ? '📕' : doc.type === 'csv' ? '📊' : '📄',
-      color: 'text-muted-foreground'
+      color: 'text-blue-400'
     })),
     {
-      name: 'Salesforce CRM Data',
+      name: 'Salesforce_CRM Data',
       icon: '☁️',
-      color: 'text-muted-foreground'
+      color: 'text-blue-400'
     },
     {
-      name: 'Drive User Interviews',
+      name: 'Drive_User Interviews',
       icon: '📁',
-      color: 'text-muted-foreground'
+      color: 'text-yellow-400'
     },
     {
-      name: 'Meeting transcript Sales 2025',
+      name: 'Meeting transcript_Sales 2025',
       icon: '📄',
-      color: 'text-muted-foreground'
+      color: 'text-blue-300'
     }
   ];
 
@@ -107,6 +115,7 @@ export function HomeView({
     openUploadModal('home');
   };
 
+  // Determine what empty state to show for Today's Insights
   const renderInsightsContent = () => {
     if (!hasDocuments) {
       return (
@@ -124,17 +133,20 @@ export function HomeView({
     
     if (!hasAgents && generatedInsights.length === 0) {
       return (
-        <div className="space-y-8">
-          <EmptyState
-            icon={Bot}
-            title="Create an agent to generate insights"
-            description="You have documents uploaded. Create an agent to analyze them and surface insights."
-            action={{
-              label: "Create Agent",
-              onClick: () => onTabChange('create-agent')
-            }}
-          />
-          <div className="card-grid md:grid-cols-2 lg:grid-cols-3">
+        <div>
+          <div className="mb-6">
+            <EmptyState
+              icon={Bot}
+              title="Create an agent to generate insights"
+              description="You have documents uploaded. Create an agent to analyze them and surface insights."
+              action={{
+                label: "Create Agent",
+                onClick: () => onTabChange('create-agent')
+              }}
+            />
+          </div>
+          {/* Still show mock insights */}
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {mockInsights.map((insight, index) => (
               <InsightCard key={insight.id} insight={insight} index={index} onClick={() => {}} />
             ))}
@@ -144,7 +156,7 @@ export function HomeView({
     }
 
     return (
-      <div className="card-grid md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {allInsights.map((insight, index) => (
           <InsightCard key={insight.id} insight={insight} index={index} onClick={() => {}} />
         ))}
@@ -152,6 +164,7 @@ export function HomeView({
     );
   };
 
+  // Determine what empty state to show for Agents
   const renderAgentsContent = () => {
     if (!hasDocuments) {
       return (
@@ -168,81 +181,81 @@ export function HomeView({
     }
 
     return (
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <p className="text-muted-foreground">AI agents continuously monitoring your product signals</p>
+      <>
+        <div className="flex items-center justify-between mb-5">
+          <p className="text-muted-foreground font-medium">AI agents continuously monitoring your product signals</p>
           <button 
             onClick={() => onTabChange('create-agent')}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors"
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-4 h-4 stroke-[2.5]" />
             Add Agent
           </button>
         </div>
         
         {/* Summary cards */}
-        <div className="card-grid md:grid-cols-3">
+        <div className="grid gap-3.5 md:grid-cols-3 mb-5">
           <div className="insight-card">
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2.5">
               <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center">
-                <Bot className="w-5 h-5 text-muted-foreground" />
+                <Bot className="w-5 h-5 text-muted-foreground stroke-[1.75]" />
               </div>
               <div>
-                <p className="text-3xl font-semibold text-foreground tracking-tight">{agents.filter(a => a.isActive).length}</p>
-                <p className="text-sm text-muted-foreground">Active agents</p>
+                <p className="text-2xl font-semibold text-foreground">{agents.filter(a => a.isActive).length}</p>
+                <p className="text-sm text-muted-foreground font-medium">Active agents</p>
               </div>
             </div>
           </div>
           <div className="insight-card">
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2.5">
               <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center">
-                <FileUp className="w-5 h-5 text-muted-foreground" />
+                <FileUp className="w-5 h-5 text-muted-foreground stroke-[1.75]" />
               </div>
               <div>
-                <p className="text-3xl font-semibold text-foreground tracking-tight">
+                <p className="text-2xl font-semibold text-foreground">
                   {agents.reduce((sum, a) => sum + a.outputCount, 0)}
                 </p>
-                <p className="text-sm text-muted-foreground">Total outputs</p>
+                <p className="text-sm text-muted-foreground font-medium">Total outputs</p>
               </div>
             </div>
           </div>
           <div className="insight-card">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-highlight-surface flex items-center justify-center">
-                <RefreshCw className="w-5 h-5 text-highlight-foreground" />
+            <div className="flex items-center gap-2.5">
+              <div className="w-12 h-12 rounded-xl bg-[hsl(145,60%,90%)] flex items-center justify-center">
+                <RefreshCw className="w-5 h-5 text-[hsl(145,60%,40%)] stroke-[1.75]" />
               </div>
               <div>
-                <p className="text-3xl font-semibold text-foreground tracking-tight">
+                <p className="text-2xl font-semibold text-foreground">
                   {agents.filter(a => a.status === 'running' && a.isActive).length}
                 </p>
-                <p className="text-sm text-muted-foreground">Currently running</p>
+                <p className="text-sm text-muted-foreground font-medium">Currently running</p>
               </div>
             </div>
           </div>
         </div>
         
-        <div className="bg-card rounded-2xl p-5 shadow-card">
+        <div className="bg-card rounded-2xl p-3.5 shadow-card">
           <AgentsList agents={agents} onAgentClick={handleAgentClick} />
         </div>
-      </div>
+      </>
     );
   };
 
   return (
     <div className="min-h-full">
-      {/* Hero section with generous spacing */}
+      {/* Hero section with greeting and search */}
       <motion.section 
         initial={{ opacity: 0 }} 
         animate={{ opacity: 1 }} 
         transition={{ duration: 0.5 }} 
-        className="px-6 lg:px-8 py-16 md:py-20"
+        className="px-6 py-12 md:py-16"
       >
-        <div className="max-w-2xl mx-auto text-center mb-12">
+        <div className="max-w-3xl mx-auto text-center mb-10">
           <motion.h1 
             initial={{ opacity: 0, y: 20 }} 
             animate={{ opacity: 1, y: 0 }} 
             transition={{ duration: 0.5, delay: 0.1 }} 
-            className="text-foreground mb-4"
+            className="font-display text-3xl md:text-4xl text-foreground mb-3"
           >
             Clarity at a glance
           </motion.h1>
@@ -265,25 +278,21 @@ export function HomeView({
         </motion.div>
       </motion.section>
 
-      {/* Tabs with refined spacing */}
-      <section className="px-6 lg:px-8 pb-16">
-        <div className="flex items-center gap-6 mb-8 border-b border-border">
+      {/* Tabs */}
+      <section className="px-6 pb-10">
+        <div className="flex items-center gap-3 mb-5">
           {tabs.map(tab => {
             const isActive = currentTab === tab.id;
             return (
               <button 
                 key={tab.id} 
                 onClick={() => onTabChange(tab.id)} 
-                className={`flex items-center gap-2 pb-4 border-b-2 -mb-px transition-colors ${
-                  isActive 
-                    ? 'border-foreground text-foreground' 
-                    : 'border-transparent text-muted-foreground hover:text-foreground'
-                }`}
+                className={`flex items-center gap-1.5 px-1 py-2.5 border-b-2 transition-colors ${isActive ? 'border-primary text-foreground' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
               >
-                <span className="font-medium">{tab.label}</span>
-                {tab.id === 'home' && allInsights.filter(i => i.isNew).length > 0 && (
-                  <span className="px-2 py-0.5 text-xs bg-muted text-muted-foreground rounded-full">
-                    {allInsights.filter(i => i.isNew).length}
+                <span className="font-semibold">{tab.label}</span>
+                {tab.id === 'home' && (
+                  <span className="ml-0.5 px-1.5 py-0.5 text-xs bg-secondary/10 text-secondary rounded-full font-medium">
+                    {allInsights.filter(i => i.isNew).length} new
                   </span>
                 )}
               </button>
@@ -296,10 +305,9 @@ export function HomeView({
           {currentTab === 'home' && (
             <motion.div 
               key="insights" 
-              initial={{ opacity: 0, y: 12 }} 
+              initial={{ opacity: 0, y: 10 }} 
               animate={{ opacity: 1, y: 0 }} 
-              exit={{ opacity: 0, y: -12 }}
-              transition={{ duration: 0.3 }}
+              exit={{ opacity: 0, y: -10 }}
             >
               {renderInsightsContent()}
             </motion.div>
@@ -308,19 +316,18 @@ export function HomeView({
           {currentTab === 'goals' && (
             <motion.div 
               key="goals" 
-              initial={{ opacity: 0, y: 12 }} 
+              initial={{ opacity: 0, y: 10 }} 
               animate={{ opacity: 1, y: 0 }} 
-              exit={{ opacity: 0, y: -12 }}
-              transition={{ duration: 0.3 }}
+              exit={{ opacity: 0, y: -10 }}
             >
-              <div className="flex items-center justify-between mb-8">
-                <p className="text-muted-foreground">Track progress toward your product objectives</p>
-                <button className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors">
-                  <Plus className="w-4 h-4" />
+              <div className="flex items-center justify-between mb-5">
+                <p className="text-muted-foreground font-medium">Track progress toward your product objectives</p>
+                <button className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors">
+                  <Plus className="w-4 h-4 stroke-[2.5]" />
                   Add Goal
                 </button>
               </div>
-              <div className="card-grid md:grid-cols-2 lg:grid-cols-3">
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {goals.map((goal, index) => (
                   <GoalCard key={goal.id} goal={goal} index={index} />
                 ))}
@@ -331,10 +338,9 @@ export function HomeView({
           {currentTab === 'agents' && (
             <motion.div 
               key="agents" 
-              initial={{ opacity: 0, y: 12 }} 
+              initial={{ opacity: 0, y: 10 }} 
               animate={{ opacity: 1, y: 0 }} 
-              exit={{ opacity: 0, y: -12 }}
-              transition={{ duration: 0.3 }}
+              exit={{ opacity: 0, y: -10 }}
             >
               {renderAgentsContent()}
             </motion.div>
@@ -343,114 +349,120 @@ export function HomeView({
           {currentTab === 'dashboard' && (
             <motion.div 
               key="dashboard" 
-              initial={{ opacity: 0, y: 12 }} 
+              initial={{ opacity: 0, y: 10 }} 
               animate={{ opacity: 1, y: 0 }} 
-              exit={{ opacity: 0, y: -12 }}
-              transition={{ duration: 0.3 }}
+              exit={{ opacity: 0, y: -10 }}
             >
-              <div className="card-grid md:grid-cols-2 lg:grid-cols-3">
-                {/* Featured Insight Card */}
-                <div className="bg-primary-surface rounded-2xl p-6 text-primary-surface-foreground">
-                  <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center mb-4">
-                    <CircleDot className="w-4 h-4" />
+              <div className="grid gap-3.5 md:grid-cols-2 lg:grid-cols-3">
+                {/* Featured Insight Card - Purple */}
+                <div className="bg-highlight-surface rounded-2xl p-5 text-highlight-foreground">
+                  <div className="w-7 h-7 rounded-full bg-highlight/20 flex items-center justify-center mb-3">
+                    <CircleDot className="w-3.5 h-3.5 stroke-[2.5]" />
                   </div>
-                  <p className="text-xl font-medium mb-6 leading-relaxed">
-                    Users aren't returning as often, fewer complete the first key action, and more exit at checkout.
+                  <p className="text-xl font-semibold mb-5">
+                    Users aren't returning as often, fewer complete the first key action, and more exit at checkout, indicating blockers in onboarding and purchase steps.
                   </p>
-                  <div className="flex items-center gap-3">
-                    <span className="px-3 py-1.5 bg-white/10 rounded-lg text-sm font-medium">
+                  <div className="flex items-center gap-2.5">
+                    <span className="px-2.5 py-1 bg-highlight/20 rounded-full text-sm font-semibold">
                       Semi structured interviews
                     </span>
-                    <span className="text-sm opacity-70">+41 sources</span>
+                    <div className="flex -space-x-2">
+                      <div className="w-5.5 h-5.5 rounded-full bg-highlight/30" />
+                      <div className="w-5.5 h-5.5 rounded-full bg-highlight/40" />
+                      <div className="w-5.5 h-5.5 rounded-full bg-highlight/50" />
+                    </div>
+                    <span className="text-sm text-highlight-foreground/70 font-medium">+41</span>
                   </div>
                 </div>
 
                 {/* Suggested Task Card */}
                 <div className="insight-card flex flex-col">
-                  <div className="flex items-center gap-2 text-muted-foreground mb-3">
-                    <FileText className="w-4 h-4" />
-                    <span className="text-sm">Suggested task</span>
+                  <div className="flex items-center gap-1.5 text-muted-foreground mb-2.5">
+                    <FileText className="w-4 h-4 stroke-[2.5]" />
+                    <span className="text-sm font-medium">Suggested task</span>
                   </div>
-                  <h3 className="text-foreground mb-auto">
+                  <h3 className="text-xl font-semibold text-foreground">
                     Review today's drop in step-two activation.
                   </h3>
-                  <div className="flex items-center gap-2 mt-6 text-muted-foreground">
-                    <Link2 className="w-4 h-4" />
-                    <span className="text-sm">Select data source ›</span>
+                  <div className="gap-1.5 mt-auto pb-0 text-muted-foreground flex items-end justify-start">
+                    <Link2 className="w-4 h-4 stroke-[2.5]" />
+                    <span className="text-sm font-medium">Select data source</span>
+                    <span className="text-sm font-medium">›</span>
                   </div>
                 </div>
 
                 {/* Connected Sources Card */}
                 <div className="insight-card flex flex-col">
-                  <div className="flex items-center gap-2 text-muted-foreground mb-4">
-                    <Link2 className="w-4 h-4" />
-                    <span className="text-sm">Connected sources</span>
+                  <div className="flex items-center gap-1.5 text-muted-foreground mb-3">
+                    <Link2 className="w-4 h-4 stroke-[2.5]" />
+                    <span className="text-sm font-medium">Connected sources</span>
                   </div>
-                  <div className="space-y-3 flex-1 max-h-36 overflow-y-auto">
-                    {connectedSources.slice(0, 4).map(source => (
-                      <div key={source.name} className="flex items-center gap-3">
+                  <div className="space-y-2.5 flex-1 max-h-32 overflow-y-auto">
+                    {connectedSources.slice(0, 5).map(source => (
+                      <div key={source.name} className="flex items-center gap-2.5">
                         <span className="text-base">{source.icon}</span>
-                        <span className="text-foreground text-sm truncate">{source.name}</span>
+                        <span className="text-foreground font-medium truncate">{source.name}</span>
                       </div>
                     ))}
                   </div>
-                  <div className="relative mt-4">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <div className="relative mt-auto pb-0">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground stroke-[2.5]" />
                     <input 
                       type="text" 
-                      placeholder="Search documents" 
-                      className="w-full bg-muted/50 rounded-xl pl-10 pr-4 py-2.5 text-sm placeholder:text-muted-foreground focus:outline-none" 
+                      placeholder="Search for documents" 
+                      className="w-full bg-muted/50 rounded-full pl-9 pr-3.5 py-1.5 text-sm placeholder:text-muted-foreground focus:outline-none font-medium" 
                     />
                   </div>
                 </div>
 
                 {/* Suggested Prompt Card */}
                 <div className="insight-card flex flex-col">
-                  <div className="flex items-center gap-2 text-muted-foreground mb-3">
-                    <Code2 className="w-4 h-4" />
-                    <span className="text-sm">Suggested prompt</span>
+                  <div className="flex items-center gap-1.5 text-muted-foreground mb-2.5">
+                    <Code2 className="w-4 h-4 stroke-[2.5]" />
+                    <span className="text-sm font-medium">Suggested prompt</span>
                   </div>
-                  <h3 className="text-foreground mb-auto">
+                  <h3 className="text-xl font-semibold text-foreground">
                     What's driving this month's performance changes?
                   </h3>
-                  <div className="flex items-center gap-2 mt-6 text-muted-foreground">
-                    <Link2 className="w-4 h-4" />
-                    <span className="text-sm">Select data source ›</span>
+                  <div className="flex items-center gap-1.5 mt-auto pb-0 text-muted-foreground py-0 pt-[130px]">
+                    <Link2 className="w-4 h-4 stroke-[2.5]" />
+                    <span className="text-sm font-medium">Select data source</span>
+                    <span className="text-xs font-medium">›</span>
                   </div>
                 </div>
 
                 {/* Recently Uploaded Card */}
                 <div className="insight-card flex flex-col">
-                  <div className="flex items-center gap-2 text-muted-foreground mb-3">
-                    <FileUp className="w-4 h-4" />
-                    <span className="text-sm">Recently uploaded</span>
+                  <div className="flex items-center gap-1.5 text-muted-foreground mb-2.5">
+                    <FileUp className="w-4 h-4 stroke-[2.5]" />
+                    <span className="text-sm font-medium">Recently uploaded</span>
                   </div>
-                  <h3 className="text-foreground mb-auto">
+                  <h3 className="text-xl font-semibold text-foreground">
                     Which emerging patterns matter for our next release?
                   </h3>
-                  <div className="flex items-center gap-2 mt-6 text-muted-foreground">
-                    <span>📕</span>
-                    <span className="text-sm">E-commerce Trends 2025 ›</span>
+                  <div className="flex items-center gap-1.5 mt-auto pb-0 text-muted-foreground">
+                    <span className="text-red-400">📕</span>
+                    <span className="text-sm">E-commerce Trends_2025  ›</span>
                   </div>
                 </div>
 
                 {/* Active Agents Card */}
                 <div className="insight-card">
-                  <div className="flex items-center gap-2 text-muted-foreground mb-4">
-                    <Bot className="w-4 h-4" />
-                    <span className="text-sm">Active Agents</span>
+                  <div className="flex items-center gap-1.5 text-muted-foreground mb-3">
+                    <Bot className="w-4 h-4 stroke-[2.5]" />
+                    <span className="text-sm font-medium">Active Agents</span>
                   </div>
-                  <div className="grid grid-cols-2 gap-2">
-                    {activeAgents.slice(0, 6).map((agent) => {
-                      const AgentIcon = agent.icon;
+                  <div className="grid grid-cols-2 gap-1.5">
+                    {activeAgents.map(agent => {
+                      const Icon = agent.icon;
                       return (
-                        <div 
+                        <button 
                           key={agent.name} 
-                          className="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-muted/50 hover:bg-muted transition-colors cursor-pointer"
+                          className="flex items-center gap-1.5 bg-muted/50 hover:bg-muted rounded-xl text-sm text-foreground transition-colors font-medium py-[28px] px-[10px]"
                         >
-                          <AgentIcon className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-                          <span className="text-sm text-foreground truncate">{agent.name}</span>
-                        </div>
+                          <Icon className="w-4 h-4 text-muted-foreground stroke-[2.5]" />
+                          <span>{agent.name}</span>
+                        </button>
                       );
                     })}
                   </div>
@@ -461,10 +473,11 @@ export function HomeView({
         </AnimatePresence>
       </section>
 
-      <EditAgentModal 
-        open={editModalOpen} 
-        onOpenChange={setEditModalOpen} 
+      {/* Edit Agent Modal */}
+      <EditAgentModal
         agent={editingAgent}
+        open={editModalOpen}
+        onOpenChange={setEditModalOpen}
       />
     </div>
   );

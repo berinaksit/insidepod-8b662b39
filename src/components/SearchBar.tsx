@@ -36,6 +36,7 @@ export function SearchBar({ onSearch, isProcessing = false, placeholder }: Searc
   const handleSuggestionClick = (suggestion: string) => {
     setQuery(suggestion);
     setIsFocused(false);
+    // Don't auto-run, just set the query
   };
 
   const handleDocumentsAdded = (newDocs: UploadedDocument[]) => {
@@ -61,17 +62,17 @@ export function SearchBar({ onSearch, isProcessing = false, placeholder }: Searc
     <div className="relative w-full max-w-2xl mx-auto">
       <form onSubmit={handleSubmit}>
         <div className="search-container">
-          <div className="flex items-center gap-3 px-5 py-4">
+          <div className="flex items-center gap-2.5 px-4 py-3.5">
             <div className="flex-shrink-0">
               {isProcessing ? (
                 <motion.div
                   animate={{ rotate: 360 }}
                   transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
                 >
-                  <Sparkles className="w-5 h-5 text-foreground" />
+                  <Sparkles className="w-5 h-5 text-primary stroke-[2.5]" />
                 </motion.div>
               ) : (
-                <Search className="w-5 h-5 text-muted-foreground" />
+                <Search className="w-5 h-5 text-muted-foreground stroke-[2.5]" />
               )}
             </div>
             
@@ -83,7 +84,7 @@ export function SearchBar({ onSearch, isProcessing = false, placeholder }: Searc
               onFocus={() => setIsFocused(true)}
               onBlur={() => setTimeout(() => setIsFocused(false), 200)}
               placeholder={placeholder || "Ask anything about your product..."}
-              className="flex-1 bg-transparent text-foreground placeholder:text-muted-foreground focus:outline-none text-base"
+              className="flex-1 bg-transparent text-foreground placeholder:text-muted-foreground focus:outline-none text-base font-medium"
               disabled={isProcessing}
             />
             
@@ -94,15 +95,15 @@ export function SearchBar({ onSearch, isProcessing = false, placeholder }: Searc
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.8 }}
                   type="submit"
-                  className="flex-shrink-0 w-9 h-9 rounded-xl bg-foreground text-background hover:bg-foreground/90 transition-colors flex items-center justify-center"
+                  className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-colors flex items-center justify-center"
                 >
-                  <ArrowRight className="w-4 h-4" />
+                  <ArrowRight className="w-4 h-4 stroke-[2.5]" />
                 </motion.button>
               )}
             </AnimatePresence>
             
             {!query && !isFocused && (
-              <kbd className="hidden sm:inline-flex px-2.5 py-1 text-xs text-muted-foreground bg-muted rounded-lg">
+              <kbd className="hidden sm:inline-flex px-2 py-0.5 text-xs text-muted-foreground bg-muted rounded font-medium">
                 /
               </kbd>
             )}
@@ -111,28 +112,30 @@ export function SearchBar({ onSearch, isProcessing = false, placeholder }: Searc
       </form>
 
       {/* Document attachment area */}
-      <div className="mt-4 flex items-center gap-2.5 flex-wrap">
+      <div className="mt-3 flex items-center gap-2 flex-wrap">
+        {/* Add documents button */}
         <button
           onClick={() => setShowDocModal(true)}
-          className="w-9 h-9 rounded-xl bg-muted/60 hover:bg-muted flex items-center justify-center transition-colors"
+          className="w-8 h-8 rounded-full bg-muted/60 hover:bg-muted flex items-center justify-center transition-colors"
           title="Add documents"
         >
-          <Plus className="w-4 h-4 text-muted-foreground" />
+          <Plus className="w-4 h-4 text-muted-foreground stroke-[2.5]" />
         </button>
 
+        {/* Document badges */}
         <AnimatePresence>
           {documents.map((doc) => (
             <motion.div
               key={doc.id}
-              initial={{ opacity: 0, scale: 0.9 }}
+              initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              className="flex items-center gap-2 px-3 py-2 bg-muted/60 rounded-xl group"
+              exit={{ opacity: 0, scale: 0.8 }}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-muted/80 rounded-full group"
             >
-              <span className="text-sm text-foreground">{doc.aiTitle}</span>
+              <span className="text-sm text-foreground font-medium">{doc.aiTitle}</span>
               <button
                 onClick={() => removeDocument(doc.id)}
-                className="w-4 h-4 rounded-full hover:bg-muted-foreground/20 flex items-center justify-center opacity-50 group-hover:opacity-100 transition-opacity"
+                className="w-4 h-4 rounded-full hover:bg-muted-foreground/20 flex items-center justify-center opacity-60 group-hover:opacity-100 transition-opacity"
               >
                 <X className="w-3 h-3 text-muted-foreground" />
               </button>
@@ -141,8 +144,9 @@ export function SearchBar({ onSearch, isProcessing = false, placeholder }: Searc
         </AnimatePresence>
       </div>
 
+      {/* Documents attached indicator */}
       {documents.length > 0 && (
-        <p className="mt-2.5 text-xs text-muted-foreground">
+        <p className="mt-2 text-xs text-muted-foreground">
           {documents.length} document{documents.length !== 1 ? 's' : ''} attached
         </p>
       )}
@@ -151,14 +155,14 @@ export function SearchBar({ onSearch, isProcessing = false, placeholder }: Searc
       <AnimatePresence>
         {isFocused && !query && (
           <motion.div
-            initial={{ opacity: 0, y: -8 }}
+            initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
+            exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
-            className="absolute top-full left-0 right-0 mt-3 bg-card rounded-2xl shadow-lg overflow-hidden z-50 border border-border"
+            className="absolute top-full left-0 right-0 mt-2 bg-card rounded-2xl shadow-lg overflow-hidden z-50"
           >
-            <div className="p-3">
-              <p className="text-xs text-muted-foreground uppercase tracking-wider mb-2 px-2.5">
+            <div className="p-2.5">
+              <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1.5 px-2 font-medium">
                 Suggestions
               </p>
               <div className="space-y-0.5">
@@ -166,7 +170,7 @@ export function SearchBar({ onSearch, isProcessing = false, placeholder }: Searc
                   <button
                     key={i}
                     onClick={() => handleSuggestionClick(suggestion)}
-                    className="w-full text-left px-3 py-2.5 text-sm text-foreground rounded-xl hover:bg-muted/60 transition-colors"
+                    className="w-full text-left px-2.5 py-2 text-sm text-foreground rounded-xl hover:bg-muted transition-colors font-medium"
                   >
                     {suggestion}
                   </button>
@@ -177,6 +181,7 @@ export function SearchBar({ onSearch, isProcessing = false, placeholder }: Searc
         )}
       </AnimatePresence>
 
+      {/* Document modal */}
       <AddDocumentsModal
         open={showDocModal}
         onOpenChange={setShowDocModal}

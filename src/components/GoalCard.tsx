@@ -12,12 +12,12 @@ const statusConfig = {
   'on-track': {
     icon: CheckCircle,
     label: 'On Track',
-    className: 'text-foreground bg-muted',
+    className: 'text-[hsl(145,60%,40%)] bg-[hsl(145,60%,95%)]',
   },
   'at-risk': {
     icon: AlertTriangle,
     label: 'At Risk',
-    className: 'text-foreground bg-muted',
+    className: 'text-[hsl(0,70%,50%)] bg-[hsl(0,70%,95%)]',
   },
   'off-track': {
     icon: AlertTriangle,
@@ -32,25 +32,25 @@ export function GoalCard({ goal, index, onClick }: GoalCardProps) {
 
   return (
     <motion.article
-      initial={{ opacity: 0, y: 16 }}
+      initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: index * 0.08 }}
+      transition={{ duration: 0.4, delay: index * 0.1 }}
       onClick={onClick}
       className="insight-card cursor-pointer group flex flex-col"
     >
-      {/* Header */}
-      <div className="flex items-start justify-between gap-4 mb-6">
-        <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium ${status.className}`}>
-          <StatusIcon className="w-3.5 h-3.5" />
+      {/* Header with status badge and percentage */}
+      <div className="flex items-start justify-between gap-3 mb-5">
+        <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold ${status.className}`}>
+          <StatusIcon className="w-3.5 h-3.5 stroke-[2.5]" />
           {status.label}
         </div>
-        <span className="text-3xl font-semibold text-foreground tracking-tight">
+        <span className="text-3xl font-semibold text-foreground">
           {goal.progress}%
         </span>
       </div>
       
       {/* Title */}
-      <h3 className="text-lg font-medium text-foreground mb-2 leading-snug">
+      <h3 className="text-lg font-semibold text-foreground mb-2 leading-tight">
         {goal.title}
       </h3>
       
@@ -59,8 +59,8 @@ export function GoalCard({ goal, index, onClick }: GoalCardProps) {
         {goal.description}
       </p>
       
-      {/* Progress bar - refined */}
-      <div className="h-1.5 bg-muted rounded-full overflow-hidden mt-auto">
+      {/* Progress bar - thick dark style */}
+      <div className="h-2.5 bg-muted rounded-full overflow-hidden mt-auto">
         <motion.div
           initial={{ width: 0 }}
           animate={{ width: `${goal.progress}%` }}
