@@ -60,7 +60,7 @@ export function GoalCard({ goal, index, onClick }: GoalCardProps) {
       </p>
       
       {/* Progress bar - thick dark style */}
-      <div className="h-2.5 bg-muted rounded-full overflow-hidden mt-auto">
+      <div className="h-1.5 bg-muted rounded-full overflow-hidden mt-auto">
         <motion.div
           initial={{ width: 0 }}
           animate={{ width: `${goal.progress}%` }}
