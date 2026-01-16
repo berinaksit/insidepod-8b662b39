@@ -6,13 +6,13 @@ import { AgentsView } from '@/views/AgentsView';
 import { SettingsView } from '@/views/SettingsView';
 import { CreateAgentView } from '@/views/CreateAgentView';
 import { AnimatePresence, motion } from 'framer-motion';
-import { DocumentsProvider, useDocuments } from '@/contexts/DocumentsContext';
+import { useDocuments } from '@/contexts/DocumentsContext';
 import { GlobalUploadModal } from '@/components/GlobalUploadModal';
 import { FirstDocumentModal } from '@/components/FirstDocumentModal';
 
 export type View = 'home' | 'goals' | 'agents' | 'dashboard' | 'settings' | 'create-agent';
 
-function IndexContent() {
+const Index = () => {
   const [currentView, setCurrentView] = useState<View>('home');
   const { 
     showUploadModal, 
@@ -89,14 +89,6 @@ function IndexContent() {
         onLater={handleFirstDocumentLater}
       />
     </div>
-  );
-}
-
-const Index = () => {
-  return (
-    <DocumentsProvider>
-      <IndexContent />
-    </DocumentsProvider>
   );
 };
 
