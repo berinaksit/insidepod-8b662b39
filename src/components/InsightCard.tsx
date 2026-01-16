@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { Insight } from '@/types';
 import { formatDistanceToNow } from 'date-fns';
 
@@ -25,6 +26,15 @@ export function InsightCard({
   index,
   onClick
 }: InsightCardProps) {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    if (onClick) {
+      onClick();
+    }
+    navigate(`/insight/${insight.id}`);
+  };
+
   return (
     <motion.article
       initial={{ opacity: 0, y: 20 }}
@@ -35,7 +45,7 @@ export function InsightCard({
         ease: [0.4, 0, 0.2, 1]
       }}
       className="insight-card cursor-pointer group flex flex-col"
-      onClick={onClick}
+      onClick={handleClick}
     >
       {/* Header badges */}
       <div className="flex items-center justify-between gap-3 mb-4">
