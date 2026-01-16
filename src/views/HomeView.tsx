@@ -197,8 +197,8 @@ export function HomeView({
         <div className="grid gap-3.5 md:grid-cols-3 mb-5">
           <div className="insight-card">
             <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-xl bg-muted flex items-center justify-center">
-                <Bot className="w-4.5 h-4.5 text-muted-foreground stroke-[1.75]" />
+              <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center">
+                <Bot className="w-5 h-5 text-muted-foreground stroke-[1.75]" />
               </div>
               <div>
                 <p className="text-2xl font-semibold text-foreground">{agents.filter(a => a.isActive).length}</p>
@@ -208,8 +208,8 @@ export function HomeView({
           </div>
           <div className="insight-card">
             <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-xl bg-muted flex items-center justify-center">
-                <FileUp className="w-4.5 h-4.5 text-muted-foreground stroke-[1.75]" />
+              <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center">
+                <FileUp className="w-5 h-5 text-muted-foreground stroke-[1.75]" />
               </div>
               <div>
                 <p className="text-2xl font-semibold text-foreground">
@@ -221,8 +221,8 @@ export function HomeView({
           </div>
           <div className="insight-card">
             <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-xl bg-[hsl(145,60%,90%)] flex items-center justify-center">
-                <RefreshCw className="w-4.5 h-4.5 text-[hsl(145,60%,40%)] stroke-[1.75]" />
+              <div className="w-12 h-12 rounded-xl bg-[hsl(145,60%,90%)] flex items-center justify-center">
+                <RefreshCw className="w-5 h-5 text-[hsl(145,60%,40%)] stroke-[1.75]" />
               </div>
               <div>
                 <p className="text-2xl font-semibold text-foreground">
