@@ -83,10 +83,10 @@
     --transition-calm: 300ms cubic-bezier(0.4, 0, 0.2, 1);
     --transition-subtle: 200ms cubic-bezier(0.4, 0, 0.2, 1);
 
-    /* Highlight purple for featured cards */
-    --highlight: 270 70% 70%;
-    --highlight-foreground: 270 60% 15%;
-    --highlight-surface: 270 60% 85%;
+    /* Highlight for featured cards - dark theme */
+    --highlight: 0 0% 25%;
+    --highlight-foreground: 0 0% 100%;
+    --highlight-surface: 0 0% 12%;
   }
 
   .dark {
@@ -136,10 +136,10 @@
     --sidebar-border: 220 15% 18%;
     --sidebar-ring: 150 30% 55%;
 
-    /* Highlight purple for featured cards - dark mode */
-    --highlight: 270 60% 65%;
-    --highlight-foreground: 270 60% 95%;
-    --highlight-surface: 270 40% 35%;
+    /* Highlight for featured cards - dark mode */
+    --highlight: 0 0% 30%;
+    --highlight-foreground: 0 0% 100%;
+    --highlight-surface: 0 0% 15%;
   }
 }
 
