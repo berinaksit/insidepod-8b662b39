@@ -123,14 +123,17 @@ export default {
   			'18': '4.5rem',
   			'22': '5.5rem'
   		},
-  		fontSize: {
-  			'2xs': [
-  				'0.625rem',
-  				{
-  					lineHeight: '0.75rem'
-  				}
-  			]
-  		},
+		fontSize: {
+			'2xs': ['0.625rem', { lineHeight: '1rem' }],
+			'xs': ['0.75rem', { lineHeight: '1.25rem' }],
+			'sm': ['0.875rem', { lineHeight: '1.5rem' }],
+			'base': ['1rem', { lineHeight: '1.65rem' }],
+			'lg': ['1.125rem', { lineHeight: '1.5rem' }],
+			'xl': ['1.25rem', { lineHeight: '1.4rem' }],
+			'2xl': ['1.5rem', { lineHeight: '1.35rem' }],
+			'3xl': ['1.875rem', { lineHeight: '1.25rem' }],
+			'4xl': ['2.25rem', { lineHeight: '1.2rem' }],
+		},
   		keyframes: {
   			'accordion-down': {
   				from: {

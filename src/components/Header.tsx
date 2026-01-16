@@ -16,30 +16,30 @@ interface HeaderProps {
 export function Header({ onSettingsClick, onLogoClick }: HeaderProps) {
   return (
     <motion.header
-      initial={{ opacity: 0, y: -20 }}
+      initial={{ opacity: 0, y: -16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="flex items-center justify-between px-6 py-4 border-b border-border/50"
+      className="flex items-center justify-between px-6 lg:px-8 py-5"
     >
       <button 
         onClick={onLogoClick}
-        className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+        className="flex items-center gap-2.5 hover:opacity-80 transition-opacity"
       >
-        <div className="w-5 h-5 rounded-xl flex items-center justify-center bg-slate-950">
-          <span className="text-primary-foreground font-display text-lg"></span>
+        <div className="w-7 h-7 rounded-lg flex items-center justify-center bg-foreground">
+          <span className="text-background font-semibold text-sm">P</span>
         </div>
-        <span className="font-display text-xl text-foreground">Inside Pōd</span>
+        <span className="text-lg font-semibold text-foreground tracking-tight">Inside Pōd</span>
       </button>
 
-      <div className="flex items-center gap-2">
-        <button className="p-2.5 rounded-xl hover:bg-muted transition-colors relative">
+      <div className="flex items-center gap-1">
+        <button className="p-3 rounded-xl hover:bg-muted/60 transition-colors relative">
           <Bell className="w-5 h-5 text-muted-foreground" />
-          <span className="absolute top-2 right-2 w-2 h-2 bg-secondary rounded-full" />
+          <span className="absolute top-2.5 right-2.5 w-1.5 h-1.5 bg-foreground rounded-full" />
         </button>
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button className="p-2.5 rounded-xl hover:bg-muted transition-colors">
+            <button className="p-3 rounded-xl hover:bg-muted/60 transition-colors">
               <User className="w-5 h-5 text-muted-foreground" />
             </button>
           </DropdownMenuTrigger>
