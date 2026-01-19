@@ -2,27 +2,101 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Insight } from '@/types';
 import { formatDistanceToNow } from 'date-fns';
-import { FileText, TrendingUp, AlertCircle, Sparkles } from 'lucide-react';
+import { 
+  FileText, 
+  TrendingUp, 
+  AlertTriangle, 
+  Sparkles, 
+  Activity, 
+  Target, 
+  Lightbulb, 
+  BarChart3,
+  Users,
+  Zap,
+  LineChart,
+  PieChart,
+  MessageSquare,
+  Clock,
+  type LucideIcon
+} from 'lucide-react';
 
 interface InsightCardProps {
   insight: Insight;
   index: number;
+  usedIcons: Set<string>;
+  onIconUsed: (iconName: string) => void;
   onClick?: () => void;
 }
 
-const typeIcons: Record<string, React.ComponentType<{ className?: string }>> = {
-  pulse: TrendingUp,
-  insight: Sparkles,
-  signal: AlertCircle
+// Agent type to icon mapping
+const agentIcons: Record<string, { icon: LucideIcon; name: string }> = {
+  'risk-scanner': { icon: AlertTriangle, name: 'AlertTriangle' },
+  'retention-monitor': { icon: Activity, name: 'Activity' },
+  'adoption-tracker': { icon: Target, name: 'Target' },
+  'insight-synthesizer': { icon: Lightbulb, name: 'Lightbulb' },
+  'trend-summarizer': { icon: TrendingUp, name: 'TrendingUp' },
+};
+
+// Content-relevant fallback icons (used when agent icon is already displayed)
+const contentFallbackIcons: { icon: LucideIcon; name: string }[] = [
+  { icon: BarChart3, name: 'BarChart3' },
+  { icon: Users, name: 'Users' },
+  { icon: Zap, name: 'Zap' },
+  { icon: LineChart, name: 'LineChart' },
+  { icon: PieChart, name: 'PieChart' },
+  { icon: MessageSquare, name: 'MessageSquare' },
+  { icon: Clock, name: 'Clock' },
+  { icon: Sparkles, name: 'Sparkles' },
+  { icon: FileText, name: 'FileText' },
+];
+
+// Helper to get agent type from source id
+const getAgentType = (sourceId: string): string | null => {
+  const agentTypes: Record<string, string> = {
+    'preset-a1': 'risk-scanner',
+    'preset-a2': 'retention-monitor',
+    'preset-a3': 'adoption-tracker',
+    'preset-a4': 'insight-synthesizer',
+    'preset-a5': 'trend-summarizer',
+  };
+  return agentTypes[sourceId] || null;
 };
 
 export function InsightCard({
   insight,
   index,
+  usedIcons,
+  onIconUsed,
   onClick
 }: InsightCardProps) {
   const navigate = useNavigate();
-  const Icon = typeIcons[insight.type] || FileText;
+  
+  // Get the appropriate icon for this card
+  const getIcon = (): { Icon: LucideIcon; iconName: string } => {
+    const agentType = getAgentType(insight.source.id);
+    
+    // If agent has a specific icon and it hasn't been used yet
+    if (agentType && agentIcons[agentType] && !usedIcons.has(agentIcons[agentType].name)) {
+      return { Icon: agentIcons[agentType].icon, iconName: agentIcons[agentType].name };
+    }
+    
+    // Find a content-relevant fallback that hasn't been used
+    for (const fallback of contentFallbackIcons) {
+      if (!usedIcons.has(fallback.name)) {
+        return { Icon: fallback.icon, iconName: fallback.name };
+      }
+    }
+    
+    // Last resort: use FileText
+    return { Icon: FileText, iconName: 'FileText-fallback' };
+  };
+
+  const { Icon, iconName } = getIcon();
+  
+  // Register icon as used on mount
+  if (!usedIcons.has(iconName)) {
+    onIconUsed(iconName);
+  }
 
   // Create varied layouts based on index
   const layoutVariant = index % 4;
