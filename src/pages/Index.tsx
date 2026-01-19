@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Header } from '@/components/Header';
 import { HomeView } from '@/views/HomeView';
-import { GoalsView } from '@/views/GoalsView';
 import { AgentsView } from '@/views/AgentsView';
 import { SettingsView } from '@/views/SettingsView';
 import { CreateAgentView } from '@/views/CreateAgentView';
@@ -10,7 +9,7 @@ import { useDocuments } from '@/contexts/DocumentsContext';
 import { GlobalUploadModal } from '@/components/GlobalUploadModal';
 import { FirstDocumentModal } from '@/components/FirstDocumentModal';
 
-export type View = 'home' | 'goals' | 'agents' | 'dashboard' | 'settings' | 'create-agent';
+export type View = 'home' | 'agents' | 'dashboard' | 'settings' | 'create-agent';
 
 const Index = () => {
   const [currentView, setCurrentView] = useState<View>('home');
@@ -33,8 +32,6 @@ const Index = () => {
   const renderView = () => {
     switch (currentView) {
       case 'home':
-        return <HomeView currentTab={currentView} onTabChange={setCurrentView} />;
-      case 'goals':
         return <HomeView currentTab={currentView} onTabChange={setCurrentView} />;
       case 'agents':
         return <HomeView currentTab={currentView} onTabChange={setCurrentView} />;

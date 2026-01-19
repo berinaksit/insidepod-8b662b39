@@ -68,15 +68,6 @@ export interface Evidence {
   metadata?: Record<string, unknown>;
 }
 
-export interface Goal {
-  id: string;
-  title: string;
-  description: string;
-  status: 'on-track' | 'at-risk' | 'off-track';
-  progress: number;
-  signals: Signal[];
-  insights: Insight[];
-}
 
 export interface Signal {
   id: string;

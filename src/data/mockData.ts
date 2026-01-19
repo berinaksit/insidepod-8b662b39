@@ -1,4 +1,4 @@
-import { Insight, Agent, Goal, AnalysisView } from '@/types';
+import { Insight, Agent, AnalysisView } from '@/types';
 
 export const mockInsights: Insight[] = [
   {
@@ -148,35 +148,6 @@ export const mockAgents: Agent[] = [
   },
 ];
 
-export const mockGoals: Goal[] = [
-  {
-    id: 'g1',
-    title: 'Improve onboarding completion to 85%',
-    description: 'Increase the percentage of new users who complete the full onboarding flow',
-    status: 'at-risk',
-    progress: 62,
-    signals: [],
-    insights: [],
-  },
-  {
-    id: 'g2',
-    title: 'Reduce support ticket volume by 20%',
-    description: 'Decrease incoming support requests through improved UX and self-serve resources',
-    status: 'on-track',
-    progress: 78,
-    signals: [],
-    insights: [],
-  },
-  {
-    id: 'g3',
-    title: 'Launch mobile v2 with feature parity',
-    description: 'Ship redesigned mobile app with full feature parity to desktop',
-    status: 'on-track',
-    progress: 91,
-    signals: [],
-    insights: [],
-  },
-];
 
 export const mockAnalysisViews: AnalysisView[] = [
   {
