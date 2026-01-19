@@ -1,4 +1,4 @@
-import { useState } from 'react';
+importimport { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -17,7 +17,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { useDocuments } from '@/contexts/DocumentsContext';
 
 type GoalType = 'KPI' | 'OKR' | 'Success Metric' | 'Custom';
 
@@ -27,12 +26,35 @@ interface SimpleGoal {
   type: GoalType;
 }
 
+const STORAGE_KEY = 'insidepod_goals_v1';
+
 export function GoalsView() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [title, setTitle] = useState('');
   const [type, setType] = useState<GoalType>('KPI');
   const [goals, setGoals] = useState<SimpleGoal[]>([]);
   const [error, setError] = useState('');
+
+  // Hydrate once on load
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return;
+      const parsed = JSON.parse(raw) as SimpleGoal[];
+      if (Array.isArray(parsed)) setGoals(parsed);
+    } catch {
+      // ignore bad localStorage
+    }
+  }, []);
+
+  // Persist on change
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(goals));
+    } catch {
+      // ignore storage errors
+    }
+  }, [goals]);
 
   const handleCreate = () => {
     if (!title.trim()) {
@@ -46,7 +68,7 @@ export function GoalsView() {
       type,
     };
 
-    setGoals(prev => [...prev, newGoal]);
+    setGoals(prev => [newGoal, ...prev]);
     setTitle('');
     setType('KPI');
     setError('');
@@ -62,7 +84,6 @@ export function GoalsView() {
 
   return (
     <div className="min-h-full px-6 py-8">
-      {/* Header with Add Goal button */}
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="font-display text-2xl text-foreground mb-1">Goals</h1>
@@ -74,8 +95,18 @@ export function GoalsView() {
         </Button>
       </div>
 
-      {/* Goal Cards Grid */}
-      {goals.length > 0 && (
+      {goals.length === 0 ? (
+        <div className="border border-border rounded-xl p-8 bg-card">
+          <p className="text-foreground font-medium mb-1">No goals yet</p>
+          <p className="text-sm text-muted-foreground mb-4">
+            Add a goal to start tracking outcomes over time.
+          </p>
+          <Button onClick={() => setIsModalOpen(true)}>
+            <Plus className="w-4 h-4 mr-2" />
+            Add your first goal
+          </Button>
+        </div>
+      ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {goals.map((goal, index) => (
             <motion.div
@@ -96,12 +127,12 @@ export function GoalsView() {
         </div>
       )}
 
-      {/* Create Goal Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Create Goal</DialogTitle>
           </DialogHeader>
+
           <div className="space-y-4 py-4">
             <div className="space-y-2">
               <Label htmlFor="title">Goal title *</Label>
@@ -116,9 +147,13 @@ export function GoalsView() {
               />
               {error && <p className="text-sm text-destructive">{error}</p>}
             </div>
+
             <div className="space-y-2">
-              <Label htmlFor="type">Goal type</Label>
-              <Select value={type} onValueChange={(value: GoalType) => setType(value)}>
+              <Label>Goal type</Label>
+              <Select
+                value={type}
+                onValueChange={(value) => setType(value as GoalType)}
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="Select type" />
                 </SelectTrigger>
@@ -131,13 +166,12 @@ export function GoalsView() {
               </Select>
             </div>
           </div>
+
           <div className="flex justify-end gap-3">
             <Button variant="outline" onClick={handleCancel}>
               Cancel
             </Button>
-            <Button onClick={handleCreate}>
-              Create
-            </Button>
+            <Button onClick={handleCreate}>Create</Button>
           </div>
         </DialogContent>
       </Dialog>
