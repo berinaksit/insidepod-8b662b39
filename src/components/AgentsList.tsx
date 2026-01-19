@@ -77,9 +77,9 @@ export function AgentsList({ agents, onAgentClick }: AgentsListProps) {
                           : 'bg-muted group-hover:bg-muted/80'
                 }`}>
                   {isRunning && !isInactive ? (
-                    <Loader2 className="w-5 h-5 text-emerald-500 animate-spin" strokeWidth={1.5} />
+                    <Loader2 className="w-6 h-6 text-emerald-500 animate-spin" strokeWidth={1.5} />
                   ) : (
-                    <Icon className={`w-5 h-5 ${
+                    <Icon className={`w-6 h-6 ${
                       isInactive
                         ? 'text-muted-foreground/50'
                         : isCustom

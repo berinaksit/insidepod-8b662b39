@@ -33,7 +33,7 @@ export function AgentsView() {
         <div className="bg-card border border-border/30 rounded-2xl p-6">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center flex-shrink-0">
-              <Bot className="w-5 h-5 text-muted-foreground" strokeWidth={1.5} />
+              <Bot className="w-6 h-6 text-muted-foreground" strokeWidth={1.5} />
             </div>
             <div>
               <p className="text-3xl font-bold text-foreground leading-none">{mockAgents.length}</p>
@@ -45,7 +45,7 @@ export function AgentsView() {
         <div className="bg-card border border-border/30 rounded-2xl p-6">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center flex-shrink-0">
-              <FileText className="w-5 h-5 text-muted-foreground" strokeWidth={1.5} />
+              <FileText className="w-6 h-6 text-muted-foreground" strokeWidth={1.5} />
             </div>
             <div>
               <p className="text-3xl font-bold text-foreground leading-none">
@@ -59,7 +59,7 @@ export function AgentsView() {
         <div className="bg-card border border-border/30 rounded-2xl p-6">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-xl bg-emerald-100 dark:bg-emerald-950 flex items-center justify-center flex-shrink-0">
-              <RefreshCw className="w-5 h-5 text-emerald-500" strokeWidth={1.5} />
+              <RefreshCw className="w-6 h-6 text-emerald-500" strokeWidth={1.5} />
             </div>
             <div>
               <p className="text-3xl font-bold text-foreground leading-none">
