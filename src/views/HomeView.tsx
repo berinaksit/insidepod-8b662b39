@@ -8,7 +8,7 @@ import { EditAgentModal } from '@/components/EditAgentModal';
 import { mockInsights } from '@/data/mockData';
 import { useDocuments } from '@/contexts/DocumentsContext';
 import { Agent } from '@/types';
-import { Sparkles, Bot, Plus, LayoutDashboard, CircleDot, FileText, Link2, Code2, FileUp, Scan, Calendar, Activity, MessageSquare, TrendingUp, MonitorCheck, Search, RefreshCw, Upload } from 'lucide-react';
+import { Sparkles, Target, Bot, Plus, LayoutDashboard, CircleDot, FileText, Link2, Code2, FileUp, Scan, Calendar, Activity, MessageSquare, TrendingUp, MonitorCheck, Search, RefreshCw, Upload } from 'lucide-react';
 import { View } from '@/pages/Index';
 
 interface HomeViewProps {
@@ -52,6 +52,10 @@ export function HomeView({
     id: 'home' as View,
     label: "Today's Insights",
     icon: Sparkles
+  }, {
+    id: 'goals' as View,
+    label: 'Goals',
+    icon: Target
   }, {
     id: 'agents' as View,
     label: 'Agents',
