@@ -5,25 +5,21 @@ import { GoalsView } from '@/views/GoalsView';
 import { AgentsView } from '@/views/AgentsView';
 import { SettingsView } from '@/views/SettingsView';
 import { CreateAgentView } from '@/views/CreateAgentView';
-import { ProjectSelectionView } from '@/views/ProjectSelectionView';
-import { ProjectWorkspaceView } from '@/views/ProjectWorkspaceView';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useDocuments } from '@/contexts/DocumentsContext';
-import { useProjects } from '@/contexts/ProjectsContext';
 import { GlobalUploadModal } from '@/components/GlobalUploadModal';
 import { FirstDocumentModal } from '@/components/FirstDocumentModal';
 
-export type View = 'home' | 'goals' | 'agents' | 'dashboard' | 'settings' | 'create-agent' | 'projects' | 'project-workspace';
+export type View = 'home' | 'goals' | 'agents' | 'dashboard' | 'settings' | 'create-agent';
 
 const Index = () => {
-  const [currentView, setCurrentView] = useState<View>('projects');
+  const [currentView, setCurrentView] = useState<View>('home');
   const { 
     showUploadModal, 
     setShowUploadModal, 
     showFirstDocumentModal, 
     setShowFirstDocumentModal 
   } = useDocuments();
-  const { activeProjectId, setActiveProjectId } = useProjects();
 
   const handleFirstDocumentCreateAgent = () => {
     setShowFirstDocumentModal(false);
@@ -34,36 +30,8 @@ const Index = () => {
     setShowFirstDocumentModal(false);
   };
 
-  const handleProjectSelect = (projectId: string) => {
-    setActiveProjectId(projectId);
-    setCurrentView('project-workspace');
-  };
-
-  const handleBackToProjects = () => {
-    setActiveProjectId(null);
-    setCurrentView('projects');
-  };
-
-  const handleLogoClick = () => {
-    // If in a project, go to project workspace; otherwise go to project selection
-    if (activeProjectId) {
-      setCurrentView('home');
-    } else {
-      setCurrentView('projects');
-    }
-  };
-
   const renderView = () => {
-    // If no project is active, show project selection (except for settings)
-    if (!activeProjectId && currentView !== 'settings') {
-      return <ProjectSelectionView onProjectSelect={handleProjectSelect} />;
-    }
-
     switch (currentView) {
-      case 'projects':
-        return <ProjectSelectionView onProjectSelect={handleProjectSelect} />;
-      case 'project-workspace':
-        return <ProjectWorkspaceView onBack={handleBackToProjects} />;
       case 'home':
         return <HomeView currentTab={currentView} onTabChange={setCurrentView} />;
       case 'goals':
@@ -84,23 +52,18 @@ const Index = () => {
     }
   };
 
-  // Show minimal header for project selection
-  const isInProjectSelection = !activeProjectId && currentView !== 'settings';
-
   return (
     <div className="flex min-h-screen bg-background">
       <div className="flex-1 flex flex-col min-h-screen">
         <Header 
           onSettingsClick={() => setCurrentView('settings')} 
-          onLogoClick={handleLogoClick}
-          showProjectSwitch={!!activeProjectId}
-          onProjectSwitch={handleBackToProjects}
+          onLogoClick={() => setCurrentView('home')}
         />
         
         <main className="flex-1 overflow-auto px-[150px]">
           <AnimatePresence mode="wait">
             <motion.div
-              key={currentView + (activeProjectId || '')}
+              key={currentView}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}

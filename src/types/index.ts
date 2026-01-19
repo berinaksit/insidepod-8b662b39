@@ -92,22 +92,3 @@ export interface SearchQuery {
   timestamp: Date;
   response?: AnalysisView;
 }
-
-// Project Types
-export interface Project {
-  id: string;
-  name: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export interface ProjectFile {
-  id: string;
-  projectId: string;
-  name: string;
-  type: string;
-  size?: number;
-  uploadedAt: Date;
-  aiTitle?: string;
-  contentText?: string;
-}
