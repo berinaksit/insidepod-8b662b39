@@ -77,9 +77,9 @@ export function AgentsList({ agents, onAgentClick }: AgentsListProps) {
                           : 'bg-muted group-hover:bg-muted/80'
                 }`}>
                   {isRunning && !isInactive ? (
-                    <Loader2 className="w-5 h-5 text-emerald-500 animate-spin" strokeWidth={1.5} />
+                    <Loader2 className="w-5 h-5 text-emerald-500 animate-spin stroke-[1.75]" />
                   ) : (
-                    <Icon className={`w-5 h-5 ${
+                    <Icon className={`w-5 h-5 stroke-[1.75] ${
                       isInactive
                         ? 'text-muted-foreground/50'
                         : isCustom
@@ -87,7 +87,7 @@ export function AgentsList({ agents, onAgentClick }: AgentsListProps) {
                           : isRiskScanner 
                             ? 'text-white' 
                             : 'text-muted-foreground'
-                    }`} strokeWidth={1.5} />
+                    }`} />
                   )}
                 </div>
                 
