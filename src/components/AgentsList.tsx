@@ -3,11 +3,10 @@ import { Agent } from '@/types';
 import { formatDistanceToNow } from 'date-fns';
 import { 
   Shield, 
-  RefreshCw, 
+  Activity, 
   TrendingUp, 
   Sparkles, 
   BarChart3,
-  Loader2,
   Wand2
 } from 'lucide-react';
 
@@ -18,7 +17,7 @@ interface AgentsListProps {
 
 const agentIcons: Record<string, React.ElementType> = {
   'risk-scanner': Shield,
-  'retention-monitor': RefreshCw,
+  'retention-monitor': Activity,
   'adoption-tracker': TrendingUp,
   'insight-synthesizer': Sparkles,
   'trend-summarizer': BarChart3,
@@ -45,8 +44,6 @@ export function AgentsList({ agents, onAgentClick }: AgentsListProps) {
     <div className="flex flex-col space-y-8">
       {sortedAgents.map((agent, index) => {
         const Icon = agentIcons[agent.type] || Wand2;
-        const isRiskScanner = agent.type === 'risk-scanner';
-        const isRunning = agent.status === 'running';
         const isInactive = !agent.isActive;
         const isCustom = !agent.isPreset;
         
@@ -68,27 +65,17 @@ export function AgentsList({ agents, onAgentClick }: AgentsListProps) {
                 <div className={`flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center transition-colors ${
                   isInactive
                     ? 'bg-muted/50'
-                    : isRunning 
-                      ? 'bg-emerald-100 dark:bg-emerald-950' 
-                      : isCustom
-                        ? 'bg-violet-100 dark:bg-violet-950 group-hover:bg-violet-200 dark:group-hover:bg-violet-900'
-                        : isRiskScanner 
-                          ? 'bg-blue-600 group-hover:bg-blue-700' 
-                          : 'bg-muted group-hover:bg-muted/80'
+                    : isCustom
+                      ? 'bg-violet-100 dark:bg-violet-950 group-hover:bg-violet-200 dark:group-hover:bg-violet-900'
+                      : 'bg-muted group-hover:bg-muted/80'
                 }`}>
-                  {isRunning && !isInactive ? (
-                    <Loader2 className="w-6 h-6 text-emerald-500 animate-spin" strokeWidth={1.5} />
-                  ) : (
-                    <Icon className={`w-6 h-6 ${
-                      isInactive
-                        ? 'text-muted-foreground/50'
-                        : isCustom
-                          ? 'text-violet-600 dark:text-violet-400'
-                          : isRiskScanner 
-                            ? 'text-white' 
-                            : 'text-muted-foreground'
-                    }`} strokeWidth={1.5} />
-                  )}
+                  <Icon className={`w-6 h-6 ${
+                    isInactive
+                      ? 'text-muted-foreground/50'
+                      : isCustom
+                        ? 'text-violet-600 dark:text-violet-400'
+                        : 'text-muted-foreground'
+                  }`} strokeWidth={1.5} />
                 </div>
                 
                 {/* Content */}
