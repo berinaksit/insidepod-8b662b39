@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate, useParams } from 'react-router-dom';
 import { 
@@ -16,6 +17,7 @@ import {
   Clock,
   ExternalLink
 } from 'lucide-react';
+import AllSuggestedActionsModal from '@/components/AllSuggestedActionsModal';
 import { 
   BarChart, 
   Bar, 
@@ -36,6 +38,7 @@ import { mockInsights } from '@/data/mockData';
 export default function InsightDetailPage() {
   const navigate = useNavigate();
   const { id } = useParams();
+  const [showAllActionsModal, setShowAllActionsModal] = useState(false);
   
   // Find the insight by id
   const insight = mockInsights.find(i => i.id === id) || mockInsights[0];
@@ -102,6 +105,8 @@ export default function InsightDetailPage() {
       detail: 'Based on evidence, simplifying the form could recover 15-20% of lost users.',
       priority: 'high' as const,
       impact: '+15% completion',
+      problem: 'Users are abandoning the onboarding flow due to form fatigue. The current 8-field form creates friction and cognitive overload.',
+      solution: 'Reduce required fields from 8 to 3 essential fields (name, email, primary use case). Move optional fields to profile settings post-activation.',
     },
     {
       icon: AlertTriangle,
@@ -109,6 +114,8 @@ export default function InsightDetailPage() {
       detail: "Users don't know how many steps remain. Showing progress reduces anxiety.",
       priority: 'medium' as const,
       impact: '+8% retention',
+      problem: 'Users abandon mid-flow because they cannot estimate remaining effort. Uncertainty causes dropout.',
+      solution: 'Implement a clear step indicator (e.g., "Step 2 of 4") with visual progress bar at the top of each onboarding screen.',
     },
     {
       icon: Target,
@@ -116,6 +123,8 @@ export default function InsightDetailPage() {
       detail: 'Pre-fill common choices based on user segment to reduce cognitive load.',
       priority: 'medium' as const,
       impact: '-30% time on step',
+      problem: 'Users spend excessive time making decisions on fields that could be pre-populated based on their segment or signup source.',
+      solution: 'Use signup context (referral source, company size) to pre-fill industry, team size, and use case fields with intelligent defaults.',
     },
     {
       icon: CheckCircle2,
@@ -123,6 +132,26 @@ export default function InsightDetailPage() {
       detail: 'Show only essential fields initially, reveal others as needed.',
       priority: 'low' as const,
       impact: 'Validate hypothesis',
+      problem: 'We hypothesize that showing all fields at once overwhelms users, but need data to confirm.',
+      solution: 'Run a 2-week A/B test comparing current layout vs. progressive disclosure (2 fields visible, expand on demand).',
+    },
+    {
+      icon: Users,
+      title: 'Optimize mobile form layout',
+      detail: 'Mobile users drop off at 2x the rate of desktop. Form fields need mobile-first redesign.',
+      priority: 'high' as const,
+      impact: '+12% mobile completion',
+      problem: 'Form fields are difficult to interact with on smaller screens, causing mobile users to abandon at twice the desktop rate.',
+      solution: 'Redesign form with larger touch targets, single-column layout, and native mobile input types (date pickers, dropdowns).',
+    },
+    {
+      icon: Clock,
+      title: 'Add save & continue later',
+      detail: 'Allow users to save progress and return via email link to complete onboarding.',
+      priority: 'low' as const,
+      impact: '+5% recovered users',
+      problem: 'Users who are interrupted during onboarding have no way to resume, forcing them to restart from scratch.',
+      solution: 'Implement session persistence with email-based magic link to resume onboarding from the last completed step.',
     },
   ];
 
@@ -514,9 +543,17 @@ export default function InsightDetailPage() {
           transition={{ duration: 0.4, delay: 0.5 }}
           className="space-y-4 pb-10"
         >
-          <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
-            Suggested actions
-          </h2>
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
+              Suggested actions
+            </h2>
+            <button
+              onClick={() => setShowAllActionsModal(true)}
+              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
+              View all
+            </button>
+          </div>
           <div className="grid gap-4 md:grid-cols-2">
             {suggestedActions.map((action, i) => {
               const Icon = action.icon;
@@ -555,6 +592,14 @@ export default function InsightDetailPage() {
           </div>
         </motion.section>
       </main>
+
+      {/* All Suggested Actions Modal */}
+      <AllSuggestedActionsModal
+        isOpen={showAllActionsModal}
+        onClose={() => setShowAllActionsModal(false)}
+        actions={suggestedActions}
+        insightTitle={insight.title}
+      />
     </div>
   );
 }
