@@ -1,180 +1,79 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { GoalCard } from '@/components/GoalCard';
+import { GoalsEmptyState } from '@/components/GoalsEmptyState';
+import { CreateGoalSheet } from '@/components/CreateGoalSheet';
+import { useDocuments } from '@/contexts/DocumentsContext';
 import { Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-
-type GoalType = 'KPI' | 'OKR' | 'Success Metric' | 'Custom';
-
-interface SimpleGoal {
-  id: string;
-  title: string;
-  type: GoalType;
-}
-
-const STORAGE_KEY = 'insidepod_goals_v1';
 
 export function GoalsView() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [title, setTitle] = useState('');
-  const [type, setType] = useState<GoalType>('KPI');
-  const [goals, setGoals] = useState<SimpleGoal[]>([]);
-  const [error, setError] = useState('');
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const { goals, addGoal } = useDocuments();
 
-  // Hydrate once on load
-  useEffect(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) return;
-      const parsed = JSON.parse(raw) as SimpleGoal[];
-      if (Array.isArray(parsed)) setGoals(parsed);
-    } catch {
-      // ignore bad localStorage
-    }
-  }, []);
-
-  // Persist on change
-  useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(goals));
-    } catch {
-      // ignore storage errors
-    }
-  }, [goals]);
-
-  const handleCreate = () => {
-    if (!title.trim()) {
-      setError('Goal title is required');
-      return;
-    }
-
-    const newGoal: SimpleGoal = {
-      id: `goal-${Date.now()}`,
-      title: title.trim(),
-      type,
-    };
-
-    setGoals(prev => [newGoal, ...prev]);
-    setTitle('');
-    setType('KPI');
-    setError('');
-    setIsModalOpen(false);
+  const handleCreateGoal = (goalData: any) => {
+    addGoal({
+      title: goalData.title,
+      description: `Target: ${goalData.targetValue}${goalData.targetUnit} by ${goalData.endDate?.toLocaleDateString() || 'TBD'}`,
+      progress: 0,
+      status: 'on-track' as const,
+      signals: [],
+      insights: [],
+    });
   };
 
-  const handleCancel = () => {
-    setTitle('');
-    setType('KPI');
-    setError('');
-    setIsModalOpen(false);
-  };
+  if (goals.length === 0) {
+    return (
+      <>
+        <GoalsEmptyState onCreateGoal={() => setIsCreateOpen(true)} />
+        <CreateGoalSheet
+          open={isCreateOpen}
+          onOpenChange={setIsCreateOpen}
+          onSave={handleCreateGoal}
+        />
+      </>
+    );
+  }
 
   return (
     <div className="min-h-full px-6 py-8">
-      <div className="flex items-center justify-between mb-8">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        className="flex items-center justify-between mb-8"
+      >
         <div>
           <h1 className="font-display text-2xl text-foreground mb-1">Goals</h1>
-          <p className="text-muted-foreground">Track your product objectives</p>
+          <p className="text-muted-foreground">
+            Track progress toward your product objectives
+          </p>
         </div>
-        <Button onClick={() => setIsModalOpen(true)}>
-          <Plus className="w-4 h-4 mr-2" />
+        
+        <Button
+          onClick={() => setIsCreateOpen(true)}
+          className="flex items-center gap-2 rounded-xl"
+        >
+          <Plus className="w-4 h-4" />
           Add Goal
         </Button>
+      </motion.div>
+      
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {goals.map((goal, index) => (
+          <GoalCard
+            key={goal.id}
+            goal={goal}
+            index={index}
+          />
+        ))}
       </div>
 
-      {goals.length === 0 ? (
-        <div className="border border-border rounded-xl p-8 bg-card">
-          <p className="text-foreground font-medium mb-1">No goals yet</p>
-          <p className="text-sm text-muted-foreground mb-4">
-            Add a goal to start tracking outcomes over time.
-          </p>
-          <Button onClick={() => setIsModalOpen(true)}>
-            <Plus className="w-4 h-4 mr-2" />
-            Add your first goal
-          </Button>
-        </div>
-      ) : (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {goals.map((goal, index) => (
-            <motion.div
-              key={goal.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: index * 0.05 }}
-              className="p-5 rounded-xl border border-border bg-card"
-            >
-              <span className="inline-block px-2.5 py-1 rounded-md text-xs font-medium bg-muted text-muted-foreground mb-3">
-                {goal.type}
-              </span>
-              <h3 className="text-lg font-semibold text-foreground">
-                {goal.title}
-              </h3>
-            </motion.div>
-          ))}
-        </div>
-      )}
-
-      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Create Goal</DialogTitle>
-          </DialogHeader>
-
-          <div className="space-y-4 py-4">
-            <div className="space-y-2">
-              <Label htmlFor="title">Goal title *</Label>
-              <Input
-                id="title"
-                value={title}
-                onChange={(e) => {
-                  setTitle(e.target.value);
-                  if (error) setError('');
-                }}
-                placeholder="Enter goal title"
-              />
-              {error && <p className="text-sm text-destructive">{error}</p>}
-            </div>
-
-            <div className="space-y-2">
-              <Label>Goal type</Label>
-              <Select
-                value={type}
-                onValueChange={(value) => setType(value as GoalType)}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="KPI">KPI</SelectItem>
-                  <SelectItem value="OKR">OKR</SelectItem>
-                  <SelectItem value="Success Metric">Success Metric</SelectItem>
-                  <SelectItem value="Custom">Custom</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          <div className="flex justify-end gap-3">
-            <Button variant="outline" onClick={handleCancel}>
-              Cancel
-            </Button>
-            <Button onClick={handleCreate}>Create</Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <CreateGoalSheet
+        open={isCreateOpen}
+        onOpenChange={setIsCreateOpen}
+        onSave={handleCreateGoal}
+      />
     </div>
   );
 }

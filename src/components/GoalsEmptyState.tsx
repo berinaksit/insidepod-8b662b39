@@ -1,7 +1,12 @@
 import { motion } from 'framer-motion';
 import { Target, Sparkles, TrendingUp, Zap } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
-export function GoalsEmptyState() {
+interface GoalsEmptyStateProps {
+  onCreateGoal: () => void;
+}
+
+export function GoalsEmptyState({ onCreateGoal }: GoalsEmptyStateProps) {
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -55,7 +60,7 @@ export function GoalsEmptyState() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4, duration: 0.4 }}
-        className="flex flex-wrap justify-center gap-4"
+        className="flex flex-wrap justify-center gap-4 mb-10"
       >
         <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-muted">
           <TrendingUp className="w-4 h-4 text-muted-foreground" />
@@ -69,6 +74,21 @@ export function GoalsEmptyState() {
           <Sparkles className="w-4 h-4 text-muted-foreground" />
           <span className="text-sm text-muted-foreground">Take action</span>
         </div>
+      </motion.div>
+
+      {/* CTA */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5, duration: 0.4 }}
+      >
+        <Button
+          onClick={onCreateGoal}
+          size="lg"
+          className="h-14 px-8 rounded-2xl text-base font-medium"
+        >
+          Create your first goal
+        </Button>
       </motion.div>
     </motion.div>
   );
