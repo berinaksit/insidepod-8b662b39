@@ -2,14 +2,13 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { InsightCard } from '@/components/InsightCard';
 import { SearchBar } from '@/components/SearchBar';
-import { GoalCard } from '@/components/GoalCard';
 import { AgentsList } from '@/components/AgentsList';
 import { EmptyState } from '@/components/EmptyState';
 import { EditAgentModal } from '@/components/EditAgentModal';
 import { mockInsights } from '@/data/mockData';
 import { useDocuments } from '@/contexts/DocumentsContext';
 import { Agent } from '@/types';
-import { Sparkles, Target, Bot, Plus, LayoutDashboard, CircleDot, FileText, Link2, Code2, FileUp, Scan, Calendar, Activity, MessageSquare, TrendingUp, MonitorCheck, Search, RefreshCw, Upload } from 'lucide-react';
+import { Sparkles, Bot, Plus, LayoutDashboard, CircleDot, FileText, Link2, Code2, FileUp, Scan, Calendar, Activity, MessageSquare, TrendingUp, MonitorCheck, Search, RefreshCw, Upload } from 'lucide-react';
 import { View } from '@/pages/Index';
 
 interface HomeViewProps {
@@ -31,8 +30,7 @@ export function HomeView({
     generatedInsights, 
     agents,
     openUploadModal,
-    documents,
-    goals
+    documents
   } = useDocuments();
 
   // Combine mock insights with generated insights
@@ -54,10 +52,6 @@ export function HomeView({
     id: 'home' as View,
     label: "Today's Insights",
     icon: Sparkles
-  }, {
-    id: 'goals' as View,
-    label: 'Goals',
-    icon: Target
   }, {
     id: 'agents' as View,
     label: 'Agents',
@@ -351,27 +345,6 @@ export function HomeView({
             </motion.div>
           )}
 
-          {currentTab === 'goals' && (
-            <motion.div 
-              key="goals" 
-              initial={{ opacity: 0, y: 10 }} 
-              animate={{ opacity: 1, y: 0 }} 
-              exit={{ opacity: 0, y: -10 }}
-            >
-              <div className="flex items-center justify-between mb-5">
-                <p className="text-muted-foreground font-medium">Track progress toward your product objectives</p>
-                <button className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors">
-                  <Plus className="w-4 h-4 stroke-[2.5]" />
-                  Add Goal
-                </button>
-              </div>
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {goals.map((goal, index) => (
-                  <GoalCard key={goal.id} goal={goal} index={index} />
-                ))}
-              </div>
-            </motion.div>
-          )}
 
           {currentTab === 'agents' && (
             <motion.div 
