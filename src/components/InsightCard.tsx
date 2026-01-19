@@ -48,25 +48,28 @@ export function InsightCard({
       onClick={handleClick}
     >
       {/* Header badges */}
-      <div className="flex items-center justify-between gap-3 mb-3">
+      <div className="flex items-center justify-between gap-3 mb-4">
         <div className="flex items-center gap-2">
-          <span className={`px-2.5 py-1 rounded-md text-xs font-medium ${typeBadgeClasses[insight.type]}`}>
+          <span className={`px-2.5 py-1 rounded-md text-xs font-semibold ${typeBadgeClasses[insight.type]}`}>
             {typeLabels[insight.type]}
           </span>
           {insight.isNew && (
             <span className="w-2 h-2 rounded-full bg-foreground" />
           )}
         </div>
+        <span className="px-2.5 py-1 rounded-md text-xs font-medium text-muted-foreground bg-muted/50">
+          {insight.source.name}
+        </span>
       </div>
       
       {/* Title */}
-      <h3 className="text-xl font-semibold mb-4 text-foreground leading-tight">
+      <h3 className="text-lg font-semibold mb-2.5 text-foreground leading-tight">
         {insight.title}
       </h3>
       
-      {/* Description - single sentence */}
-      <p className="text-muted-foreground text-sm mb-6 flex-1 line-clamp-1">
-        {insight.synthesis.split('.')[0]}.
+      {/* Description */}
+      <p className="text-muted-foreground text-sm mb-6 flex-1 leading-relaxed">
+        {insight.synthesis}
       </p>
       
       {/* Footer */}
