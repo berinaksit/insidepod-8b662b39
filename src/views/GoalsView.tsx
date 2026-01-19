@@ -156,7 +156,7 @@ export function GoalsView() {
         
         <Button
           onClick={handleAddGoalClick}
-          className="flex items-center gap-2 rounded-full px-5 h-11 bg-foreground text-background hover:bg-foreground/90 self-start sm:self-auto"
+          className="flex items-center gap-2 rounded-xl self-start sm:self-auto"
         >
           <Plus className="w-4 h-4" />
           Add Goal
