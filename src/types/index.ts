@@ -68,24 +68,14 @@ export interface Evidence {
   metadata?: Record<string, unknown>;
 }
 
-export type GoalType = 'kpi' | 'okr' | 'success-metric' | 'custom';
-
 export interface Goal {
   id: string;
   title: string;
   description: string;
-  goalType: GoalType;
   status: 'on-track' | 'at-risk' | 'off-track';
   progress: number;
-  targetValue?: string;
-  startDate?: Date;
-  endDate?: Date;
-  linkedAgentIds: string[];
-  linkedDataSourceIds: string[];
   signals: Signal[];
   insights: Insight[];
-  createdAt: Date;
-  updatedAt: Date;
 }
 
 export interface Signal {

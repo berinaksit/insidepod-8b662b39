@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useCallback, useEffect, ReactNode } from 'react';
-import { Insight, Agent, AgentType, AgentFrequency, Goal, GoalType } from '@/types';
+import { Insight, Agent, AgentType, AgentFrequency, Goal } from '@/types';
 import { mockAgents, mockGoals } from '@/data/mockData';
 
 // localStorage keys
@@ -138,7 +138,7 @@ function initializeInsights(): Insight[] {
 function initializeGoals(): Goal[] {
   const stored = loadFromStorage<Goal[]>(STORAGE_KEYS.goals, []);
   if (stored.length > 0) {
-    return hydrateDates(stored, ['startDate', 'endDate', 'createdAt', 'updatedAt']);
+    return stored;
   }
   return mockGoals;
 }
