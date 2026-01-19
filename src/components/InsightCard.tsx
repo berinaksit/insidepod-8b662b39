@@ -44,50 +44,47 @@ export function InsightCard({
         delay: index * 0.1,
         ease: [0.4, 0, 0.2, 1]
       }}
-      className="insight-card cursor-pointer group flex flex-col p-6"
+      className="insight-card cursor-pointer group flex flex-col"
       onClick={handleClick}
     >
       {/* Header badges */}
-      <div className="flex items-center justify-between gap-3 mb-5">
-        <div className="flex items-center gap-2.5">
-          <span className={`px-3 py-1.5 rounded-lg text-xs font-semibold tracking-wide uppercase ${typeBadgeClasses[insight.type]}`}>
+      <div className="flex items-center justify-between gap-3 mb-4">
+        <div className="flex items-center gap-2">
+          <span className={`px-2.5 py-1 rounded-md text-xs font-semibold ${typeBadgeClasses[insight.type]}`}>
             {typeLabels[insight.type]}
           </span>
           {insight.isNew && (
-            <span className="w-2.5 h-2.5 rounded-full bg-primary animate-pulse" />
+            <span className="w-2 h-2 rounded-full bg-foreground" />
           )}
         </div>
-        <span className="px-2.5 py-1 rounded-md text-xs font-medium text-muted-foreground/80 bg-muted/40">
+        <span className="px-2.5 py-1 rounded-md text-xs font-medium text-muted-foreground bg-muted/50">
           {insight.source.name}
         </span>
       </div>
       
       {/* Title */}
-      <h3 className="text-xl font-semibold mb-3 text-foreground leading-snug tracking-tight group-hover:text-primary transition-colors">
+      <h3 className="text-lg font-semibold mb-2.5 text-foreground leading-tight">
         {insight.title}
       </h3>
       
       {/* Description */}
-      <p className="text-muted-foreground text-sm mb-8 flex-1 leading-relaxed line-clamp-3">
+      <p className="text-muted-foreground text-sm mb-6 flex-1 leading-relaxed">
         {insight.synthesis}
       </p>
       
       {/* Footer */}
-      <div className="flex items-center justify-between text-xs text-muted-foreground/70 font-medium mt-auto pt-4 border-t border-border/50">
+      <div className="flex items-center justify-between text-sm text-muted-foreground font-medium mt-auto">
         <div className="flex items-center gap-4">
           <span>{formatDistanceToNow(insight.timestamp, { addSuffix: true })}</span>
-          <span className="flex items-center gap-1">
-            <span className="w-1 h-1 rounded-full bg-muted-foreground/40" />
-            {insight.evidenceCount} sources
-          </span>
+          <span>{insight.evidenceCount} sources</span>
         </div>
-        <span className="flex items-center gap-2">
+        <span className="flex items-center gap-1.5">
           <span className={`w-2 h-2 rounded-full ${
             insight.confidence >= 0.9 ? 'bg-[hsl(145,60%,45%)]' : 
             insight.confidence >= 0.8 ? 'bg-[hsl(145,60%,45%)]' : 
             'bg-[hsl(45,80%,50%)]'
           }`} />
-          <span className="font-semibold text-foreground/80">{Math.round(insight.confidence * 100)}%</span>
+          {Math.round(insight.confidence * 100)}% confidence
         </span>
       </div>
     </motion.article>
