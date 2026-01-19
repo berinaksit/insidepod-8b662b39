@@ -2,16 +2,7 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Insight } from '@/types';
 import { formatDistanceToNow } from 'date-fns';
-import { LucideIcon } from 'lucide-react';
-import { 
-  ShieldAlert, 
-  Activity, 
-  Rocket, 
-  Lightbulb, 
-  TrendingUp,
-  Wand2,
-  FileText
-} from 'lucide-react';
+import { FileText, TrendingUp, AlertCircle, Sparkles } from 'lucide-react';
 
 interface InsightCardProps {
   insight: Insight;
@@ -19,13 +10,10 @@ interface InsightCardProps {
   onClick?: () => void;
 }
 
-// Map agent IDs to their unique icons - each agent has one specific icon
-const agentIcons: Record<string, LucideIcon> = {
-  'preset-a1': ShieldAlert,    // Risk Scanner
-  'preset-a2': Activity,        // Retention Monitor
-  'preset-a3': Rocket,          // Adoption Tracker
-  'preset-a4': Lightbulb,       // Insight Synthesizer
-  'preset-a5': TrendingUp,      // Trend Summarizer
+const typeIcons: Record<string, React.ComponentType<{ className?: string }>> = {
+  pulse: TrendingUp,
+  insight: Sparkles,
+  signal: AlertCircle
 };
 
 export function InsightCard({
@@ -34,8 +22,7 @@ export function InsightCard({
   onClick
 }: InsightCardProps) {
   const navigate = useNavigate();
-  // Get the icon for the specific agent that generated this insight
-  const Icon = agentIcons[insight.source.id] || Wand2;
+  const Icon = typeIcons[insight.type] || FileText;
 
   // Create varied layouts based on index
   const layoutVariant = index % 4;
@@ -107,7 +94,7 @@ export function InsightCard({
         
         <div className="mt-8 flex items-center gap-3">
           <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
-            <Icon className="w-5 h-5 text-muted-foreground" strokeWidth={1.5} />
+            <FileText className="w-5 h-5 text-muted-foreground stroke-[1.5]" />
           </div>
           <div className="text-sm text-muted-foreground font-medium">
             <span>{insight.evidenceCount} sources</span>
