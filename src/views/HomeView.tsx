@@ -19,6 +19,7 @@ import { SourcesOverviewView } from '@/components/SourcesOverviewView';
 import { SuggestedPromptView } from '@/components/SuggestedPromptView';
 import { RecentActivityView } from '@/components/RecentActivityView';
 import { AgentsOverviewView } from '@/components/AgentsOverviewView';
+import { ProjectSelector } from '@/components/ProjectSelector';
 
 interface HomeViewProps {
   currentTab: View;
@@ -456,24 +457,29 @@ export function HomeView({
 
       {/* Tabs */}
       <section className="px-6 pb-10">
-        <div className="flex items-center gap-3 mb-5">
-          {tabs.map(tab => {
-            const isActive = currentTab === tab.id;
-            return (
-              <button 
-                key={tab.id} 
-                onClick={() => onTabChange(tab.id)} 
-                className={`flex items-center gap-1.5 px-1 py-2.5 border-b-2 transition-colors ${isActive ? 'border-primary text-foreground' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
-              >
-                <span className="font-semibold">{tab.label}</span>
-                {tab.id === 'home' && (
-                  <span className="ml-0.5 px-1.5 py-0.5 text-xs bg-secondary/10 text-secondary rounded-full font-medium">
-                    {allInsights.filter(i => i.isNew).length} new
-                  </span>
-                )}
-              </button>
-            );
-          })}
+        <div className="flex items-center justify-between mb-5">
+          <div className="flex items-center gap-3">
+            {tabs.map(tab => {
+              const isActive = currentTab === tab.id;
+              return (
+                <button 
+                  key={tab.id} 
+                  onClick={() => onTabChange(tab.id)} 
+                  className={`flex items-center gap-1.5 px-1 py-2.5 border-b-2 transition-colors ${isActive ? 'border-primary text-foreground' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
+                >
+                  <span className="font-semibold">{tab.label}</span>
+                  {tab.id === 'home' && (
+                    <span className="ml-0.5 px-1.5 py-0.5 text-xs bg-secondary/10 text-secondary rounded-full font-medium">
+                      {allInsights.filter(i => i.isNew).length} new
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Project Selector - right aligned */}
+          <ProjectSelector />
         </div>
 
         {/* Tab Content */}
