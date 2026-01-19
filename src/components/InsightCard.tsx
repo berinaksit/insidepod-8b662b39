@@ -101,19 +101,6 @@ export function InsightCard({
   // Create varied layouts based on index
   const layoutVariant = index % 4;
 
-  // Get badge label based on insight type
-  const getBadgeLabel = (): string => {
-    switch (insight.type) {
-      case 'signal': return 'Signal';
-      case 'pulse': return 'Pulse';
-      case 'insight': return 'Insight';
-      default: return 'Insight';
-    }
-  };
-
-  // Footer text: "{Agent name} · {number of sources} sources"
-  const footerText = `${insight.source.name} · ${insight.evidenceCount} sources`;
-
   const handleClick = () => {
     if (onClick) {
       onClick();
@@ -135,33 +122,26 @@ export function InsightCard({
         className="bg-foreground rounded-2xl p-6 cursor-pointer group min-h-[280px] flex flex-col"
         onClick={handleClick}
       >
-        <div className="flex items-center justify-between mb-4">
-          <span className="px-2.5 py-1 rounded-md text-xs font-semibold bg-background/15 text-background/80">
-            {getBadgeLabel()}
-          </span>
-          {insight.isNew && (
-            <span className="w-2 h-2 rounded-full bg-background" />
-          )}
-        </div>
-        
-        <h3 className="text-lg font-semibold text-background leading-snug mb-auto">
+        <h3 className="text-xl font-semibold text-background leading-snug mb-auto">
           {insight.title}
         </h3>
         
-        <div className="mt-6">
-          <div className="w-14 h-14 rounded-xl bg-background/10 flex items-center justify-center mb-4">
-            <Icon className="w-6 h-6 text-background/70 stroke-[1.5]" />
+        <div className="mt-8">
+          <div className="w-16 h-16 rounded-xl bg-background/10 flex items-center justify-center mb-6">
+            <Icon className="w-7 h-7 text-background/70 stroke-[1.5]" />
           </div>
           
-          <button className="text-sm text-background/60 font-medium hover:text-background/80 transition-colors">
-            {footerText}
-          </button>
+          <div className="flex items-center gap-2 text-background/60 text-sm font-medium">
+            <span>{insight.source.name}</span>
+            <span>·</span>
+            <span>{formatDistanceToNow(insight.timestamp, { addSuffix: false })}</span>
+          </div>
         </div>
       </motion.article>
     );
   }
 
-  // Synthesis quote card
+  // Quote/question style card
   if (layoutVariant === 1) {
     return (
       <motion.article
@@ -175,26 +155,26 @@ export function InsightCard({
         className="insight-card cursor-pointer group min-h-[280px] flex flex-col"
         onClick={handleClick}
       >
-        <div className="flex items-center justify-between mb-4">
-          <span className="px-2.5 py-1 rounded-md text-xs font-semibold bg-muted text-muted-foreground">
-            {getBadgeLabel()}
-          </span>
+        <div className="flex items-center gap-2 mb-4">
+          <span className="text-muted-foreground font-medium text-sm">Ask</span>
           {insight.isNew && (
             <span className="w-2 h-2 rounded-full bg-foreground" />
           )}
         </div>
         
         <h3 className="text-lg font-semibold text-foreground leading-snug mb-auto">
-          {insight.title}
+          "{insight.synthesis}"
         </h3>
         
-        <div className="mt-6 flex items-center gap-3">
+        <div className="mt-8 flex items-center gap-3">
           <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
-            <Icon className="w-5 h-5 text-muted-foreground stroke-[1.5]" />
+            <FileText className="w-5 h-5 text-muted-foreground stroke-[1.5]" />
           </div>
-          <button className="text-sm text-muted-foreground font-medium hover:text-foreground transition-colors">
-            {footerText}
-          </button>
+          <div className="text-sm text-muted-foreground font-medium">
+            <span>{insight.evidenceCount} sources</span>
+            <span className="mx-1.5">·</span>
+            <span>{formatDistanceToNow(insight.timestamp, { addSuffix: false })}</span>
+          </div>
         </div>
       </motion.article>
     );
@@ -214,28 +194,21 @@ export function InsightCard({
         className="insight-card cursor-pointer group min-h-[280px] flex flex-col"
         onClick={handleClick}
       >
-        <div className="flex items-center justify-between mb-4">
-          <span className="px-2.5 py-1 rounded-md text-xs font-semibold bg-muted text-muted-foreground">
-            {getBadgeLabel()}
-          </span>
-          {insight.isNew && (
-            <span className="w-2 h-2 rounded-full bg-foreground" />
-          )}
-        </div>
-        
-        <h3 className="text-lg font-semibold text-foreground leading-snug mb-2">
+        <h3 className="text-lg font-semibold text-foreground leading-snug mb-6">
           {insight.title}
         </h3>
         
         <div className="flex-1 flex items-center justify-center">
-          <div className="w-20 h-20 rounded-2xl bg-muted/80 flex items-center justify-center">
-            <Icon className="w-9 h-9 text-muted-foreground stroke-[1.5]" />
+          <div className="w-24 h-24 rounded-2xl bg-muted/80 flex items-center justify-center">
+            <Icon className="w-10 h-10 text-muted-foreground stroke-[1.5]" />
           </div>
         </div>
         
-        <button className="mt-auto text-sm text-muted-foreground font-medium hover:text-foreground transition-colors">
-          {footerText}
-        </button>
+        <div className="mt-auto flex items-center gap-2 text-sm text-muted-foreground font-medium">
+          <span>{insight.source.name}</span>
+          <span>·</span>
+          <span>{formatDistanceToNow(insight.timestamp, { addSuffix: false })}</span>
+        </div>
       </motion.article>
     );
   }
@@ -255,7 +228,7 @@ export function InsightCard({
     >
       <div className="flex items-center justify-between mb-4">
         <span className="px-2.5 py-1 rounded-md text-xs font-semibold bg-muted text-muted-foreground">
-          {getBadgeLabel()}
+          {insight.type.charAt(0).toUpperCase() + insight.type.slice(1)}
         </span>
         {insight.isNew && (
           <span className="w-2 h-2 rounded-full bg-foreground" />
@@ -266,7 +239,7 @@ export function InsightCard({
         {insight.title}
       </h3>
       
-      <div className="mt-6">
+      <div className="mt-8">
         <div className="flex items-center gap-2 mb-3">
           <div className="flex-1 h-1 bg-muted rounded-full overflow-hidden">
             <div 
@@ -279,9 +252,11 @@ export function InsightCard({
           </span>
         </div>
         
-        <button className="text-sm text-muted-foreground font-medium hover:text-foreground transition-colors">
-          {footerText}
-        </button>
+        <div className="flex items-center gap-2 text-sm text-muted-foreground font-medium">
+          <span>{insight.evidenceCount} sources</span>
+          <span>·</span>
+          <span>{formatDistanceToNow(insight.timestamp, { addSuffix: false })}</span>
+        </div>
       </div>
     </motion.article>
   );
