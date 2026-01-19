@@ -35,7 +35,7 @@ const Index = () => {
       case 'home':
         return <HomeView currentTab={currentView} onTabChange={setCurrentView} />;
       case 'goals':
-        return <GoalsView />;
+        return <HomeView currentTab={currentView} onTabChange={setCurrentView} />;
       case 'agents':
         return <HomeView currentTab={currentView} onTabChange={setCurrentView} />;
       case 'create-agent':
