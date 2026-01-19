@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { InsightCard, resetUsedIcons } from '@/components/InsightCard';
+import { InsightCard } from '@/components/InsightCard';
 import { SearchBar } from '@/components/SearchBar';
 import { GoalCard } from '@/components/GoalCard';
 import { AgentsList } from '@/components/AgentsList';
@@ -117,9 +117,6 @@ export function HomeView({
 
   // Determine what empty state to show for Today's Insights
   const renderInsightsContent = () => {
-    // Reset icon tracking for each render
-    resetUsedIcons();
-    
     if (!hasDocuments) {
       return (
         <EmptyState
@@ -135,8 +132,6 @@ export function HomeView({
     }
     
     if (!hasAgents && generatedInsights.length === 0) {
-      // Reset icons before rendering
-      resetUsedIcons();
       return (
         <div>
           <div className="mb-6">
@@ -160,8 +155,6 @@ export function HomeView({
       );
     }
 
-    // Reset icons before rendering
-    resetUsedIcons();
     return (
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {allInsights.map((insight, index) => (

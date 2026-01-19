@@ -2,81 +2,27 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Insight } from '@/types';
 import { formatDistanceToNow } from 'date-fns';
-import { 
-  ShieldAlert, 
-  Activity, 
-  Rocket, 
-  Lightbulb, 
-  TrendingUp,
-  FileText,
-  BarChart3,
-  Users,
-  Target,
-  Zap
-} from 'lucide-react';
+import { FileText, TrendingUp, AlertCircle, Sparkles } from 'lucide-react';
 
 interface InsightCardProps {
   insight: Insight;
   index: number;
-  usedIconKeys?: Set<string>;
   onClick?: () => void;
 }
 
-// Map agent source IDs to their dedicated icons - each agent has ONE icon
-const agentIcons: Record<string, React.ComponentType<{ className?: string }>> = {
-  'preset-a1': ShieldAlert,    // Risk Scanner
-  'preset-a2': Activity,       // Retention Monitor
-  'preset-a3': Rocket,         // Adoption Tracker
-  'preset-a4': Lightbulb,      // Insight Synthesizer
-  'preset-a5': TrendingUp,     // Trend Summarizer
+const typeIcons: Record<string, React.ComponentType<{ className?: string }>> = {
+  pulse: TrendingUp,
+  insight: Sparkles,
+  signal: AlertCircle
 };
-
-// Fallback icons for custom agents (used in order, never repeated)
-const fallbackIcons = [BarChart3, Users, Target, Zap, FileText];
-
-// Track which icons have been used globally within a render cycle
-let globalUsedIcons = new Set<string>();
-
-export function resetUsedIcons() {
-  globalUsedIcons = new Set<string>();
-}
 
 export function InsightCard({
   insight,
   index,
-  usedIconKeys,
   onClick
 }: InsightCardProps) {
   const navigate = useNavigate();
-  
-  // Get the agent's dedicated icon
-  const agentId = insight.source.id;
-  const agentIconKey = agentId;
-  
-  // Check if this agent's icon has already been used
-  const iconAlreadyUsed = usedIconKeys?.has(agentIconKey) || globalUsedIcons.has(agentIconKey);
-  
-  // Get the icon - either the agent's dedicated icon or null if already used
-  let Icon: React.ComponentType<{ className?: string }> | null = null;
-  let showIcon = false;
-  
-  if (!iconAlreadyUsed) {
-    Icon = agentIcons[agentId];
-    if (!Icon) {
-      // For custom agents, find an unused fallback icon
-      for (const fallback of fallbackIcons) {
-        const fallbackKey = fallback.displayName || fallback.name;
-        if (!globalUsedIcons.has(fallbackKey)) {
-          Icon = fallback;
-          globalUsedIcons.add(fallbackKey);
-          break;
-        }
-      }
-    } else {
-      globalUsedIcons.add(agentIconKey);
-    }
-    showIcon = Icon !== null;
-  }
+  const Icon = typeIcons[insight.type] || FileText;
 
   // Create varied layouts based on index
   const layoutVariant = index % 4;
@@ -107,11 +53,9 @@ export function InsightCard({
         </h3>
         
         <div className="mt-8">
-          {showIcon && Icon && (
-            <div className="w-16 h-16 rounded-xl bg-background/10 flex items-center justify-center mb-6">
-              <Icon className="w-7 h-7 text-background/70 stroke-[1.5]" />
-            </div>
-          )}
+          <div className="w-16 h-16 rounded-xl bg-background/10 flex items-center justify-center mb-6">
+            <Icon className="w-7 h-7 text-background/70 stroke-[1.5]" />
+          </div>
           
           <div className="flex items-center gap-2 text-background/60 text-sm font-medium">
             <span>{insight.source.name}</span>
@@ -149,15 +93,13 @@ export function InsightCard({
         </h3>
         
         <div className="mt-8 flex items-center gap-3">
-          {showIcon && Icon && (
-            <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
-              <Icon className="w-5 h-5 text-muted-foreground stroke-[1.5]" />
-            </div>
-          )}
+          <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
+            <FileText className="w-5 h-5 text-muted-foreground stroke-[1.5]" />
+          </div>
           <div className="text-sm text-muted-foreground font-medium">
-            <span>{insight.source.name}</span>
-            <span className="mx-1.5">·</span>
             <span>{insight.evidenceCount} sources</span>
+            <span className="mx-1.5">·</span>
+            <span>{formatDistanceToNow(insight.timestamp, { addSuffix: false })}</span>
           </div>
         </div>
       </motion.article>
@@ -182,13 +124,11 @@ export function InsightCard({
           {insight.title}
         </h3>
         
-        {showIcon && Icon && (
-          <div className="flex-1 flex items-center justify-center">
-            <div className="w-24 h-24 rounded-2xl bg-muted/80 flex items-center justify-center">
-              <Icon className="w-10 h-10 text-muted-foreground stroke-[1.5]" />
-            </div>
+        <div className="flex-1 flex items-center justify-center">
+          <div className="w-24 h-24 rounded-2xl bg-muted/80 flex items-center justify-center">
+            <Icon className="w-10 h-10 text-muted-foreground stroke-[1.5]" />
           </div>
-        )}
+        </div>
         
         <div className="mt-auto flex items-center gap-2 text-sm text-muted-foreground font-medium">
           <span>{insight.source.name}</span>
@@ -214,7 +154,7 @@ export function InsightCard({
     >
       <div className="flex items-center justify-between mb-4">
         <span className="px-2.5 py-1 rounded-md text-xs font-semibold bg-muted text-muted-foreground">
-          {insight.source.name}
+          {insight.type.charAt(0).toUpperCase() + insight.type.slice(1)}
         </span>
         {insight.isNew && (
           <span className="w-2 h-2 rounded-full bg-foreground" />
