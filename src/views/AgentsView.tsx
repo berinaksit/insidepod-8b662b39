@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { AgentsList } from '@/components/AgentsList';
 import { mockAgents } from '@/data/mockData';
-import { Bot, Plus, FileText, RefreshCw } from 'lucide-react';
+import { Bot, Plus, FileText, Wand2 } from 'lucide-react';
 
 export function AgentsView() {
   return (
@@ -58,14 +58,14 @@ export function AgentsView() {
         
         <div className="bg-card border border-border/30 rounded-2xl p-6">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-emerald-100 dark:bg-emerald-950 flex items-center justify-center flex-shrink-0">
-              <RefreshCw className="w-6 h-6 text-emerald-500" strokeWidth={1.5} />
+            <div className="w-12 h-12 rounded-xl bg-violet-100 dark:bg-violet-950 flex items-center justify-center flex-shrink-0">
+              <Wand2 className="w-6 h-6 text-violet-600 dark:text-violet-400" strokeWidth={1.5} />
             </div>
             <div>
               <p className="text-3xl font-bold text-foreground leading-none">
-                {mockAgents.filter(a => a.status === 'running').length}
+                {mockAgents.filter(a => !a.isPreset).length}
               </p>
-              <p className="text-sm text-muted-foreground font-medium mt-1">Currently running</p>
+              <p className="text-sm text-muted-foreground font-medium mt-1">Custom agents</p>
             </div>
           </div>
         </div>
