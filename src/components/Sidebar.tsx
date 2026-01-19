@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
-import { Home, Target, Bot, Settings, X } from 'lucide-react';
-type View = 'home' | 'goals' | 'agents' | 'settings';
+import { Home, Bot, Settings, X } from 'lucide-react';
+type View = 'home' | 'agents' | 'settings';
 interface SidebarProps {
   currentView: View;
   onViewChange: (view: View) => void;
@@ -15,10 +15,6 @@ const navItems: {
   id: 'home',
   label: 'Home',
   icon: Home
-}, {
-  id: 'goals',
-  label: 'Goals',
-  icon: Target
 }, {
   id: 'agents',
   label: 'Agents',
