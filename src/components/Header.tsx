@@ -33,24 +33,24 @@ export function Header({ onSettingsClick, onLogoClick }: HeaderProps) {
 
       <div className="flex items-center gap-2">
         <button className="p-2.5 rounded-xl hover:bg-muted transition-colors relative">
-          <Bell className="w-5 h-5 text-muted-foreground stroke-[1.75]" />
+          <Bell className="w-5 h-5 text-muted-foreground" />
           <span className="absolute top-2 right-2 w-2 h-2 bg-secondary rounded-full" />
         </button>
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button className="p-2.5 rounded-xl hover:bg-muted transition-colors">
-              <User className="w-5 h-5 text-muted-foreground stroke-[1.75]" />
+              <User className="w-5 h-5 text-muted-foreground" />
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-48">
             <DropdownMenuItem onClick={onSettingsClick} className="cursor-pointer">
-              <Settings className="w-4 h-4 mr-2 stroke-[1.75]" />
+              <Settings className="w-4 h-4 mr-2" />
               Settings
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem className="cursor-pointer text-destructive">
-              <LogOut className="w-4 h-4 mr-2 stroke-[1.75]" />
+              <LogOut className="w-4 h-4 mr-2" />
               Log out
             </DropdownMenuItem>
           </DropdownMenuContent>

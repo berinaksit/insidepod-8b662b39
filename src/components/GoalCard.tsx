@@ -41,7 +41,7 @@ export function GoalCard({ goal, index, onClick }: GoalCardProps) {
       {/* Header with status badge and percentage */}
       <div className="flex items-start justify-between gap-3 mb-5">
         <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold ${status.className}`}>
-          <StatusIcon className="w-3.5 h-3.5 stroke-[1.75]" />
+          <StatusIcon className="w-3.5 h-3.5 stroke-[2.5]" />
           {status.label}
         </div>
         <span className="text-3xl font-semibold text-foreground">
