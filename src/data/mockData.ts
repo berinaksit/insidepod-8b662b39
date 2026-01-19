@@ -3,9 +3,9 @@ import { Insight, Agent, Goal, AnalysisView } from '@/types';
 export const mockInsights: Insight[] = [
   {
     id: '1',
-    type: 'signal',
+    type: 'pulse',
     title: 'Onboarding completion rate declining',
-    synthesis: 'Users who joined in the last 30 days are 23% less likely to complete onboarding compared to the previous cohort. Primary friction identified at the workspace setup step.',
+    synthesis: 'Users who joined in the last 30 days are 23% less likely to complete onboarding compared to the previous cohort. Primary friction point identified at the workspace setup step.',
     source: { id: 'preset-a3', name: 'Adoption Tracker', type: 'amplitude' },
     timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000),
     confidence: 0.87,
@@ -16,8 +16,8 @@ export const mockInsights: Insight[] = [
   {
     id: '2',
     type: 'insight',
-    title: 'Enterprise customers seeking bulk actions',
-    synthesis: 'Across 8 recent enterprise conversations, bulk editing capabilities emerged as a critical gap. Customers managing 50+ projects cite significant time loss.',
+    title: 'Enterprise customers requesting bulk actions',
+    synthesis: 'Across 8 recent enterprise conversations, bulk editing capabilities emerged as a critical gap. Customers managing 50+ projects cite significant time loss from individual updates.',
     source: { id: 'preset-a4', name: 'Insight Synthesizer', type: 'dovetail' },
     timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000),
     confidence: 0.92,
@@ -26,7 +26,7 @@ export const mockInsights: Insight[] = [
   },
   {
     id: '3',
-    type: 'pulse',
+    type: 'signal',
     title: 'Mobile engagement up 34% month-over-month',
     synthesis: 'Mobile app sessions increased significantly following the iOS redesign. Feature adoption on mobile now matches desktop patterns for core workflows.',
     source: { id: 'preset-a5', name: 'Trend Summarizer', type: 'mixpanel' },
@@ -37,9 +37,9 @@ export const mockInsights: Insight[] = [
   },
   {
     id: '4',
-    type: 'signal',
+    type: 'pulse',
     title: 'Churn risk detected in mid-market segment',
-    synthesis: 'Three mid-market accounts showing declining engagement patterns consistent with historical churn indicators. Activity dropped 40% in the past two weeks.',
+    synthesis: 'Three mid-market accounts showing declining engagement patterns consistent with historical churn indicators. CSM outreach recommended within 48 hours.',
     source: { id: 'preset-a1', name: 'Risk Scanner', type: 'salesforce' },
     timestamp: new Date(Date.now() - 12 * 60 * 60 * 1000),
     confidence: 0.78,
@@ -51,7 +51,7 @@ export const mockInsights: Insight[] = [
     id: '5',
     type: 'insight',
     title: 'Integration ecosystem driving expansion',
-    synthesis: 'Customers using 3+ integrations show 2.4x higher expansion rates. Slack and Jira integrations are most correlated with account growth.',
+    synthesis: 'Customers using 3+ integrations show 2.4x higher expansion rates. Slack and Jira integrations most correlated with account growth.',
     source: { id: 'preset-a2', name: 'Retention Monitor', type: 'internal' },
     timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000),
     confidence: 0.89,
