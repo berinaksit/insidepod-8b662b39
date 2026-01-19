@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { InsightCard } from '@/components/InsightCard';
 import { SearchBar } from '@/components/SearchBar';
-import { GoalCard } from '@/components/GoalCard';
 import { AgentsList } from '@/components/AgentsList';
 import { EmptyState } from '@/components/EmptyState';
 import { EditAgentModal } from '@/components/EditAgentModal';
@@ -366,8 +365,11 @@ export function HomeView({
                 </button>
               </div>
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {goals.map((goal, index) => (
-                  <GoalCard key={goal.id} goal={goal} index={index} />
+                {goals.map((goal) => (
+                  <div key={goal.id} className="p-5 rounded-xl border border-border bg-card">
+                    <h3 className="font-medium text-foreground mb-2">{goal.title}</h3>
+                    <span className="text-sm text-muted-foreground">{goal.status}</span>
+                  </div>
                 ))}
               </div>
             </motion.div>
