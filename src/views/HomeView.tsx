@@ -357,7 +357,7 @@ export function HomeView({
                 {/* Featured Insight Card - Purple */}
                 <div className="bg-highlight-surface rounded-2xl p-5 text-highlight-foreground">
                   <div className="w-7 h-7 rounded-full bg-highlight/20 flex items-center justify-center mb-3">
-                    <CircleDot className="w-3.5 h-3.5 stroke-[2.5]" />
+                    <CircleDot className="w-3.5 h-3.5" strokeWidth={1.75} />
                   </div>
                   <p className="text-xl font-semibold mb-5">
                     Users aren't returning as often, fewer complete the first key action, and more exit at checkout, indicating blockers in onboarding and purchase steps.
@@ -378,14 +378,14 @@ export function HomeView({
                 {/* Suggested Task Card */}
                 <div className="insight-card flex flex-col">
                   <div className="flex items-center gap-1.5 text-muted-foreground mb-2.5">
-                    <FileText className="w-4 h-4 stroke-[2.5]" />
+                    <FileText className="w-4 h-4" strokeWidth={1.75} />
                     <span className="text-sm font-medium">Suggested task</span>
                   </div>
                   <h3 className="text-xl font-semibold text-foreground">
                     Review today's drop in step-two activation.
                   </h3>
                   <div className="gap-1.5 mt-auto pb-0 text-muted-foreground flex items-end justify-start">
-                    <Link2 className="w-4 h-4 stroke-[2.5]" />
+                    <Link2 className="w-4 h-4" strokeWidth={1.75} />
                     <span className="text-sm font-medium">Select data source</span>
                     <span className="text-sm font-medium">›</span>
                   </div>
@@ -394,7 +394,7 @@ export function HomeView({
                 {/* Connected Sources Card */}
                 <div className="insight-card flex flex-col">
                   <div className="flex items-center gap-1.5 text-muted-foreground mb-3">
-                    <Link2 className="w-4 h-4 stroke-[2.5]" />
+                    <Link2 className="w-4 h-4" strokeWidth={1.75} />
                     <span className="text-sm font-medium">Connected sources</span>
                   </div>
                   <div className="space-y-2.5 flex-1 max-h-32 overflow-y-auto">
@@ -406,7 +406,7 @@ export function HomeView({
                     ))}
                   </div>
                   <div className="relative mt-auto pb-0">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground stroke-[2.5]" />
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" strokeWidth={1.75} />
                     <input 
                       type="text" 
                       placeholder="Search for documents" 
@@ -418,14 +418,14 @@ export function HomeView({
                 {/* Suggested Prompt Card */}
                 <div className="insight-card flex flex-col">
                   <div className="flex items-center gap-1.5 text-muted-foreground mb-2.5">
-                    <Code2 className="w-4 h-4 stroke-[2.5]" />
+                    <Code2 className="w-4 h-4" strokeWidth={1.75} />
                     <span className="text-sm font-medium">Suggested prompt</span>
                   </div>
                   <h3 className="text-xl font-semibold text-foreground">
                     What's driving this month's performance changes?
                   </h3>
                   <div className="flex items-center gap-1.5 mt-auto pb-0 text-muted-foreground py-0 pt-[130px]">
-                    <Link2 className="w-4 h-4 stroke-[2.5]" />
+                    <Link2 className="w-4 h-4" strokeWidth={1.75} />
                     <span className="text-sm font-medium">Select data source</span>
                     <span className="text-xs font-medium">›</span>
                   </div>
@@ -434,7 +434,7 @@ export function HomeView({
                 {/* Recently Uploaded Card */}
                 <div className="insight-card flex flex-col">
                   <div className="flex items-center gap-1.5 text-muted-foreground mb-2.5">
-                    <FileUp className="w-4 h-4 stroke-[2.5]" />
+                    <FileUp className="w-4 h-4" strokeWidth={1.75} />
                     <span className="text-sm font-medium">Recently uploaded</span>
                   </div>
                   <h3 className="text-xl font-semibold text-foreground">
@@ -449,7 +449,7 @@ export function HomeView({
                 {/* Active Agents Card */}
                 <div className="insight-card">
                   <div className="flex items-center gap-1.5 text-muted-foreground mb-3">
-                    <Bot className="w-4 h-4 stroke-[2.5]" />
+                    <Bot className="w-4 h-4" strokeWidth={1.75} />
                     <span className="text-sm font-medium">Active Agents</span>
                   </div>
                   <div className="grid grid-cols-2 gap-1.5">
