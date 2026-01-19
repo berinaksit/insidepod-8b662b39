@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { InsightCard } from '@/components/InsightCard';
 import { SearchBar } from '@/components/SearchBar';
@@ -10,6 +10,8 @@ import { useDocuments } from '@/contexts/DocumentsContext';
 import { Agent } from '@/types';
 import { Sparkles, Target, Bot, Plus, LayoutDashboard, CircleDot, FileText, Link2, Code2, FileUp, Scan, Calendar, Activity, MessageSquare, TrendingUp, MonitorCheck, Search, RefreshCw, Upload } from 'lucide-react';
 import { View } from '@/pages/Index';
+import { Button } from '@/components/ui/button';
+import { CreateGoalModal, Goal, GoalType } from '@/components/CreateGoalModal';
 
 interface HomeViewProps {
   currentTab: View;
@@ -23,6 +25,46 @@ export function HomeView({
   const [isSearching] = useState(false);
   const [editingAgent, setEditingAgent] = useState<Agent | null>(null);
   const [editModalOpen, setEditModalOpen] = useState(false);
+  const [isGoalModalOpen, setIsGoalModalOpen] = useState(false);
+  
+  // Goals state with localStorage persistence
+  const GOALS_STORAGE_KEY = 'insidepod_goals_v2';
+  
+  const loadGoals = (): Goal[] => {
+    try {
+      const stored = localStorage.getItem(GOALS_STORAGE_KEY);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        return parsed.map((g: any) => ({
+          ...g,
+          createdAt: new Date(g.createdAt),
+        }));
+      }
+    } catch (e) {
+      console.warn('Failed to load goals from localStorage:', e);
+    }
+    return [];
+  };
+
+  const [goals, setGoals] = useState<Goal[]>(() => loadGoals());
+  
+  // Persist goals whenever they change
+  useEffect(() => {
+    try {
+      localStorage.setItem(GOALS_STORAGE_KEY, JSON.stringify(goals));
+    } catch (e) {
+      console.warn('Failed to save goals to localStorage:', e);
+    }
+  }, [goals]);
+
+  const handleCreateGoal = (goalData: Omit<Goal, 'id' | 'createdAt'>) => {
+    const newGoal: Goal = {
+      ...goalData,
+      id: `goal-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      createdAt: new Date(),
+    };
+    setGoals((prev) => [...prev, newGoal]);
+  };
   
   const { 
     hasDocuments, 
@@ -277,6 +319,76 @@ export function HomeView({
     );
   };
 
+  const typeColors: Record<GoalType, string> = {
+    'KPI': 'bg-blue-100 text-blue-700',
+    'OKR': 'bg-purple-100 text-purple-700',
+    'Success Metric': 'bg-green-100 text-green-700',
+    'Custom': 'bg-muted text-muted-foreground',
+  };
+
+  // Render Goals content
+  const renderGoalsContent = () => {
+    return (
+      <>
+        <div className="flex items-center justify-between mb-5">
+          <p className="text-muted-foreground font-medium">Track product outcomes over time</p>
+          <Button
+            onClick={() => setIsGoalModalOpen(true)}
+            className="flex items-center gap-1.5 rounded-xl"
+          >
+            <Plus className="w-4 h-4 stroke-[2.5]" />
+            Add Goal
+          </Button>
+        </div>
+
+        {goals.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-20">
+            <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mb-6">
+              <Target className="w-8 h-8 text-muted-foreground" />
+            </div>
+            <h2 className="text-xl font-semibold text-foreground mb-2">No goals yet</h2>
+            <p className="text-muted-foreground text-center max-w-sm mb-6">
+              Create goals to track product outcomes over time
+            </p>
+            <Button
+              onClick={() => setIsGoalModalOpen(true)}
+              className="rounded-xl"
+            >
+              Add your first goal
+            </Button>
+          </div>
+        ) : (
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {goals.map((goal, index) => (
+              <motion.div
+                key={goal.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: index * 0.05 }}
+                className="bg-card rounded-2xl p-5 shadow-card border border-border/50 hover:border-border transition-colors"
+              >
+                <div className="flex items-start justify-between gap-3 mb-3">
+                  <span className={`px-2.5 py-1 rounded-md text-xs font-medium ${typeColors[goal.type]}`}>
+                    {goal.type}
+                  </span>
+                </div>
+                <h3 className="text-lg font-semibold text-foreground leading-tight">
+                  {goal.title}
+                </h3>
+              </motion.div>
+            ))}
+          </div>
+        )}
+
+        <CreateGoalModal
+          open={isGoalModalOpen}
+          onOpenChange={setIsGoalModalOpen}
+          onCreateGoal={handleCreateGoal}
+        />
+      </>
+    );
+  };
+
   return (
     <div className="min-h-full">
       {/* Hero section with greeting and search */}
@@ -346,6 +458,17 @@ export function HomeView({
               exit={{ opacity: 0, y: -10 }}
             >
               {renderInsightsContent()}
+            </motion.div>
+          )}
+
+          {currentTab === 'goals' && (
+            <motion.div 
+              key="goals" 
+              initial={{ opacity: 0, y: 10 }} 
+              animate={{ opacity: 1, y: 0 }} 
+              exit={{ opacity: 0, y: -10 }}
+            >
+              {renderGoalsContent()}
             </motion.div>
           )}
 
