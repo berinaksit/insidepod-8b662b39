@@ -13,6 +13,12 @@ import { View } from '@/pages/Index';
 import { Button } from '@/components/ui/button';
 import { CreateGoalModal, Goal, GoalType } from '@/components/CreateGoalModal';
 import { GoalDetailView } from '@/components/GoalDetailView';
+import { InsightDetailView } from '@/components/InsightDetailView';
+import { ActionDetailPanel } from '@/components/ActionDetailPanel';
+import { SourcesOverviewView } from '@/components/SourcesOverviewView';
+import { SuggestedPromptView } from '@/components/SuggestedPromptView';
+import { RecentActivityView } from '@/components/RecentActivityView';
+import { AgentsOverviewView } from '@/components/AgentsOverviewView';
 
 interface HomeViewProps {
   currentTab: View;
@@ -28,6 +34,10 @@ export function HomeView({
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [isGoalModalOpen, setIsGoalModalOpen] = useState(false);
   const [selectedGoal, setSelectedGoal] = useState<Goal | null>(null);
+  
+  // Dashboard detail view states
+  type DashboardView = 'none' | 'insight' | 'task' | 'sources' | 'prompt' | 'recent' | 'agents';
+  const [dashboardView, setDashboardView] = useState<DashboardView>('none');
   
   // Goals state with localStorage persistence
   const GOALS_STORAGE_KEY = 'insidepod_goals_v2';
@@ -509,121 +519,189 @@ export function HomeView({
               animate={{ opacity: 1, y: 0 }} 
               exit={{ opacity: 0, y: -10 }}
             >
-              <div className="grid gap-3.5 md:grid-cols-2 lg:grid-cols-3">
-                {/* Featured Insight Card - Purple */}
-                <div className="bg-highlight-surface rounded-2xl p-5 text-highlight-foreground">
-                  <div className="w-7 h-7 rounded-full bg-highlight/20 flex items-center justify-center mb-3">
-                    <CircleDot className="w-3.5 h-3.5 stroke-[2.5]" />
-                  </div>
-                  <p className="text-xl font-semibold mb-5">
-                    Users aren't returning as often, fewer complete the first key action, and more exit at checkout, indicating blockers in onboarding and purchase steps.
-                  </p>
-                  <div className="flex items-center gap-2.5">
-                    <span className="px-2.5 py-1 bg-highlight/20 rounded-full text-sm font-semibold">
-                      Semi structured interviews
-                    </span>
-                    <div className="flex -space-x-2">
-                      <div className="w-5.5 h-5.5 rounded-full bg-highlight/30" />
-                      <div className="w-5.5 h-5.5 rounded-full bg-highlight/40" />
-                      <div className="w-5.5 h-5.5 rounded-full bg-highlight/50" />
+              {/* Detail Views */}
+              {dashboardView === 'insight' && (
+                <InsightDetailView
+                  onClose={() => setDashboardView('none')}
+                  insight={{
+                    headline: "Users aren't returning as often, fewer complete the first key action, and more exit at checkout, indicating blockers in onboarding and purchase steps.",
+                    type: 'Signal',
+                    source: 'Semi structured interviews',
+                    contributorCount: 41
+                  }}
+                />
+              )}
+
+              {dashboardView === 'task' && (
+                <ActionDetailPanel
+                  onClose={() => setDashboardView('none')}
+                  task={{
+                    title: "Review today's drop in step-two activation."
+                  }}
+                />
+              )}
+
+              {dashboardView === 'sources' && (
+                <SourcesOverviewView
+                  onClose={() => setDashboardView('none')}
+                />
+              )}
+
+              {dashboardView === 'prompt' && (
+                <SuggestedPromptView
+                  onClose={() => setDashboardView('none')}
+                  prompt="What's driving this month's performance changes?"
+                />
+              )}
+
+              {dashboardView === 'recent' && (
+                <RecentActivityView
+                  onClose={() => setDashboardView('none')}
+                />
+              )}
+
+              {dashboardView === 'agents' && (
+                <AgentsOverviewView
+                  onClose={() => setDashboardView('none')}
+                />
+              )}
+
+              {/* Dashboard Cards Grid */}
+              {dashboardView === 'none' && (
+                <div className="grid gap-3.5 md:grid-cols-2 lg:grid-cols-3">
+                  {/* Featured Insight Card - Purple */}
+                  <div 
+                    onClick={() => setDashboardView('insight')}
+                    className="bg-highlight-surface rounded-2xl p-5 text-highlight-foreground cursor-pointer hover:opacity-90 transition-opacity"
+                  >
+                    <div className="w-7 h-7 rounded-full bg-highlight/20 flex items-center justify-center mb-3">
+                      <CircleDot className="w-3.5 h-3.5 stroke-[2.5]" />
                     </div>
-                    <span className="text-sm text-highlight-foreground/70 font-medium">+41</span>
-                  </div>
-                </div>
-
-                {/* Suggested Task Card */}
-                <div className="insight-card flex flex-col">
-                  <div className="flex items-center gap-1.5 text-muted-foreground mb-2.5">
-                    <FileText className="w-4 h-4 stroke-[2.5]" />
-                    <span className="text-sm font-medium">Suggested task</span>
-                  </div>
-                  <h3 className="text-xl font-semibold text-foreground">
-                    Review today's drop in step-two activation.
-                  </h3>
-                  <div className="gap-1.5 mt-auto pb-0 text-muted-foreground flex items-end justify-start">
-                    <Link2 className="w-4 h-4 stroke-[2.5]" />
-                    <span className="text-sm font-medium">Select data source</span>
-                    <span className="text-sm font-medium">›</span>
-                  </div>
-                </div>
-
-                {/* Connected Sources Card */}
-                <div className="insight-card flex flex-col">
-                  <div className="flex items-center gap-1.5 text-muted-foreground mb-3">
-                    <Link2 className="w-4 h-4 stroke-[2.5]" />
-                    <span className="text-sm font-medium">Connected sources</span>
-                  </div>
-                  <div className="space-y-2.5 flex-1 max-h-32 overflow-y-auto">
-                    {connectedSources.slice(0, 5).map(source => (
-                      <div key={source.name} className="flex items-center gap-2.5">
-                        <span className="text-base">{source.icon}</span>
-                        <span className="text-foreground font-medium truncate">{source.name}</span>
+                    <p className="text-xl font-semibold mb-5">
+                      Users aren't returning as often, fewer complete the first key action, and more exit at checkout, indicating blockers in onboarding and purchase steps.
+                    </p>
+                    <div className="flex items-center gap-2.5">
+                      <span className="px-2.5 py-1 bg-highlight/20 rounded-full text-sm font-semibold">
+                        Semi structured interviews
+                      </span>
+                      <div className="flex -space-x-2">
+                        <div className="w-5.5 h-5.5 rounded-full bg-highlight/30" />
+                        <div className="w-5.5 h-5.5 rounded-full bg-highlight/40" />
+                        <div className="w-5.5 h-5.5 rounded-full bg-highlight/50" />
                       </div>
-                    ))}
+                      <span className="text-sm text-highlight-foreground/70 font-medium">+41</span>
+                    </div>
                   </div>
-                  <div className="relative mt-auto pb-0">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground stroke-[2.5]" />
-                    <input 
-                      type="text" 
-                      placeholder="Search for documents" 
-                      className="w-full bg-muted/50 rounded-full pl-9 pr-3.5 py-1.5 text-sm placeholder:text-muted-foreground focus:outline-none font-medium" 
-                    />
-                  </div>
-                </div>
 
-                {/* Suggested Prompt Card */}
-                <div className="insight-card flex flex-col">
-                  <div className="flex items-center gap-1.5 text-muted-foreground mb-2.5">
-                    <Code2 className="w-4 h-4 stroke-[2.5]" />
-                    <span className="text-sm font-medium">Suggested prompt</span>
+                  {/* Suggested Task Card */}
+                  <div 
+                    onClick={() => setDashboardView('task')}
+                    className="insight-card flex flex-col cursor-pointer hover:border-border transition-colors"
+                  >
+                    <div className="flex items-center gap-1.5 text-muted-foreground mb-2.5">
+                      <FileText className="w-4 h-4 stroke-[2.5]" />
+                      <span className="text-sm font-medium">Suggested task</span>
+                    </div>
+                    <h3 className="text-xl font-semibold text-foreground">
+                      Review today's drop in step-two activation.
+                    </h3>
+                    <div className="gap-1.5 mt-auto pb-0 text-muted-foreground flex items-end justify-start">
+                      <Link2 className="w-4 h-4 stroke-[2.5]" />
+                      <span className="text-sm font-medium">Select data source</span>
+                      <span className="text-sm font-medium">›</span>
+                    </div>
                   </div>
-                  <h3 className="text-xl font-semibold text-foreground">
-                    What's driving this month's performance changes?
-                  </h3>
-                  <div className="flex items-center gap-1.5 mt-auto pb-0 text-muted-foreground py-0 pt-[130px]">
-                    <Link2 className="w-4 h-4 stroke-[2.5]" />
-                    <span className="text-sm font-medium">Select data source</span>
-                    <span className="text-xs font-medium">›</span>
-                  </div>
-                </div>
 
-                {/* Recently Uploaded Card */}
-                <div className="insight-card flex flex-col">
-                  <div className="flex items-center gap-1.5 text-muted-foreground mb-2.5">
-                    <FileUp className="w-4 h-4 stroke-[2.5]" />
-                    <span className="text-sm font-medium">Recently uploaded</span>
+                  {/* Connected Sources Card */}
+                  <div 
+                    onClick={() => setDashboardView('sources')}
+                    className="insight-card flex flex-col cursor-pointer hover:border-border transition-colors"
+                  >
+                    <div className="flex items-center gap-1.5 text-muted-foreground mb-3">
+                      <Link2 className="w-4 h-4 stroke-[2.5]" />
+                      <span className="text-sm font-medium">Connected sources</span>
+                    </div>
+                    <div className="space-y-2.5 flex-1 max-h-32 overflow-y-auto">
+                      {connectedSources.slice(0, 5).map(source => (
+                        <div key={source.name} className="flex items-center gap-2.5">
+                          <span className="text-base">{source.icon}</span>
+                          <span className="text-foreground font-medium truncate">{source.name}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="relative mt-auto pb-0" onClick={(e) => e.stopPropagation()}>
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground stroke-[2.5]" />
+                      <input 
+                        type="text" 
+                        placeholder="Search for documents" 
+                        className="w-full bg-muted/50 rounded-full pl-9 pr-3.5 py-1.5 text-sm placeholder:text-muted-foreground focus:outline-none font-medium" 
+                      />
+                    </div>
                   </div>
-                  <h3 className="text-xl font-semibold text-foreground">
-                    Which emerging patterns matter for our next release?
-                  </h3>
-                  <div className="flex items-center gap-1.5 mt-auto pb-0 text-muted-foreground">
-                    <span className="text-red-400">📕</span>
-                    <span className="text-sm">E-commerce Trends_2025  ›</span>
-                  </div>
-                </div>
 
-                {/* Active Agents Card */}
-                <div className="insight-card">
-                  <div className="flex items-center gap-1.5 text-muted-foreground mb-3">
-                    <Bot className="w-4 h-4 stroke-[2.5]" />
-                    <span className="text-sm font-medium">Active Agents</span>
+                  {/* Suggested Prompt Card */}
+                  <div 
+                    onClick={() => setDashboardView('prompt')}
+                    className="insight-card flex flex-col cursor-pointer hover:border-border transition-colors"
+                  >
+                    <div className="flex items-center gap-1.5 text-muted-foreground mb-2.5">
+                      <Code2 className="w-4 h-4 stroke-[2.5]" />
+                      <span className="text-sm font-medium">Suggested prompt</span>
+                    </div>
+                    <h3 className="text-xl font-semibold text-foreground">
+                      What's driving this month's performance changes?
+                    </h3>
+                    <div className="flex items-center gap-1.5 mt-auto pb-0 text-muted-foreground py-0 pt-[130px]">
+                      <Link2 className="w-4 h-4 stroke-[2.5]" />
+                      <span className="text-sm font-medium">Select data source</span>
+                      <span className="text-xs font-medium">›</span>
+                    </div>
                   </div>
-                  <div className="grid grid-cols-2 gap-1.5">
-                    {activeAgents.map(agent => {
-                      const Icon = agent.icon;
-                      return (
-                        <button 
-                          key={agent.name} 
-                          className="flex items-center gap-1.5 bg-muted/50 hover:bg-muted rounded-xl text-sm text-foreground transition-colors font-medium py-[28px] px-[10px]"
-                        >
-                          <Icon className="w-4 h-4 text-muted-foreground stroke-[2.5]" />
-                          <span>{agent.name}</span>
-                        </button>
-                      );
-                    })}
+
+                  {/* Recently Uploaded Card */}
+                  <div 
+                    onClick={() => setDashboardView('recent')}
+                    className="insight-card flex flex-col cursor-pointer hover:border-border transition-colors"
+                  >
+                    <div className="flex items-center gap-1.5 text-muted-foreground mb-2.5">
+                      <FileUp className="w-4 h-4 stroke-[2.5]" />
+                      <span className="text-sm font-medium">Recently uploaded</span>
+                    </div>
+                    <h3 className="text-xl font-semibold text-foreground">
+                      Which emerging patterns matter for our next release?
+                    </h3>
+                    <div className="flex items-center gap-1.5 mt-auto pb-0 text-muted-foreground">
+                      <span>📕</span>
+                      <span className="text-sm">E-commerce Trends_2025  ›</span>
+                    </div>
+                  </div>
+
+                  {/* Active Agents Card */}
+                  <div 
+                    onClick={() => setDashboardView('agents')}
+                    className="insight-card cursor-pointer hover:border-border transition-colors"
+                  >
+                    <div className="flex items-center gap-1.5 text-muted-foreground mb-3">
+                      <Bot className="w-4 h-4 stroke-[2.5]" />
+                      <span className="text-sm font-medium">Active Agents</span>
+                    </div>
+                    <div className="grid grid-cols-2 gap-1.5">
+                      {activeAgents.map(agent => {
+                        const Icon = agent.icon;
+                        return (
+                          <div 
+                            key={agent.name} 
+                            className="flex items-center gap-1.5 bg-muted/50 rounded-xl text-sm text-foreground font-medium py-[28px] px-[10px]"
+                          >
+                            <Icon className="w-4 h-4 text-muted-foreground stroke-[2.5]" />
+                            <span>{agent.name}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
             </motion.div>
           )}
         </AnimatePresence>
