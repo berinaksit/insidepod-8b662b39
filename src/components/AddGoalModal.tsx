@@ -129,7 +129,7 @@ export function AddGoalModal({ open, onOpenChange, onSave }: AddGoalModalProps) 
         <DialogHeader>
           <DialogTitle className="font-display text-xl text-foreground flex items-center gap-2">
             <Target className="w-5 h-5" />
-            Create Goal
+            Add Goal
           </DialogTitle>
         </DialogHeader>
 

@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { GoalCard } from '@/components/GoalCard';
 import { GoalsEmptyState } from '@/components/GoalsEmptyState';
-import { CreateGoalPanel } from '@/components/CreateGoalPanel';
+import { AddGoalModal, GoalFormData } from '@/components/AddGoalModal';
 import { GoalDetailPanel } from '@/components/GoalDetailPanel';
 import { useDocuments } from '@/contexts/DocumentsContext';
 import { Plus, Filter, ArrowUpDown, X } from 'lucide-react';
@@ -49,10 +49,10 @@ const sortLabels: Record<SortOption, string> = {
 };
 
 export function GoalsView() {
-  const [isCreateGoalOpen, setIsCreateGoalOpen] = useState(false);
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [selectedGoal, setSelectedGoal] = useState<Goal | null>(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
-  const { goals } = useDocuments();
+  const { goals, addGoal } = useDocuments();
 
   // Filters
   const [typeFilter, setTypeFilter] = useState<GoalType | 'all'>('all');
@@ -68,12 +68,24 @@ export function GoalsView() {
     setTimeframeFilter('all');
   };
 
-  const handleAddGoalClick = () => {
-    setIsCreateGoalOpen(true);
-  };
-
-  const handleCloseCreateGoal = () => {
-    setIsCreateGoalOpen(false);
+  const handleCreateGoal = (goalData: GoalFormData) => {
+    const now = new Date();
+    addGoal({
+      title: goalData.title,
+      description: goalData.description,
+      goalType: goalData.goalType,
+      targetValue: goalData.targetValue,
+      startDate: goalData.startDate,
+      endDate: goalData.endDate,
+      linkedAgentIds: goalData.linkedAgentIds,
+      linkedDataSourceIds: goalData.linkedDataSourceIds,
+      progress: 0,
+      status: 'on-track' as const,
+      signals: [],
+      insights: [],
+      createdAt: now,
+      updatedAt: now,
+    });
   };
 
   const handleGoalClick = (goal: Goal) => {
@@ -129,10 +141,11 @@ export function GoalsView() {
   if (goals.length === 0) {
     return (
       <>
-        <GoalsEmptyState onCreateGoal={handleAddGoalClick} />
-        <CreateGoalPanel
-          isOpen={isCreateGoalOpen}
-          onClose={handleCloseCreateGoal}
+        <GoalsEmptyState onCreateGoal={() => setIsCreateOpen(true)} />
+        <AddGoalModal
+          open={isCreateOpen}
+          onOpenChange={setIsCreateOpen}
+          onSave={handleCreateGoal}
         />
       </>
     );
@@ -155,7 +168,7 @@ export function GoalsView() {
         </div>
         
         <Button
-          onClick={handleAddGoalClick}
+          onClick={() => setIsCreateOpen(true)}
           className="flex items-center gap-2 rounded-xl self-start sm:self-auto"
         >
           <Plus className="w-4 h-4" />
@@ -274,9 +287,10 @@ export function GoalsView() {
         </div>
       )}
 
-      <CreateGoalPanel
-        isOpen={isCreateGoalOpen}
-        onClose={handleCloseCreateGoal}
+      <AddGoalModal
+        open={isCreateOpen}
+        onOpenChange={setIsCreateOpen}
+        onSave={handleCreateGoal}
       />
 
       <GoalDetailPanel
