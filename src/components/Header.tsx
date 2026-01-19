@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Bell, User, Settings, LogOut } from 'lucide-react';
+import { Bell, User, Settings, LogOut, FolderOpen, ChevronRight } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -7,13 +7,19 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useProjects } from '@/contexts/ProjectsContext';
+import { Button } from '@/components/ui/button';
 
 interface HeaderProps {
   onSettingsClick?: () => void;
   onLogoClick?: () => void;
+  showProjectSwitch?: boolean;
+  onProjectSwitch?: () => void;
 }
 
-export function Header({ onSettingsClick, onLogoClick }: HeaderProps) {
+export function Header({ onSettingsClick, onLogoClick, showProjectSwitch, onProjectSwitch }: HeaderProps) {
+  const { activeProject } = useProjects();
+
   return (
     <motion.header
       initial={{ opacity: 0, y: -20 }}
@@ -21,15 +27,33 @@ export function Header({ onSettingsClick, onLogoClick }: HeaderProps) {
       transition={{ duration: 0.4 }}
       className="flex items-center justify-between px-6 py-4 border-b border-border/50"
     >
-      <button 
-        onClick={onLogoClick}
-        className="flex items-center gap-2 hover:opacity-80 transition-opacity"
-      >
-        <div className="w-5 h-5 rounded-xl flex items-center justify-center bg-slate-950">
-          <span className="text-primary-foreground font-display text-lg"></span>
-        </div>
-        <span className="font-display text-xl text-foreground">Inside Pōd</span>
-      </button>
+      <div className="flex items-center gap-3">
+        <button 
+          onClick={onLogoClick}
+          className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+        >
+          <div className="w-5 h-5 rounded-xl flex items-center justify-center bg-foreground">
+            <span className="text-primary-foreground font-display text-lg"></span>
+          </div>
+          <span className="font-display text-xl text-foreground">Inside Pōd</span>
+        </button>
+
+        {/* Project breadcrumb */}
+        {showProjectSwitch && activeProject && (
+          <>
+            <ChevronRight className="w-4 h-4 text-muted-foreground" />
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onProjectSwitch}
+              className="flex items-center gap-2 text-muted-foreground hover:text-foreground"
+            >
+              <FolderOpen className="w-4 h-4" />
+              <span className="max-w-[200px] truncate">{activeProject.name}</span>
+            </Button>
+          </>
+        )}
+      </div>
 
       <div className="flex items-center gap-2">
         <button className="p-2.5 rounded-xl hover:bg-muted transition-colors relative">
