@@ -12,6 +12,7 @@ import { Sparkles, Target, Bot, Plus, LayoutDashboard, CircleDot, FileText, Link
 import { View } from '@/pages/Index';
 import { Button } from '@/components/ui/button';
 import { CreateGoalModal, Goal, GoalType } from '@/components/CreateGoalModal';
+import { GoalDetailView } from '@/components/GoalDetailView';
 
 interface HomeViewProps {
   currentTab: View;
@@ -26,6 +27,7 @@ export function HomeView({
   const [editingAgent, setEditingAgent] = useState<Agent | null>(null);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [isGoalModalOpen, setIsGoalModalOpen] = useState(false);
+  const [selectedGoal, setSelectedGoal] = useState<Goal | null>(null);
   
   // Goals state with localStorage persistence
   const GOALS_STORAGE_KEY = 'insidepod_goals_v2';
@@ -326,8 +328,23 @@ export function HomeView({
     'Custom': 'bg-muted text-muted-foreground',
   };
 
+  // Handle goal card click
+  const handleGoalClick = (goal: Goal) => {
+    setSelectedGoal(goal);
+  };
+
   // Render Goals content
   const renderGoalsContent = () => {
+    // Show detail view if a goal is selected
+    if (selectedGoal) {
+      return (
+        <GoalDetailView
+          goal={selectedGoal}
+          onClose={() => setSelectedGoal(null)}
+        />
+      );
+    }
+
     return (
       <>
         <div className="flex items-center justify-between mb-5">
@@ -365,7 +382,8 @@ export function HomeView({
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: index * 0.05 }}
-                className="bg-card rounded-2xl p-5 shadow-card border border-border/50 hover:border-border transition-colors"
+                onClick={() => handleGoalClick(goal)}
+                className="bg-card rounded-2xl p-5 shadow-card border border-border/50 hover:border-border hover:shadow-md transition-all cursor-pointer"
               >
                 <div className="flex items-start justify-between gap-3 mb-3">
                   <span className={`px-2.5 py-1 rounded-md text-xs font-medium ${typeColors[goal.type]}`}>
