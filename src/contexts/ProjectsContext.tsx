@@ -75,10 +75,6 @@ interface ProjectsContextType {
   projectFiles: ProjectFile[];
   getFilesForProject: (projectId: string) => ProjectFile[];
   addFileToProject: (projectId: string, file: Omit<ProjectFile, 'id' | 'projectId' | 'uploadedAt'>) => ProjectFile;
-  
-  // Panel state
-  isProjectsPanelOpen: boolean;
-  setIsProjectsPanelOpen: (open: boolean) => void;
 }
 
 const ProjectsContext = createContext<ProjectsContextType | undefined>(undefined);
@@ -101,7 +97,6 @@ export function ProjectsProvider({ children }: { children: ReactNode }) {
   const [activeProjectId, setActiveProjectIdState] = useState<string | null>(() => 
     loadFromStorage<string | null>(STORAGE_KEYS.activeProjectId, null)
   );
-  const [isProjectsPanelOpen, setIsProjectsPanelOpen] = useState(false);
 
   // Persist projects to localStorage
   useEffect(() => {
@@ -176,8 +171,6 @@ export function ProjectsProvider({ children }: { children: ReactNode }) {
     projectFiles,
     getFilesForProject,
     addFileToProject,
-    isProjectsPanelOpen,
-    setIsProjectsPanelOpen,
   };
 
   return (

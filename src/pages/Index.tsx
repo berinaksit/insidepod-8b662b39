@@ -5,12 +5,13 @@ import { GoalsView } from '@/views/GoalsView';
 import { AgentsView } from '@/views/AgentsView';
 import { SettingsView } from '@/views/SettingsView';
 import { CreateAgentView } from '@/views/CreateAgentView';
+import { ProjectsView } from '@/views/ProjectsView';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useDocuments } from '@/contexts/DocumentsContext';
 import { GlobalUploadModal } from '@/components/GlobalUploadModal';
 import { FirstDocumentModal } from '@/components/FirstDocumentModal';
 
-export type View = 'home' | 'goals' | 'agents' | 'dashboard' | 'settings' | 'create-agent';
+export type View = 'home' | 'goals' | 'agents' | 'dashboard' | 'settings' | 'create-agent' | 'projects';
 
 const Index = () => {
   const [currentView, setCurrentView] = useState<View>('home');
@@ -45,6 +46,8 @@ const Index = () => {
             onCreate={() => setCurrentView('home')}
           />
         );
+      case 'projects':
+        return <ProjectsView onBack={() => setCurrentView('home')} />;
       case 'settings':
         return <SettingsView onNavigate={setCurrentView} />;
       default:
@@ -58,6 +61,7 @@ const Index = () => {
         <Header 
           onSettingsClick={() => setCurrentView('settings')} 
           onLogoClick={() => setCurrentView('home')}
+          onProjectsClick={() => setCurrentView('projects')}
         />
         
         <main className="flex-1 overflow-auto px-[150px]">
