@@ -1,10 +1,12 @@
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Insight } from '@/types';
+import { formatDistanceToNow } from 'date-fns';
 import { 
   FileText, 
   TrendingUp, 
   AlertTriangle, 
+  Sparkles, 
   Activity, 
   Target, 
   Lightbulb, 
@@ -12,9 +14,11 @@ import {
   Users,
   Zap,
   LineChart,
+  PieChart,
+  MessageSquare,
+  Clock,
   type LucideIcon
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 
 interface InsightCardProps {
   insight: Insight;
@@ -39,6 +43,10 @@ const contentFallbackIcons: { icon: LucideIcon; name: string }[] = [
   { icon: Users, name: 'Users' },
   { icon: Zap, name: 'Zap' },
   { icon: LineChart, name: 'LineChart' },
+  { icon: PieChart, name: 'PieChart' },
+  { icon: MessageSquare, name: 'MessageSquare' },
+  { icon: Clock, name: 'Clock' },
+  { icon: Sparkles, name: 'Sparkles' },
   { icon: FileText, name: 'FileText' },
 ];
 
@@ -53,26 +61,6 @@ const getAgentType = (sourceId: string): string | null => {
   };
   return agentTypes[sourceId] || null;
 };
-
-// Badge type mapping
-type BadgeType = 'Signal' | 'Pulse' | 'Insight';
-
-const getBadgeType = (type: string): BadgeType => {
-  switch (type) {
-    case 'signal':
-      return 'Signal';
-    case 'pulse':
-      return 'Pulse';
-    case 'insight':
-      return 'Insight';
-    default:
-      return 'Insight';
-  }
-};
-
-// Cards that can show badges and buttons (0-indexed positions in the grid)
-// Middle card on first row (index 1), first card on second row (index 3), third card on second row (index 5)
-const CARDS_WITH_BADGES = [1, 3, 5];
 
 export function InsightCard({
   insight,
@@ -110,11 +98,8 @@ export function InsightCard({
     onIconUsed(iconName);
   }
 
-  // Determine if this is a dark card (index 0) or white card
-  const isDarkCard = index === 0;
-  
-  // Only white cards at specific positions can show badges and buttons
-  const canShowBadgeAndButton = !isDarkCard && CARDS_WITH_BADGES.includes(index);
+  // Create varied layouts based on index
+  const layoutVariant = index % 4;
 
   const handleClick = () => {
     if (onClick) {
@@ -123,10 +108,8 @@ export function InsightCard({
     navigate(`/insight/${insight.id}`);
   };
 
-  const badgeType = getBadgeType(insight.type);
-
-  // Featured card (first one) - dark themed, no badge/button
-  if (isDarkCard) {
+  // Featured card (first one) - dark themed
+  if (layoutVariant === 0) {
     return (
       <motion.article
         initial={{ opacity: 0, y: 20 }}
@@ -149,14 +132,88 @@ export function InsightCard({
           </div>
           
           <div className="flex items-center gap-2 text-background/60 text-sm font-medium">
-            <span>{insight.source.name} · {insight.evidenceCount} sources</span>
+            <span>{insight.source.name}</span>
+            <span>·</span>
+            <span>{formatDistanceToNow(insight.timestamp, { addSuffix: false })}</span>
           </div>
         </div>
       </motion.article>
     );
   }
 
-  // White cards with optional badge and button
+  // Quote/question style card
+  if (layoutVariant === 1) {
+    return (
+      <motion.article
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{
+          duration: 0.4,
+          delay: index * 0.1,
+          ease: [0.4, 0, 0.2, 1]
+        }}
+        className="insight-card cursor-pointer group min-h-[280px] flex flex-col"
+        onClick={handleClick}
+      >
+        <div className="flex items-center gap-2 mb-4">
+          <span className="text-muted-foreground font-medium text-sm">Ask</span>
+          {insight.isNew && (
+            <span className="w-2 h-2 rounded-full bg-foreground" />
+          )}
+        </div>
+        
+        <h3 className="text-lg font-semibold text-foreground leading-snug mb-auto">
+          "{insight.synthesis}"
+        </h3>
+        
+        <div className="mt-8 flex items-center gap-3">
+          <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
+            <FileText className="w-5 h-5 text-muted-foreground stroke-[1.5]" />
+          </div>
+          <div className="text-sm text-muted-foreground font-medium">
+            <span>{insight.evidenceCount} sources</span>
+            <span className="mx-1.5">·</span>
+            <span>{formatDistanceToNow(insight.timestamp, { addSuffix: false })}</span>
+          </div>
+        </div>
+      </motion.article>
+    );
+  }
+
+  // Visual emphasis card with large icon
+  if (layoutVariant === 2) {
+    return (
+      <motion.article
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{
+          duration: 0.4,
+          delay: index * 0.1,
+          ease: [0.4, 0, 0.2, 1]
+        }}
+        className="insight-card cursor-pointer group min-h-[280px] flex flex-col"
+        onClick={handleClick}
+      >
+        <h3 className="text-lg font-semibold text-foreground leading-snug mb-6">
+          {insight.title}
+        </h3>
+        
+        <div className="flex-1 flex items-center justify-center">
+          <div className="w-24 h-24 rounded-2xl bg-muted/80 flex items-center justify-center">
+            <Icon className="w-10 h-10 text-muted-foreground stroke-[1.5]" />
+          </div>
+        </div>
+        
+        <div className="mt-auto flex items-center gap-2 text-sm text-muted-foreground font-medium">
+          <span>{insight.source.name}</span>
+          <span>·</span>
+          <span>{formatDistanceToNow(insight.timestamp, { addSuffix: false })}</span>
+        </div>
+      </motion.article>
+    );
+  }
+
+  // Minimal card with confidence indicator
   return (
     <motion.article
       initial={{ opacity: 0, y: 20 }}
@@ -169,47 +226,37 @@ export function InsightCard({
       className="insight-card cursor-pointer group min-h-[280px] flex flex-col"
       onClick={handleClick}
     >
-      {/* Badge - only for specific cards */}
-      {canShowBadgeAndButton && (
-        <div className="mb-4">
-          <span className="px-2.5 py-1 rounded-md text-xs font-semibold bg-muted text-muted-foreground">
-            {badgeType}
-          </span>
-        </div>
-      )}
+      <div className="flex items-center justify-between mb-4">
+        <span className="px-2.5 py-1 rounded-md text-xs font-semibold bg-muted text-muted-foreground">
+          {insight.type.charAt(0).toUpperCase() + insight.type.slice(1)}
+        </span>
+        {insight.isNew && (
+          <span className="w-2 h-2 rounded-full bg-foreground" />
+        )}
+      </div>
       
-      {/* Title - single clear takeaway */}
       <h3 className="text-lg font-semibold text-foreground leading-snug mb-auto">
         {insight.title}
       </h3>
       
-      {/* Footer area */}
       <div className="mt-8">
-        {/* Icon for cards without badge/button */}
-        {!canShowBadgeAndButton && (
-          <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center mb-4">
-            <Icon className="w-5 h-5 text-muted-foreground stroke-[1.5]" />
+        <div className="flex items-center gap-2 mb-3">
+          <div className="flex-1 h-1 bg-muted rounded-full overflow-hidden">
+            <div 
+              className="h-full bg-foreground/60 rounded-full"
+              style={{ width: `${insight.confidence * 100}%` }}
+            />
           </div>
-        )}
+          <span className="text-xs text-muted-foreground font-medium">
+            {Math.round(insight.confidence * 100)}%
+          </span>
+        </div>
         
-        {/* Button - only for specific cards */}
-        {canShowBadgeAndButton ? (
-          <Button 
-            variant="outline" 
-            size="sm" 
-            className="rounded-full font-medium text-sm"
-            onClick={(e) => {
-              e.stopPropagation();
-              handleClick();
-            }}
-          >
-            {insight.source.name} · {insight.evidenceCount} sources
-          </Button>
-        ) : (
-          <div className="text-sm text-muted-foreground font-medium">
-            {insight.source.name} · {insight.evidenceCount} sources
-          </div>
-        )}
+        <div className="flex items-center gap-2 text-sm text-muted-foreground font-medium">
+          <span>{insight.evidenceCount} sources</span>
+          <span>·</span>
+          <span>{formatDistanceToNow(insight.timestamp, { addSuffix: false })}</span>
+        </div>
       </div>
     </motion.article>
   );
