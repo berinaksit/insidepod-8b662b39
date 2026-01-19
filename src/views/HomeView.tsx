@@ -115,6 +115,18 @@ export function HomeView({
     openUploadModal('home');
   };
 
+  // Track used icons to prevent duplicates
+  const [usedIcons, setUsedIcons] = useState<Set<string>>(new Set());
+
+  const handleIconUsed = (iconName: string) => {
+    setUsedIcons(prev => new Set(prev).add(iconName));
+  };
+
+  // Reset used icons when insights change
+  const resetUsedIcons = () => {
+    setUsedIcons(new Set());
+  };
+
   // Determine what empty state to show for Today's Insights
   const renderInsightsContent = () => {
     if (!hasDocuments) {
@@ -132,6 +144,12 @@ export function HomeView({
     }
     
     if (!hasAgents && generatedInsights.length === 0) {
+      // Create a local set for this render pass
+      const localUsedIcons = new Set<string>();
+      const handleLocalIconUsed = (iconName: string) => {
+        localUsedIcons.add(iconName);
+      };
+      
       return (
         <div>
           <div className="mb-6">
@@ -148,17 +166,37 @@ export function HomeView({
           {/* Still show mock insights */}
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {mockInsights.map((insight, index) => (
-              <InsightCard key={insight.id} insight={insight} index={index} onClick={() => {}} />
+              <InsightCard 
+                key={insight.id} 
+                insight={insight} 
+                index={index} 
+                usedIcons={localUsedIcons}
+                onIconUsed={handleLocalIconUsed}
+                onClick={() => {}} 
+              />
             ))}
           </div>
         </div>
       );
     }
 
+    // Create a local set for this render pass
+    const localUsedIcons = new Set<string>();
+    const handleLocalIconUsed = (iconName: string) => {
+      localUsedIcons.add(iconName);
+    };
+
     return (
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {allInsights.map((insight, index) => (
-          <InsightCard key={insight.id} insight={insight} index={index} onClick={() => {}} />
+          <InsightCard 
+            key={insight.id} 
+            insight={insight} 
+            index={index} 
+            usedIcons={localUsedIcons}
+            onIconUsed={handleLocalIconUsed}
+            onClick={() => {}} 
+          />
         ))}
       </div>
     );
