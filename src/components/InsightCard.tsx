@@ -1,12 +1,15 @@
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Insight } from '@/types';
+import { formatDistanceToNow } from 'date-fns';
 import { 
+  FileText, 
+  TrendingUp, 
   AlertTriangle, 
+  Sparkles, 
   Activity, 
   Target, 
   Lightbulb, 
-  TrendingUp, 
   BarChart3,
   Users,
   Zap,
@@ -14,8 +17,6 @@ import {
   PieChart,
   MessageSquare,
   Clock,
-  Sparkles,
-  FileText,
   type LucideIcon
 } from 'lucide-react';
 
@@ -36,7 +37,7 @@ const agentIcons: Record<string, { icon: LucideIcon; name: string }> = {
   'trend-summarizer': { icon: TrendingUp, name: 'TrendingUp' },
 };
 
-// Content-relevant fallback icons
+// Content-relevant fallback icons (used when agent icon is already displayed)
 const contentFallbackIcons: { icon: LucideIcon; name: string }[] = [
   { icon: BarChart3, name: 'BarChart3' },
   { icon: Users, name: 'Users' },
@@ -61,23 +62,6 @@ const getAgentType = (sourceId: string): string | null => {
   return agentTypes[sourceId] || null;
 };
 
-// Badge component
-const Badge = ({ type }: { type: string }) => {
-  const badgeConfig: Record<string, { label: string; className: string }> = {
-    signal: { label: 'Signal', className: 'bg-foreground text-background' },
-    pulse: { label: 'Pulse', className: 'bg-muted text-muted-foreground' },
-    insight: { label: 'Insight', className: 'bg-muted text-muted-foreground' },
-  };
-  
-  const config = badgeConfig[type] || badgeConfig.insight;
-  
-  return (
-    <span className={`px-2.5 py-1 rounded-md text-xs font-semibold ${config.className}`}>
-      {config.label}
-    </span>
-  );
-};
-
 export function InsightCard({
   insight,
   index,
@@ -88,7 +72,7 @@ export function InsightCard({
   const navigate = useNavigate();
   
   // Get the appropriate icon for this card
-  const getIcon = (): { Icon: LucideIcon; iconName: string } | null => {
+  const getIcon = (): { Icon: LucideIcon; iconName: string } => {
     const agentType = getAgentType(insight.source.id);
     
     // If agent has a specific icon and it hasn't been used yet
@@ -103,15 +87,15 @@ export function InsightCard({
       }
     }
     
-    // Return null if all icons are used (hide icon)
-    return null;
+    // Last resort: use FileText
+    return { Icon: FileText, iconName: 'FileText-fallback' };
   };
 
-  const iconData = getIcon();
+  const { Icon, iconName } = getIcon();
   
   // Register icon as used on mount
-  if (iconData && !usedIcons.has(iconData.iconName)) {
-    onIconUsed(iconData.iconName);
+  if (!usedIcons.has(iconName)) {
+    onIconUsed(iconName);
   }
 
   // Create varied layouts based on index
@@ -123,13 +107,6 @@ export function InsightCard({
     }
     navigate(`/insight/${insight.id}`);
   };
-
-  // Footer button with agent name and sources
-  const FooterButton = () => (
-    <button className="text-sm text-muted-foreground font-medium hover:text-foreground transition-colors text-left">
-      {insight.source.name} · {insight.evidenceCount} sources
-    </button>
-  );
 
   // Featured card (first one) - dark themed
   if (layoutVariant === 0) {
@@ -145,38 +122,26 @@ export function InsightCard({
         className="bg-foreground rounded-2xl p-6 cursor-pointer group min-h-[280px] flex flex-col"
         onClick={handleClick}
       >
-        <div className="flex items-center justify-between mb-4">
-          <span className="px-2.5 py-1 rounded-md text-xs font-semibold bg-background/20 text-background">
-            {insight.type.charAt(0).toUpperCase() + insight.type.slice(1)}
-          </span>
-          {insight.isNew && (
-            <span className="w-2 h-2 rounded-full bg-background" />
-          )}
-        </div>
-        
-        <h3 className="text-xl font-semibold text-background leading-snug mb-3">
+        <h3 className="text-xl font-semibold text-background leading-snug mb-auto">
           {insight.title}
         </h3>
         
-        <p className="text-sm text-background/70 leading-relaxed mb-auto">
-          {insight.synthesis}
-        </p>
-        
-        <div className="mt-6 flex items-center justify-between">
-          {iconData && (
-            <div className="w-12 h-12 rounded-xl bg-background/10 flex items-center justify-center">
-              <iconData.Icon className="w-6 h-6 text-background/70 stroke-[1.5]" />
-            </div>
-          )}
-          <button className="text-sm text-background/60 font-medium hover:text-background transition-colors">
-            {insight.source.name} · {insight.evidenceCount} sources
-          </button>
+        <div className="mt-8">
+          <div className="w-16 h-16 rounded-xl bg-background/10 flex items-center justify-center mb-6">
+            <Icon className="w-7 h-7 text-background/70 stroke-[1.5]" />
+          </div>
+          
+          <div className="flex items-center gap-2 text-background/60 text-sm font-medium">
+            <span>{insight.source.name}</span>
+            <span>·</span>
+            <span>{formatDistanceToNow(insight.timestamp, { addSuffix: false })}</span>
+          </div>
         </div>
       </motion.article>
     );
   }
 
-  // Minimal card with badge
+  // Quote/question style card
   if (layoutVariant === 1) {
     return (
       <motion.article
@@ -190,23 +155,26 @@ export function InsightCard({
         className="insight-card cursor-pointer group min-h-[280px] flex flex-col"
         onClick={handleClick}
       >
-        <div className="flex items-center justify-between mb-4">
-          <Badge type={insight.type} />
+        <div className="flex items-center gap-2 mb-4">
+          <span className="text-muted-foreground font-medium text-sm">Ask</span>
           {insight.isNew && (
             <span className="w-2 h-2 rounded-full bg-foreground" />
           )}
         </div>
         
-        <h3 className="text-lg font-semibold text-foreground leading-snug mb-3">
-          {insight.title}
+        <h3 className="text-lg font-semibold text-foreground leading-snug mb-auto">
+          "{insight.synthesis}"
         </h3>
         
-        <p className="text-sm text-muted-foreground leading-relaxed mb-auto line-clamp-3">
-          {insight.synthesis}
-        </p>
-        
-        <div className="mt-6">
-          <FooterButton />
+        <div className="mt-8 flex items-center gap-3">
+          <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
+            <FileText className="w-5 h-5 text-muted-foreground stroke-[1.5]" />
+          </div>
+          <div className="text-sm text-muted-foreground font-medium">
+            <span>{insight.evidenceCount} sources</span>
+            <span className="mx-1.5">·</span>
+            <span>{formatDistanceToNow(insight.timestamp, { addSuffix: false })}</span>
+          </div>
         </div>
       </motion.article>
     );
@@ -226,33 +194,26 @@ export function InsightCard({
         className="insight-card cursor-pointer group min-h-[280px] flex flex-col"
         onClick={handleClick}
       >
-        <div className="flex items-center justify-between mb-4">
-          <Badge type={insight.type} />
-          {insight.isNew && (
-            <span className="w-2 h-2 rounded-full bg-foreground" />
-          )}
-        </div>
-        
-        <h3 className="text-lg font-semibold text-foreground leading-snug mb-4">
+        <h3 className="text-lg font-semibold text-foreground leading-snug mb-6">
           {insight.title}
         </h3>
         
-        {iconData && (
-          <div className="flex-1 flex items-center justify-center py-4">
-            <div className="w-20 h-20 rounded-2xl bg-muted/80 flex items-center justify-center">
-              <iconData.Icon className="w-9 h-9 text-muted-foreground stroke-[1.5]" />
-            </div>
+        <div className="flex-1 flex items-center justify-center">
+          <div className="w-24 h-24 rounded-2xl bg-muted/80 flex items-center justify-center">
+            <Icon className="w-10 h-10 text-muted-foreground stroke-[1.5]" />
           </div>
-        )}
+        </div>
         
-        <div className="mt-auto">
-          <FooterButton />
+        <div className="mt-auto flex items-center gap-2 text-sm text-muted-foreground font-medium">
+          <span>{insight.source.name}</span>
+          <span>·</span>
+          <span>{formatDistanceToNow(insight.timestamp, { addSuffix: false })}</span>
         </div>
       </motion.article>
     );
   }
 
-  // Synthesis-focused card
+  // Minimal card with confidence indicator
   return (
     <motion.article
       initial={{ opacity: 0, y: 20 }}
@@ -266,27 +227,36 @@ export function InsightCard({
       onClick={handleClick}
     >
       <div className="flex items-center justify-between mb-4">
-        <Badge type={insight.type} />
+        <span className="px-2.5 py-1 rounded-md text-xs font-semibold bg-muted text-muted-foreground">
+          {insight.type.charAt(0).toUpperCase() + insight.type.slice(1)}
+        </span>
         {insight.isNew && (
           <span className="w-2 h-2 rounded-full bg-foreground" />
         )}
       </div>
       
-      <h3 className="text-lg font-semibold text-foreground leading-snug mb-3">
+      <h3 className="text-lg font-semibold text-foreground leading-snug mb-auto">
         {insight.title}
       </h3>
       
-      <p className="text-sm text-muted-foreground leading-relaxed mb-auto">
-        {insight.synthesis}
-      </p>
-      
-      <div className="mt-6 flex items-center gap-3">
-        {iconData && (
-          <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
-            <iconData.Icon className="w-5 h-5 text-muted-foreground stroke-[1.5]" />
+      <div className="mt-8">
+        <div className="flex items-center gap-2 mb-3">
+          <div className="flex-1 h-1 bg-muted rounded-full overflow-hidden">
+            <div 
+              className="h-full bg-foreground/60 rounded-full"
+              style={{ width: `${insight.confidence * 100}%` }}
+            />
           </div>
-        )}
-        <FooterButton />
+          <span className="text-xs text-muted-foreground font-medium">
+            {Math.round(insight.confidence * 100)}%
+          </span>
+        </div>
+        
+        <div className="flex items-center gap-2 text-sm text-muted-foreground font-medium">
+          <span>{insight.evidenceCount} sources</span>
+          <span>·</span>
+          <span>{formatDistanceToNow(insight.timestamp, { addSuffix: false })}</span>
+        </div>
       </div>
     </motion.article>
   );
