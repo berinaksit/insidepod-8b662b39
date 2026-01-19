@@ -1,12 +1,10 @@
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Insight } from '@/types';
-import { formatDistanceToNow } from 'date-fns';
 import { 
   FileText, 
   TrendingUp, 
   AlertTriangle, 
-  Sparkles, 
   Activity, 
   Target, 
   Lightbulb, 
@@ -17,8 +15,10 @@ import {
   PieChart,
   MessageSquare,
   Clock,
+  Sparkles,
   type LucideIcon
 } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 
 interface InsightCardProps {
   insight: Insight;
@@ -62,6 +62,37 @@ const getAgentType = (sourceId: string): string | null => {
   return agentTypes[sourceId] || null;
 };
 
+// Helper to get agent display name
+const getAgentDisplayName = (sourceId: string): string => {
+  const agentNames: Record<string, string> = {
+    'preset-a1': 'Risk Scanner',
+    'preset-a2': 'Retention Monitor',
+    'preset-a3': 'Adoption Tracker',
+    'preset-a4': 'Insight Synthesizer',
+    'preset-a5': 'Trend Summarizer',
+  };
+  return agentNames[sourceId] || 'Agent';
+};
+
+// Badge type mapping
+type BadgeType = 'Signal' | 'Pulse' | 'Insight';
+
+const getBadgeType = (type: string): BadgeType => {
+  switch (type) {
+    case 'signal':
+      return 'Signal';
+    case 'pulse':
+      return 'Pulse';
+    case 'insight':
+    default:
+      return 'Insight';
+  }
+};
+
+// Cards that can show badges and buttons (0-indexed positions in grid)
+// Middle card first row = index 1, First card second row = index 3, Third card second row = index 5
+const cardsWithBadges = [1, 3, 5];
+
 export function InsightCard({
   insight,
   index,
@@ -100,6 +131,12 @@ export function InsightCard({
 
   // Create varied layouts based on index
   const layoutVariant = index % 4;
+  
+  // Check if this card should show badge and button
+  const showBadgeAndButton = cardsWithBadges.includes(index) && layoutVariant !== 0;
+  
+  const badgeType = getBadgeType(insight.type);
+  const agentName = getAgentDisplayName(insight.source.id);
 
   const handleClick = () => {
     if (onClick) {
@@ -108,7 +145,7 @@ export function InsightCard({
     navigate(`/insight/${insight.id}`);
   };
 
-  // Featured card (first one) - dark themed
+  // Featured card (first one) - dark themed - never shows badge/button
   if (layoutVariant === 0) {
     return (
       <motion.article
@@ -132,16 +169,14 @@ export function InsightCard({
           </div>
           
           <div className="flex items-center gap-2 text-background/60 text-sm font-medium">
-            <span>{insight.source.name}</span>
-            <span>·</span>
-            <span>{formatDistanceToNow(insight.timestamp, { addSuffix: false })}</span>
+            <span>{agentName} · {insight.evidenceCount} sources</span>
           </div>
         </div>
       </motion.article>
     );
   }
 
-  // Quote/question style card
+  // Quote/synthesis style card - white
   if (layoutVariant === 1) {
     return (
       <motion.article
@@ -155,32 +190,37 @@ export function InsightCard({
         className="insight-card cursor-pointer group min-h-[280px] flex flex-col"
         onClick={handleClick}
       >
-        <div className="flex items-center gap-2 mb-4">
-          <span className="text-muted-foreground font-medium text-sm">Ask</span>
-          {insight.isNew && (
-            <span className="w-2 h-2 rounded-full bg-foreground" />
-          )}
-        </div>
+        {showBadgeAndButton && (
+          <div className="flex items-center gap-2 mb-4">
+            <Badge variant="secondary" className="text-xs font-semibold">
+              {badgeType}
+            </Badge>
+          </div>
+        )}
         
         <h3 className="text-lg font-semibold text-foreground leading-snug mb-auto">
-          "{insight.synthesis}"
+          {insight.title}
         </h3>
         
         <div className="mt-8 flex items-center gap-3">
           <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
-            <FileText className="w-5 h-5 text-muted-foreground stroke-[1.5]" />
+            <Icon className="w-5 h-5 text-muted-foreground stroke-[1.5]" />
           </div>
-          <div className="text-sm text-muted-foreground font-medium">
-            <span>{insight.evidenceCount} sources</span>
-            <span className="mx-1.5">·</span>
-            <span>{formatDistanceToNow(insight.timestamp, { addSuffix: false })}</span>
-          </div>
+          {showBadgeAndButton ? (
+            <button className="text-sm text-muted-foreground font-medium hover:text-foreground transition-colors">
+              {agentName} · {insight.evidenceCount} sources
+            </button>
+          ) : (
+            <div className="text-sm text-muted-foreground font-medium">
+              {agentName} · {insight.evidenceCount} sources
+            </div>
+          )}
         </div>
       </motion.article>
     );
   }
 
-  // Visual emphasis card with large icon
+  // Visual emphasis card with large icon - white
   if (layoutVariant === 2) {
     return (
       <motion.article
@@ -194,6 +234,14 @@ export function InsightCard({
         className="insight-card cursor-pointer group min-h-[280px] flex flex-col"
         onClick={handleClick}
       >
+        {showBadgeAndButton && (
+          <div className="flex items-center gap-2 mb-4">
+            <Badge variant="secondary" className="text-xs font-semibold">
+              {badgeType}
+            </Badge>
+          </div>
+        )}
+        
         <h3 className="text-lg font-semibold text-foreground leading-snug mb-6">
           {insight.title}
         </h3>
@@ -205,15 +253,19 @@ export function InsightCard({
         </div>
         
         <div className="mt-auto flex items-center gap-2 text-sm text-muted-foreground font-medium">
-          <span>{insight.source.name}</span>
-          <span>·</span>
-          <span>{formatDistanceToNow(insight.timestamp, { addSuffix: false })}</span>
+          {showBadgeAndButton ? (
+            <button className="hover:text-foreground transition-colors">
+              {agentName} · {insight.evidenceCount} sources
+            </button>
+          ) : (
+            <span>{agentName} · {insight.evidenceCount} sources</span>
+          )}
         </div>
       </motion.article>
     );
   }
 
-  // Minimal card with confidence indicator
+  // Minimal clean card - white
   return (
     <motion.article
       initial={{ opacity: 0, y: 20 }}
@@ -226,36 +278,27 @@ export function InsightCard({
       className="insight-card cursor-pointer group min-h-[280px] flex flex-col"
       onClick={handleClick}
     >
-      <div className="flex items-center justify-between mb-4">
-        <span className="px-2.5 py-1 rounded-md text-xs font-semibold bg-muted text-muted-foreground">
-          {insight.type.charAt(0).toUpperCase() + insight.type.slice(1)}
-        </span>
-        {insight.isNew && (
-          <span className="w-2 h-2 rounded-full bg-foreground" />
-        )}
-      </div>
+      {showBadgeAndButton && (
+        <div className="flex items-center gap-2 mb-4">
+          <Badge variant="secondary" className="text-xs font-semibold">
+            {badgeType}
+          </Badge>
+        </div>
+      )}
       
       <h3 className="text-lg font-semibold text-foreground leading-snug mb-auto">
         {insight.title}
       </h3>
       
       <div className="mt-8">
-        <div className="flex items-center gap-2 mb-3">
-          <div className="flex-1 h-1 bg-muted rounded-full overflow-hidden">
-            <div 
-              className="h-full bg-foreground/60 rounded-full"
-              style={{ width: `${insight.confidence * 100}%` }}
-            />
-          </div>
-          <span className="text-xs text-muted-foreground font-medium">
-            {Math.round(insight.confidence * 100)}%
-          </span>
-        </div>
-        
         <div className="flex items-center gap-2 text-sm text-muted-foreground font-medium">
-          <span>{insight.evidenceCount} sources</span>
-          <span>·</span>
-          <span>{formatDistanceToNow(insight.timestamp, { addSuffix: false })}</span>
+          {showBadgeAndButton ? (
+            <button className="hover:text-foreground transition-colors">
+              {agentName} · {insight.evidenceCount} sources
+            </button>
+          ) : (
+            <span>{agentName} · {insight.evidenceCount} sources</span>
+          )}
         </div>
       </div>
     </motion.article>
