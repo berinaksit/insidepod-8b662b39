@@ -8,7 +8,7 @@ import { EditAgentModal } from '@/components/EditAgentModal';
 import { mockInsights } from '@/data/mockData';
 import { useDocuments } from '@/contexts/DocumentsContext';
 import { Agent } from '@/types';
-import { Sparkles, Target, Bot, Plus, LayoutDashboard, CircleDot, FileText, Link2, Code2, FileUp, Scan, Calendar, Activity, MessageSquare, TrendingUp, MonitorCheck, Search, RefreshCw, Upload, Download } from 'lucide-react';
+import { Sparkles, Target, Bot, Plus, LayoutDashboard, CircleDot, FileText, Link2, Code2, FileUp, Scan, Calendar, Activity, MessageSquare, TrendingUp, MonitorCheck, Search, RefreshCw, Upload } from 'lucide-react';
 import { View } from '@/pages/Index';
 import { Button } from '@/components/ui/button';
 import { CreateGoalModal, Goal, GoalType } from '@/components/CreateGoalModal';
@@ -20,7 +20,7 @@ import { SuggestedPromptView } from '@/components/SuggestedPromptView';
 import { RecentActivityView } from '@/components/RecentActivityView';
 import { AgentsOverviewView } from '@/components/AgentsOverviewView';
 import { ProjectSelector } from '@/components/ProjectSelector';
-import { generateExecutiveSummaryPDF } from '@/components/ExecutiveSummaryExport';
+
 
 interface HomeViewProps {
   currentTab: View;
@@ -492,24 +492,6 @@ export function HomeView({
               animate={{ opacity: 1, y: 0 }} 
               exit={{ opacity: 0, y: -10 }}
             >
-              {/* Executive Summary Download Button */}
-              {allInsights.length > 0 && (
-                <div className="flex justify-end mb-4">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => generateExecutiveSummaryPDF({
-                      insights: allInsights,
-                      goals,
-                      documents
-                    })}
-                    className="flex items-center gap-2"
-                  >
-                    <Download className="w-4 h-4" />
-                    Download executive summary
-                  </Button>
-                </div>
-              )}
               {renderInsightsContent()}
             </motion.div>
           )}
