@@ -479,8 +479,17 @@ export function HomeView({
             })}
           </div>
 
-          {/* Project Selector - right aligned */}
-          <ProjectSelector />
+          {/* Executive Summary Download + Project Selector - right aligned */}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => generateExecutiveSummaryPDF({ insights: allInsights, goals, documents })}
+              className="p-2 rounded-lg hover:bg-muted transition-colors"
+              title="Download executive summary"
+            >
+              <Download className="w-5 h-5 text-muted-foreground" />
+            </button>
+            <ProjectSelector />
+          </div>
         </div>
 
         {/* Tab Content */}
@@ -492,24 +501,6 @@ export function HomeView({
               animate={{ opacity: 1, y: 0 }} 
               exit={{ opacity: 0, y: -10 }}
             >
-              {/* Executive Summary Download Button */}
-              {allInsights.length > 0 && (
-                <div className="flex justify-end mb-4">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => generateExecutiveSummaryPDF({
-                      insights: allInsights,
-                      goals,
-                      documents
-                    })}
-                    className="flex items-center gap-2"
-                  >
-                    <Download className="w-4 h-4" />
-                    Download executive summary
-                  </Button>
-                </div>
-              )}
               {renderInsightsContent()}
             </motion.div>
           )}
