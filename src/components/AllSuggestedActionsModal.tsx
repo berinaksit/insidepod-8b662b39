@@ -3,7 +3,8 @@ import { motion } from 'framer-motion';
 import { X, Download, CheckSquare, Square, TrendingUp, LucideIcon } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
-import jsPDF from 'jspdf';
+import { Document, Packer, Paragraph, TextRun, HeadingLevel, BorderStyle, AlignmentType } from 'docx';
+import { saveAs } from 'file-saver';
 
 interface SuggestedAction {
   icon: LucideIcon;
@@ -59,114 +60,169 @@ export default function AllSuggestedActionsModal({
     }
   };
 
-  const downloadPRD = () => {
+  const downloadPRD = async () => {
     const actionsToExport = someSelected
       ? actions.filter((_, i) => selectedActions.has(i))
       : actions;
 
-    const pdf = new jsPDF();
-    const pageWidth = pdf.internal.pageSize.getWidth();
-    const pageHeight = pdf.internal.pageSize.getHeight();
-    const margin = 20;
-    const contentWidth = pageWidth - margin * 2;
-    let yPos = margin;
-
-    const checkPageBreak = (neededHeight: number) => {
-      if (yPos + neededHeight > pageHeight - margin) {
-        pdf.addPage();
-        yPos = margin;
-      }
-    };
+    const children: Paragraph[] = [];
 
     // Title
-    pdf.setFontSize(20);
-    pdf.setFont('helvetica', 'bold');
-    pdf.text('Suggested Actions PRD', margin, yPos);
-    yPos += 10;
+    children.push(
+      new Paragraph({
+        text: 'Suggested Actions PRD',
+        heading: HeadingLevel.TITLE,
+        spacing: { after: 200 },
+      })
+    );
 
-    // Subtitle
-    pdf.setFontSize(10);
-    pdf.setFont('helvetica', 'normal');
-    pdf.setTextColor(100);
-    pdf.text(`Generated from: ${insightTitle}`, margin, yPos);
-    yPos += 5;
-    pdf.text(`Date: ${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}`, margin, yPos);
-    yPos += 5;
-    pdf.text(`Total Actions: ${actionsToExport.length}`, margin, yPos);
-    yPos += 10;
+    // Metadata
+    children.push(
+      new Paragraph({
+        children: [
+          new TextRun({ text: 'Generated from: ', bold: true }),
+          new TextRun(insightTitle),
+        ],
+        spacing: { after: 100 },
+      })
+    );
+
+    children.push(
+      new Paragraph({
+        children: [
+          new TextRun({ text: 'Date: ', bold: true }),
+          new TextRun(new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })),
+        ],
+        spacing: { after: 100 },
+      })
+    );
+
+    children.push(
+      new Paragraph({
+        children: [
+          new TextRun({ text: 'Total Actions: ', bold: true }),
+          new TextRun(String(actionsToExport.length)),
+        ],
+        spacing: { after: 400 },
+      })
+    );
 
     // Divider
-    pdf.setDrawColor(200);
-    pdf.line(margin, yPos, pageWidth - margin, yPos);
-    yPos += 10;
+    children.push(
+      new Paragraph({
+        border: {
+          bottom: { color: 'CCCCCC', space: 1, style: BorderStyle.SINGLE, size: 6 },
+        },
+        spacing: { after: 400 },
+      })
+    );
 
-    pdf.setTextColor(0);
-
+    // Actions
     actionsToExport.forEach((action, index) => {
-      checkPageBreak(60);
-
       // Action Header
-      pdf.setFontSize(14);
-      pdf.setFont('helvetica', 'bold');
-      pdf.text(`Action ${index + 1}: ${action.title}`, margin, yPos);
-      yPos += 6;
+      children.push(
+        new Paragraph({
+          text: `Action ${index + 1}: ${action.title}`,
+          heading: HeadingLevel.HEADING_2,
+          spacing: { before: 300, after: 100 },
+        })
+      );
 
-      // Priority badge
-      pdf.setFontSize(9);
-      pdf.setFont('helvetica', 'normal');
-      const priorityText = `Priority: ${action.priority.toUpperCase()}`;
-      pdf.text(priorityText, margin, yPos);
-      yPos += 8;
+      // Priority
+      children.push(
+        new Paragraph({
+          children: [
+            new TextRun({ text: 'Priority: ', bold: true }),
+            new TextRun({ text: action.priority.toUpperCase(), color: action.priority === 'high' ? 'DC2626' : action.priority === 'medium' ? 'D97706' : '6B7280' }),
+          ],
+          spacing: { after: 200 },
+        })
+      );
 
       // Problem
-      pdf.setFontSize(11);
-      pdf.setFont('helvetica', 'bold');
-      pdf.text('Problem:', margin, yPos);
-      yPos += 5;
-      pdf.setFont('helvetica', 'normal');
-      const problemLines = pdf.splitTextToSize(action.problem || action.detail, contentWidth);
-      checkPageBreak(problemLines.length * 5 + 10);
-      pdf.text(problemLines, margin, yPos);
-      yPos += problemLines.length * 5 + 3;
+      children.push(
+        new Paragraph({
+          text: 'Problem:',
+          heading: HeadingLevel.HEADING_3,
+          spacing: { after: 100 },
+        })
+      );
+      children.push(
+        new Paragraph({
+          text: action.problem || action.detail,
+          spacing: { after: 200 },
+        })
+      );
 
       // Proposed Solution
-      pdf.setFont('helvetica', 'bold');
-      pdf.text('Proposed Solution:', margin, yPos);
-      yPos += 5;
-      pdf.setFont('helvetica', 'normal');
-      const solutionLines = pdf.splitTextToSize(action.solution || action.title, contentWidth);
-      checkPageBreak(solutionLines.length * 5 + 10);
-      pdf.text(solutionLines, margin, yPos);
-      yPos += solutionLines.length * 5 + 3;
+      children.push(
+        new Paragraph({
+          text: 'Proposed Solution:',
+          heading: HeadingLevel.HEADING_3,
+          spacing: { after: 100 },
+        })
+      );
+      children.push(
+        new Paragraph({
+          text: action.solution || action.title,
+          spacing: { after: 200 },
+        })
+      );
 
       // Rationale
-      pdf.setFont('helvetica', 'bold');
-      pdf.text('Rationale:', margin, yPos);
-      yPos += 5;
-      pdf.setFont('helvetica', 'normal');
-      const rationaleLines = pdf.splitTextToSize(action.detail, contentWidth);
-      checkPageBreak(rationaleLines.length * 5 + 10);
-      pdf.text(rationaleLines, margin, yPos);
-      yPos += rationaleLines.length * 5 + 3;
+      children.push(
+        new Paragraph({
+          text: 'Rationale:',
+          heading: HeadingLevel.HEADING_3,
+          spacing: { after: 100 },
+        })
+      );
+      children.push(
+        new Paragraph({
+          text: action.detail,
+          spacing: { after: 200 },
+        })
+      );
 
       // Expected Impact
-      pdf.setFont('helvetica', 'bold');
-      pdf.text('Expected Impact:', margin, yPos);
-      yPos += 5;
-      pdf.setFont('helvetica', 'normal');
-      pdf.text(action.impact, margin, yPos);
-      yPos += 10;
+      children.push(
+        new Paragraph({
+          text: 'Expected Impact:',
+          heading: HeadingLevel.HEADING_3,
+          spacing: { after: 100 },
+        })
+      );
+      children.push(
+        new Paragraph({
+          text: action.impact,
+          spacing: { after: 300 },
+        })
+      );
 
       // Divider between actions
       if (index < actionsToExport.length - 1) {
-        checkPageBreak(15);
-        pdf.setDrawColor(220);
-        pdf.line(margin, yPos, pageWidth - margin, yPos);
-        yPos += 10;
+        children.push(
+          new Paragraph({
+            border: {
+              bottom: { color: 'EEEEEE', space: 1, style: BorderStyle.SINGLE, size: 4 },
+            },
+            spacing: { after: 300 },
+          })
+        );
       }
     });
 
-    pdf.save(`suggested-actions-prd-${Date.now()}.pdf`);
+    const doc = new Document({
+      sections: [
+        {
+          properties: {},
+          children,
+        },
+      ],
+    });
+
+    const blob = await Packer.toBlob(doc);
+    saveAs(blob, `suggested-actions-prd-${Date.now()}.docx`);
   };
 
   return (
