@@ -213,6 +213,35 @@ export default function AllSuggestedActionsModal({
     });
 
     const doc = new Document({
+      styles: {
+        default: {
+          document: {
+            run: {
+              font: 'Arial',
+            },
+          },
+          heading1: {
+            run: {
+              font: 'Arial',
+            },
+          },
+          heading2: {
+            run: {
+              font: 'Arial',
+            },
+          },
+          heading3: {
+            run: {
+              font: 'Arial',
+            },
+          },
+          title: {
+            run: {
+              font: 'Arial',
+            },
+          },
+        },
+      },
       sections: [
         {
           properties: {},
