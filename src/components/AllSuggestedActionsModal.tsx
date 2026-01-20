@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { X, Download, CheckSquare, Square, TrendingUp, LucideIcon } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
+import jsPDF from 'jspdf';
 
 interface SuggestedAction {
   icon: LucideIcon;
@@ -58,62 +59,114 @@ export default function AllSuggestedActionsModal({
     }
   };
 
-  const generatePRDContent = () => {
+  const downloadPRD = () => {
     const actionsToExport = someSelected
       ? actions.filter((_, i) => selectedActions.has(i))
       : actions;
 
-    let content = `SUGGESTED ACTIONS PRD
-Generated from: ${insightTitle}
-Date: ${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
-Total Actions: ${actionsToExport.length}
+    const pdf = new jsPDF();
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    const margin = 20;
+    const contentWidth = pageWidth - margin * 2;
+    let yPos = margin;
 
-${'='.repeat(60)}
+    const checkPageBreak = (neededHeight: number) => {
+      if (yPos + neededHeight > pageHeight - margin) {
+        pdf.addPage();
+        yPos = margin;
+      }
+    };
 
-`;
+    // Title
+    pdf.setFontSize(20);
+    pdf.setFont('helvetica', 'bold');
+    pdf.text('Suggested Actions PRD', margin, yPos);
+    yPos += 10;
+
+    // Subtitle
+    pdf.setFontSize(10);
+    pdf.setFont('helvetica', 'normal');
+    pdf.setTextColor(100);
+    pdf.text(`Generated from: ${insightTitle}`, margin, yPos);
+    yPos += 5;
+    pdf.text(`Date: ${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}`, margin, yPos);
+    yPos += 5;
+    pdf.text(`Total Actions: ${actionsToExport.length}`, margin, yPos);
+    yPos += 10;
+
+    // Divider
+    pdf.setDrawColor(200);
+    pdf.line(margin, yPos, pageWidth - margin, yPos);
+    yPos += 10;
+
+    pdf.setTextColor(0);
 
     actionsToExport.forEach((action, index) => {
-      content += `
-ACTION ${index + 1}: ${action.title.toUpperCase()}
-${'-'.repeat(50)}
+      checkPageBreak(60);
 
-PROBLEM:
-${action.problem || action.detail}
+      // Action Header
+      pdf.setFontSize(14);
+      pdf.setFont('helvetica', 'bold');
+      pdf.text(`Action ${index + 1}: ${action.title}`, margin, yPos);
+      yPos += 6;
 
-PROPOSED SOLUTION:
-${action.solution || action.title}
+      // Priority badge
+      pdf.setFontSize(9);
+      pdf.setFont('helvetica', 'normal');
+      const priorityText = `Priority: ${action.priority.toUpperCase()}`;
+      pdf.text(priorityText, margin, yPos);
+      yPos += 8;
 
-RATIONALE:
-${action.detail}
+      // Problem
+      pdf.setFontSize(11);
+      pdf.setFont('helvetica', 'bold');
+      pdf.text('Problem:', margin, yPos);
+      yPos += 5;
+      pdf.setFont('helvetica', 'normal');
+      const problemLines = pdf.splitTextToSize(action.problem || action.detail, contentWidth);
+      checkPageBreak(problemLines.length * 5 + 10);
+      pdf.text(problemLines, margin, yPos);
+      yPos += problemLines.length * 5 + 3;
 
-EXPECTED IMPACT:
-${action.impact}
+      // Proposed Solution
+      pdf.setFont('helvetica', 'bold');
+      pdf.text('Proposed Solution:', margin, yPos);
+      yPos += 5;
+      pdf.setFont('helvetica', 'normal');
+      const solutionLines = pdf.splitTextToSize(action.solution || action.title, contentWidth);
+      checkPageBreak(solutionLines.length * 5 + 10);
+      pdf.text(solutionLines, margin, yPos);
+      yPos += solutionLines.length * 5 + 3;
 
-PRIORITY:
-${action.priority.toUpperCase()}
+      // Rationale
+      pdf.setFont('helvetica', 'bold');
+      pdf.text('Rationale:', margin, yPos);
+      yPos += 5;
+      pdf.setFont('helvetica', 'normal');
+      const rationaleLines = pdf.splitTextToSize(action.detail, contentWidth);
+      checkPageBreak(rationaleLines.length * 5 + 10);
+      pdf.text(rationaleLines, margin, yPos);
+      yPos += rationaleLines.length * 5 + 3;
 
-`;
+      // Expected Impact
+      pdf.setFont('helvetica', 'bold');
+      pdf.text('Expected Impact:', margin, yPos);
+      yPos += 5;
+      pdf.setFont('helvetica', 'normal');
+      pdf.text(action.impact, margin, yPos);
+      yPos += 10;
+
+      // Divider between actions
+      if (index < actionsToExport.length - 1) {
+        checkPageBreak(15);
+        pdf.setDrawColor(220);
+        pdf.line(margin, yPos, pageWidth - margin, yPos);
+        yPos += 10;
+      }
     });
 
-    content += `
-${'='.repeat(60)}
-END OF PRD
-`;
-
-    return content;
-  };
-
-  const downloadPRD = () => {
-    const content = generatePRDContent();
-    const blob = new Blob([content], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `suggested-actions-prd-${Date.now()}.txt`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    pdf.save(`suggested-actions-prd-${Date.now()}.pdf`);
   };
 
   return (
