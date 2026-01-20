@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Bell, User, Settings, LogOut, FolderOpen } from 'lucide-react';
+import { Bell, User, Settings, LogOut, FolderOpen, Download } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -7,14 +7,21 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 interface HeaderProps {
   onSettingsClick?: () => void;
   onLogoClick?: () => void;
   onProjectsClick?: () => void;
+  onDownloadSummary?: () => void;
 }
 
-export function Header({ onSettingsClick, onLogoClick, onProjectsClick }: HeaderProps) {
+export function Header({ onSettingsClick, onLogoClick, onProjectsClick, onDownloadSummary }: HeaderProps) {
   return (
     <motion.header
       initial={{ opacity: 0, y: -20 }}
@@ -33,13 +40,37 @@ export function Header({ onSettingsClick, onLogoClick, onProjectsClick }: Header
       </button>
 
       <div className="flex items-center gap-2">
-        <button 
-          onClick={onProjectsClick}
-          className="p-2.5 rounded-xl hover:bg-muted transition-colors"
-          title="Projects"
-        >
-          <FolderOpen className="w-5 h-5 text-muted-foreground" />
-        </button>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button 
+                onClick={onProjectsClick}
+                className="p-2.5 rounded-xl hover:bg-muted transition-colors"
+              >
+                <FolderOpen className="w-5 h-5 text-muted-foreground" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Projects</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button 
+                onClick={onDownloadSummary}
+                className="p-2.5 rounded-xl hover:bg-muted transition-colors"
+              >
+                <Download className="w-5 h-5 text-muted-foreground" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Download executive summary</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
 
         <button className="p-2.5 rounded-xl hover:bg-muted transition-colors relative">
           <Bell className="w-5 h-5 text-muted-foreground" />

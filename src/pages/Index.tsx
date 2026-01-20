@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Header } from '@/components/Header';
 import { HomeView } from '@/views/HomeView';
 import { GoalsView } from '@/views/GoalsView';
@@ -10,8 +10,13 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useDocuments } from '@/contexts/DocumentsContext';
 import { GlobalUploadModal } from '@/components/GlobalUploadModal';
 import { FirstDocumentModal } from '@/components/FirstDocumentModal';
+import { generateExecutiveSummaryPDF } from '@/components/ExecutiveSummaryExport';
+import { mockInsights } from '@/data/mockData';
+import { Goal } from '@/components/CreateGoalModal';
 
 export type View = 'home' | 'goals' | 'agents' | 'dashboard' | 'settings' | 'create-agent' | 'projects';
+
+const GOALS_STORAGE_KEY = 'insidepod_goals_v2';
 
 const Index = () => {
   const [currentView, setCurrentView] = useState<View>('home');
@@ -19,8 +24,48 @@ const Index = () => {
     showUploadModal, 
     setShowUploadModal, 
     showFirstDocumentModal, 
-    setShowFirstDocumentModal 
+    setShowFirstDocumentModal,
+    generatedInsights,
+    documents
   } = useDocuments();
+
+  // Load goals for executive summary
+  const loadGoals = (): Goal[] => {
+    try {
+      const stored = localStorage.getItem(GOALS_STORAGE_KEY);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        return parsed.map((g: any) => ({
+          ...g,
+          createdAt: new Date(g.createdAt),
+        }));
+      }
+    } catch (e) {
+      console.warn('Failed to load goals from localStorage:', e);
+    }
+    return [];
+  };
+
+  const [goals, setGoals] = useState<Goal[]>(() => loadGoals());
+
+  // Listen for goal updates from HomeView
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setGoals(loadGoals());
+    };
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
+  const allInsights = [...generatedInsights, ...mockInsights];
+
+  const handleDownloadSummary = () => {
+    generateExecutiveSummaryPDF({
+      insights: allInsights,
+      goals,
+      documents
+    });
+  };
 
   const handleFirstDocumentCreateAgent = () => {
     setShowFirstDocumentModal(false);
@@ -62,6 +107,7 @@ const Index = () => {
           onSettingsClick={() => setCurrentView('settings')} 
           onLogoClick={() => setCurrentView('home')}
           onProjectsClick={() => setCurrentView('projects')}
+          onDownloadSummary={handleDownloadSummary}
         />
         
         <main className="flex-1 overflow-auto px-[150px]">
