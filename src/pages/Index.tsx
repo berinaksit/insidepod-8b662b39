@@ -62,7 +62,6 @@ const Index = () => {
           onSettingsClick={() => setCurrentView('settings')} 
           onLogoClick={() => setCurrentView('home')}
           onProjectsClick={() => setCurrentView('projects')}
-          showProjectSelector={true}
         />
         
         <main className="flex-1 overflow-auto px-[150px]">

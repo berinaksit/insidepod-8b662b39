@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Bell, User, Settings, LogOut, FolderOpen, Download } from 'lucide-react';
+import { Bell, User, Settings, LogOut, FolderOpen } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -7,46 +7,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { ProjectSelector } from '@/components/ProjectSelector';
-import { generateExecutiveSummaryPDF } from '@/components/ExecutiveSummaryExport';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { useDocuments } from '@/contexts/DocumentsContext';
-import { mockInsights } from '@/data/mockData';
-import { Goal } from '@/components/CreateGoalModal';
 
 interface HeaderProps {
   onSettingsClick?: () => void;
   onLogoClick?: () => void;
   onProjectsClick?: () => void;
-  showProjectSelector?: boolean;
 }
 
-export function Header({ onSettingsClick, onLogoClick, onProjectsClick, showProjectSelector = false }: HeaderProps) {
-  const { generatedInsights, documents } = useDocuments();
-  
-  const handleDownloadExecutiveSummary = () => {
-    // Load goals from localStorage
-    const GOALS_STORAGE_KEY = 'insidepod_goals_v2';
-    let goals: Goal[] = [];
-    try {
-      const stored = localStorage.getItem(GOALS_STORAGE_KEY);
-      if (stored) {
-        goals = JSON.parse(stored).map((g: any) => ({
-          ...g,
-          createdAt: new Date(g.createdAt),
-        }));
-      }
-    } catch (e) {
-      console.warn('Failed to load goals:', e);
-    }
-    
-    const allInsights = [...generatedInsights, ...mockInsights];
-    generateExecutiveSummaryPDF({
-      insights: allInsights,
-      goals,
-      documents
-    });
-  };
+export function Header({ onSettingsClick, onLogoClick, onProjectsClick }: HeaderProps) {
   return (
     <motion.header
       initial={{ opacity: 0, y: -20 }}
@@ -65,26 +33,6 @@ export function Header({ onSettingsClick, onLogoClick, onProjectsClick, showProj
       </button>
 
       <div className="flex items-center gap-2">
-        {showProjectSelector && (
-          <>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button 
-                    onClick={handleDownloadExecutiveSummary}
-                    className="p-2.5 rounded-xl hover:bg-muted transition-colors"
-                  >
-                    <Download className="w-5 h-5 text-muted-foreground" />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Download executive summary</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-            <ProjectSelector />
-          </>
-        )}
         <button 
           onClick={onProjectsClick}
           className="p-2.5 rounded-xl hover:bg-muted transition-colors"
