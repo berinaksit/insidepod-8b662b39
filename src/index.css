@@ -152,9 +152,8 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-medium;
     font-family: 'Geist', var(--font-sans);
-    font-weight: 400;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     line-height: 1.28;
   }
@@ -164,27 +163,8 @@
     line-height: 1.28;
   }
 
-  h1 {
+  h1, h2, h3, h4, h5, h6 {
     font-family: 'Geist', var(--font-sans);
-    font-weight: 700;
-    line-height: 1.15;
-  }
-
-  h2 {
-    font-family: 'Geist', var(--font-sans);
-    font-weight: 600;
-    line-height: 1.15;
-  }
-
-  h3, h4 {
-    font-family: 'Geist', var(--font-sans);
-    font-weight: 600;
-    line-height: 1.15;
-  }
-
-  h5, h6 {
-    font-family: 'Geist', var(--font-sans);
-    font-weight: 500;
     line-height: 1.15;
   }
 
