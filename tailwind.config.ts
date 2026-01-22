@@ -20,7 +20,7 @@ export default {
   	extend: {
 		fontFamily: {
 			sans: [
-				'Geist',
+				'Geist Sans',
 				'ui-sans-serif',
 				'system-ui',
 				'sans-serif',
@@ -30,7 +30,7 @@ export default {
 				'Noto Color Emoji'
 			],
 			display: [
-				'Geist',
+				'Geist Sans',
 				'system-ui',
 				'sans-serif'
 			],
