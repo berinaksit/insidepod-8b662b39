@@ -74,6 +74,7 @@
     /* Typography scale */
     --font-sans: 'Geist', system-ui, sans-serif;
     --font-display: 'Geist', system-ui, sans-serif;
+    --font-mono: 'Geist Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
 
     /* Animation timing - calm, deliberate */
     --transition-calm: 300ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -171,6 +172,11 @@
   /* Display typography - for headlines */
   .font-display {
     font-family: 'Geist', var(--font-display);
+  }
+
+  /* Monospace typography - for code blocks */
+  code, kbd, samp, pre, .font-mono {
+    font-family: 'Geist Mono', var(--font-mono);
   }
 
   /* Calm focus states */
