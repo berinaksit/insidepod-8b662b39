@@ -108,7 +108,7 @@ export function InsightCard({
     navigate(`/insight/${insight.id}`);
   };
 
-  // Featured card (first one) - dark themed
+  // Featured card (first one) - dark themed with icy-earth gradient
   if (layoutVariant === 0) {
     return (
       <motion.article
@@ -119,19 +119,23 @@ export function InsightCard({
           delay: index * 0.08,
           ease: [0.4, 0, 0.2, 1]
         }}
-        className="bg-foreground rounded-xl p-6 cursor-pointer group min-h-[260px] flex flex-col"
+        className="relative rounded-xl p-6 cursor-pointer group min-h-[260px] flex flex-col overflow-hidden bg-gradient-featured"
         onClick={handleClick}
       >
-        <h3 className="text-lg font-medium text-background leading-snug mb-auto">
+        {/* Subtle gradient overlay for depth */}
+        <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-white/[0.03] pointer-events-none" />
+        <div className="absolute top-0 left-0 w-1/2 h-1/2 bg-gradient-to-br from-white/[0.02] to-transparent pointer-events-none" />
+        
+        <h3 className="relative text-lg font-medium text-background leading-snug mb-auto">
           {insight.title}
         </h3>
         
-        <div className="mt-8">
-          <div className="w-10 h-10 rounded-lg bg-background/10 flex items-center justify-center mb-4">
-            <Icon className="w-4 h-4 text-background/50" strokeWidth={1.8} />
+        <div className="relative mt-8">
+          <div className="w-10 h-10 rounded-lg bg-background/10 backdrop-blur-sm flex items-center justify-center mb-4 border border-white/[0.05]">
+            <Icon className="w-4 h-4 text-background/60" strokeWidth={1.8} />
           </div>
           
-          <div className="flex items-center gap-2 text-background/40 text-sm">
+          <div className="flex items-center gap-2 text-background/50 text-sm">
             <span>{insight.source.name}</span>
             <span>·</span>
             <span>{formatDistanceToNow(insight.timestamp, { addSuffix: false })}</span>
