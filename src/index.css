@@ -13,67 +13,67 @@
 
 @layer base {
   :root {
-    /* Core surfaces - pure white background */
-    --background: 0 0% 100%;
-    --foreground: 0 0% 15%;
+    /* Core surfaces - soft off-white for calm */
+    --background: 0 0% 98.5%;
+    --foreground: 0 0% 12%;
 
-    /* Card surfaces - soft warm gray */
-    --card: 0 0% 96%;
-    --card-foreground: 0 0% 15%;
+    /* Card surfaces - clean white for lift */
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 12%;
 
     /* Popover */
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 15%;
+    --popover-foreground: 0 0% 12%;
 
-    /* Primary - dark for emphasis */
-    --primary: 0 0% 15%;
+    /* Primary - confident dark */
+    --primary: 0 0% 12%;
     --primary-foreground: 0 0% 100%;
 
-    /* Primary surface - large colored panels */
-    --primary-surface: 0 0% 96%;
-    --primary-surface-foreground: 0 0% 15%;
+    /* Primary surface - subtle elevation */
+    --primary-surface: 0 0% 97%;
+    --primary-surface-foreground: 0 0% 12%;
 
-    /* Secondary - muted gray text */
-    --secondary: 0 0% 60%;
+    /* Secondary - refined muted gray */
+    --secondary: 0 0% 50%;
     --secondary-foreground: 0 0% 100%;
 
     /* Secondary surface */
-    --secondary-surface: 0 0% 94%;
-    --secondary-surface-foreground: 0 0% 40%;
+    --secondary-surface: 0 0% 95%;
+    --secondary-surface-foreground: 0 0% 35%;
 
-    /* Tertiary - Soft gray for info */
-    --tertiary-surface: 0 0% 94%;
-    --tertiary-surface-foreground: 0 0% 40%;
+    /* Tertiary - subtle info */
+    --tertiary-surface: 0 0% 95%;
+    --tertiary-surface-foreground: 0 0% 35%;
 
-    /* Muted - subdued elements */
+    /* Muted - calm subdued elements */
     --muted: 0 0% 96%;
-    --muted-foreground: 0 0% 55%;
+    --muted-foreground: 0 0% 45%;
 
     /* Accent - minimal use */
-    --accent: 0 0% 94%;
-    --accent-foreground: 0 0% 15%;
+    --accent: 0 0% 95%;
+    --accent-foreground: 0 0% 12%;
 
     /* Destructive */
-    --destructive: 0 60% 55%;
+    --destructive: 0 55% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    /* Borders - very subtle */
-    --border: 0 0% 92%;
-    --input: 0 0% 92%;
-    --ring: 0 0% 15%;
+    /* Borders - whisper-thin */
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 0 0% 12%;
 
-    /* Radius - soft, not aggressive */
-    --radius: 1rem;
+    /* Radius - refined, not aggressive */
+    --radius: 0.875rem;
 
-    /* Sidebar - clean white */
-    --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 0 0% 35%;
-    --sidebar-primary: 0 0% 15%;
+    /* Sidebar - harmonized */
+    --sidebar-background: 0 0% 98.5%;
+    --sidebar-foreground: 0 0% 30%;
+    --sidebar-primary: 0 0% 12%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 0 0% 96%;
-    --sidebar-accent-foreground: 0 0% 15%;
+    --sidebar-accent-foreground: 0 0% 12%;
     --sidebar-border: 0 0% 92%;
-    --sidebar-ring: 0 0% 15%;
+    --sidebar-ring: 0 0% 12%;
 
     /* Typography scale */
     --font-sans: 'DM Sans', system-ui, sans-serif;
@@ -83,10 +83,10 @@
     --transition-calm: 300ms cubic-bezier(0.4, 0, 0.2, 1);
     --transition-subtle: 200ms cubic-bezier(0.4, 0, 0.2, 1);
 
-    /* Highlight for featured cards - dark theme */
-    --highlight: 0 0% 20%;
+    /* Highlight for featured cards - refined dark */
+    --highlight: 0 0% 18%;
     --highlight-foreground: 0 0% 100%;
-    --highlight-surface: 0 0% 10%;
+    --highlight-surface: 0 0% 8%;
   }
 
   .dark {
@@ -155,47 +155,65 @@
   }
 
   body {
-    @apply bg-background text-foreground font-medium;
+    @apply bg-background text-foreground;
+    font-weight: 450;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
-    line-height: 1.28;
+    line-height: 1.5;
+    letter-spacing: -0.01em;
   }
 
-  /* Tighter line heights for editorial feel */
+  /* Improved line heights for reading flow */
   p, span, div {
-    line-height: 1.28;
+    line-height: 1.55;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    line-height: 1.15;
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+    font-weight: 600;
   }
 
   /* Display typography - for headlines */
   .font-display {
     font-family: var(--font-display);
+    font-weight: 400;
   }
 
-  /* Calm focus states */
+  /* Refined focus states */
   *:focus-visible {
-    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+    @apply outline-none ring-1 ring-ring/50 ring-offset-2 ring-offset-background;
   }
 }
 
 @layer components {
-  /* Card shadow for contrast on white background */
+  /* Refined card shadow - subtle depth */
   .shadow-card {
-    box-shadow: 0 2px 8px 0 hsl(220 15% 15% / 0.08), 0 1px 3px -1px hsl(220 15% 15% / 0.06);
+    box-shadow: 
+      0 1px 2px 0 hsl(0 0% 0% / 0.03),
+      0 4px 12px -2px hsl(0 0% 0% / 0.06);
   }
 
-  /* Insight cards - contained, calm surfaces - borderless */
+  /* Hover shadow - gentle lift */
+  .shadow-card-hover {
+    box-shadow: 
+      0 2px 4px 0 hsl(0 0% 0% / 0.04),
+      0 8px 20px -4px hsl(0 0% 0% / 0.08);
+  }
+
+  /* Insight cards - refined, calm surfaces */
   .insight-card {
-    @apply bg-card rounded-2xl p-5 shadow-card;
+    @apply bg-card rounded-2xl p-6 shadow-card;
     @apply transition-all duration-300 ease-out;
-    @apply hover:shadow-md;
   }
 
-  /* Large analysis panels - the color moments */
+  .insight-card:hover {
+    @apply shadow-card-hover;
+    transform: translateY(-1px);
+  }
+
+  /* Large analysis panels */
   .analysis-panel {
-    @apply rounded-3xl p-7 md:p-10;
+    @apply rounded-2xl p-8 md:p-10;
     @apply transition-all duration-300 ease-out;
   }
 
@@ -211,42 +229,42 @@
     @apply bg-tertiary-surface text-tertiary-surface-foreground;
   }
 
-  /* Search bar - borderless, relies on background contrast */
+  /* Search bar - refined */
   .search-container {
-    @apply bg-card rounded-full;
-    @apply shadow-none;
+    @apply bg-card rounded-full shadow-card;
     @apply transition-all duration-300 ease-out;
-    @apply focus-within:shadow-xl focus-within:shadow-primary/10;
+    @apply focus-within:shadow-card-hover;
   }
 
-  /* Agent list items - tighter spacing */
+  /* Agent list items - refined spacing */
   .agent-item {
-    @apply flex items-center gap-3 p-3 rounded-xl;
+    @apply flex items-center gap-4 p-4 rounded-xl;
     @apply transition-all duration-200 ease-out;
-    @apply hover:bg-muted cursor-pointer;
+    @apply hover:bg-muted/50 cursor-pointer;
   }
 
-  /* Badge variants - tighter padding */
+  /* Badge variants - refined */
   .badge-pulse {
-    @apply bg-primary/10 text-primary px-2.5 py-0.5 rounded-full text-xs font-medium;
+    @apply bg-primary/8 text-primary px-2.5 py-0.5 rounded-full text-xs font-medium;
   }
 
   .badge-insight {
-    @apply bg-secondary/10 text-secondary px-2.5 py-0.5 rounded-full text-xs font-medium;
+    @apply bg-secondary/8 text-secondary px-2.5 py-0.5 rounded-full text-xs font-medium;
   }
 
   .badge-signal {
     @apply bg-tertiary-surface text-tertiary-surface-foreground px-2.5 py-0.5 rounded-full text-xs font-medium;
   }
 
-  /* Source attribution */
+  /* Source attribution - refined */
   .source-tag {
-    @apply text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded font-medium;
+    @apply text-xs text-muted-foreground bg-muted/60 px-2.5 py-1 rounded-md;
+    font-weight: 450;
   }
 
-  /* Calm loading state */
+  /* Loading state */
   .loading-pulse {
-    @apply animate-pulse bg-muted rounded;
+    @apply animate-pulse bg-muted/80 rounded;
   }
 }
 
