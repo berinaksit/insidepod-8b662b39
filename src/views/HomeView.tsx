@@ -274,59 +274,59 @@ export function HomeView({
 
     return (
       <>
-        <div className="flex items-center justify-between mb-5">
-          <p className="text-muted-foreground font-medium">AI agents continuously monitoring your product signals</p>
+        <div className="flex items-center justify-between mb-6">
+          <p className="text-muted-foreground">AI agents continuously monitoring your product signals</p>
           <button 
             onClick={() => onTabChange('create-agent')}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors"
+            className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors"
           >
-            <Plus className="w-4 h-4 stroke-[2.5]" />
+            <Plus className="w-4 h-4 stroke-[2]" />
             Add Agent
           </button>
         </div>
         
         {/* Summary cards */}
-        <div className="grid gap-3.5 md:grid-cols-3 mb-5">
+        <div className="grid gap-4 md:grid-cols-3 mb-6">
           <div className="insight-card">
-            <div className="flex items-center gap-2.5">
-              <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center">
-                <Bot className="w-5 h-5 text-muted-foreground stroke-[1.75]" />
+            <div className="flex items-center gap-3">
+              <div className="w-11 h-11 rounded-xl bg-muted/70 flex items-center justify-center">
+                <Bot className="w-5 h-5 text-muted-foreground stroke-[1.5]" />
               </div>
               <div>
-                <p className="text-2xl font-semibold text-foreground">{agents.filter(a => a.isActive).length}</p>
-                <p className="text-sm text-muted-foreground font-medium">Active agents</p>
+                <p className="text-2xl font-semibold text-foreground tracking-tight">{agents.filter(a => a.isActive).length}</p>
+                <p className="text-sm text-muted-foreground">Active agents</p>
               </div>
             </div>
           </div>
           <div className="insight-card">
-            <div className="flex items-center gap-2.5">
-              <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center">
-                <FileUp className="w-5 h-5 text-muted-foreground stroke-[1.75]" />
+            <div className="flex items-center gap-3">
+              <div className="w-11 h-11 rounded-xl bg-muted/70 flex items-center justify-center">
+                <FileUp className="w-5 h-5 text-muted-foreground stroke-[1.5]" />
               </div>
               <div>
-                <p className="text-2xl font-semibold text-foreground">
+                <p className="text-2xl font-semibold text-foreground tracking-tight">
                   {agents.reduce((sum, a) => sum + a.outputCount, 0)}
                 </p>
-                <p className="text-sm text-muted-foreground font-medium">Total outputs</p>
+                <p className="text-sm text-muted-foreground">Total outputs</p>
               </div>
             </div>
           </div>
           <div className="insight-card">
-            <div className="flex items-center gap-2.5">
-              <div className="w-12 h-12 rounded-xl bg-[hsl(145,60%,90%)] flex items-center justify-center">
-                <RefreshCw className="w-5 h-5 text-[hsl(145,60%,40%)] stroke-[1.75]" />
+            <div className="flex items-center gap-3">
+              <div className="w-11 h-11 rounded-xl bg-emerald-50 flex items-center justify-center">
+                <RefreshCw className="w-5 h-5 text-emerald-500 stroke-[1.5]" />
               </div>
               <div>
-                <p className="text-2xl font-semibold text-foreground">
+                <p className="text-2xl font-semibold text-foreground tracking-tight">
                   {agents.filter(a => a.status === 'running' && a.isActive).length}
                 </p>
-                <p className="text-sm text-muted-foreground font-medium">Currently running</p>
+                <p className="text-sm text-muted-foreground">Currently running</p>
               </div>
             </div>
           </div>
         </div>
         
-        <div className="bg-card rounded-2xl p-3.5 shadow-card">
+        <div className="bg-card rounded-2xl p-5 shadow-card">
           <AgentsList agents={agents} onAgentClick={handleAgentClick} />
         </div>
       </>
@@ -426,14 +426,14 @@ export function HomeView({
         initial={{ opacity: 0 }} 
         animate={{ opacity: 1 }} 
         transition={{ duration: 0.5 }} 
-        className="px-6 py-12 md:py-16"
+        className="px-6 py-14 md:py-20"
       >
-        <div className="max-w-3xl mx-auto text-center mb-10">
+        <div className="max-w-3xl mx-auto text-center mb-12">
           <motion.h1 
             initial={{ opacity: 0, y: 20 }} 
             animate={{ opacity: 1, y: 0 }} 
             transition={{ duration: 0.5, delay: 0.1 }} 
-            className="font-display text-3xl md:text-4xl text-foreground mb-3"
+            className="font-display text-3xl md:text-4xl text-foreground mb-4"
           >
             Clarity at a glance
           </motion.h1>
@@ -457,20 +457,20 @@ export function HomeView({
       </motion.section>
 
       {/* Tabs */}
-      <section className="px-6 pb-10">
-        <div className="flex items-center justify-between mb-5">
-          <div className="flex items-center gap-3">
+      <section className="px-6 pb-12">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-1">
             {tabs.map(tab => {
               const isActive = currentTab === tab.id;
               return (
                 <button 
                   key={tab.id} 
                   onClick={() => onTabChange(tab.id)} 
-                  className={`flex items-center gap-1.5 px-1 py-2.5 border-b-2 transition-colors ${isActive ? 'border-primary text-foreground' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
+                  className={`flex items-center gap-1.5 px-3 py-2.5 border-b-2 transition-colors ${isActive ? 'border-foreground text-foreground' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
                 >
-                  <span className="font-semibold">{tab.label}</span>
+                  <span className={isActive ? 'font-semibold' : 'font-medium'}>{tab.label}</span>
                   {tab.id === 'home' && (
-                    <span className="ml-0.5 px-1.5 py-0.5 text-xs bg-secondary/10 text-secondary rounded-full font-medium">
+                    <span className="ml-1 px-1.5 py-0.5 text-xs bg-muted text-muted-foreground rounded-full">
                       {allInsights.filter(i => i.isNew).length} new
                     </span>
                   )}
@@ -480,10 +480,10 @@ export function HomeView({
           </div>
 
           {/* Executive Summary Download + Project Selector - right aligned */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             <button
               onClick={() => generateExecutiveSummaryPDF({ insights: allInsights, goals, documents })}
-              className="p-2 rounded-lg hover:bg-muted transition-colors"
+              className="p-2 rounded-lg hover:bg-muted/60 transition-colors"
               title="Download executive summary"
             >
               <Download className="w-5 h-5 text-muted-foreground" />

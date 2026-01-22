@@ -209,62 +209,62 @@ export function GoalDetailView({ goal, onClose }: GoalDetailViewProps) {
       className="min-h-full"
     >
       {/* Header */}
-      <div className="mb-8">
+      <div className="mb-10">
         <Button
           variant="ghost"
           size="sm"
           onClick={onClose}
-          className="mb-4 -ml-2 text-muted-foreground hover:text-foreground"
+          className="mb-5 -ml-2 text-muted-foreground hover:text-foreground"
         >
           <ArrowLeft className="w-4 h-4 mr-1.5" />
           Back to Goals
         </Button>
 
-        <div className="flex flex-wrap items-start gap-3 mb-4">
-          <span className={`px-2.5 py-1 rounded-md text-xs font-medium ${typeColors[enrichedGoal.type]}`}>
+        <div className="flex flex-wrap items-start gap-2.5 mb-5">
+          <span className={`px-2.5 py-1 rounded-md text-xs ${typeColors[enrichedGoal.type]}`}>
             {enrichedGoal.type}
           </span>
-          <span className={`px-2.5 py-1 rounded-md text-xs font-medium flex items-center gap-1.5 ${statusConfig[status].color}`}>
+          <span className={`px-2.5 py-1 rounded-md text-xs flex items-center gap-1.5 ${statusConfig[status].color}`}>
             <StatusIcon className="w-3.5 h-3.5" />
             {statusConfig[status].label}
           </span>
         </div>
 
-        <h1 className="text-2xl md:text-3xl font-display font-semibold text-foreground">
+        <h1 className="text-2xl md:text-3xl font-display text-foreground tracking-tight">
           {enrichedGoal.title}
         </h1>
       </div>
 
       {/* Goal Health Summary */}
-      <section className="mb-8">
-        <div className="bg-card rounded-2xl p-5 shadow-card border border-border/50">
-          <div className="flex items-center gap-2 mb-3">
+      <section className="mb-10">
+        <div className="bg-card rounded-2xl p-6 shadow-card">
+          <div className="flex items-center gap-2 mb-4">
             <Activity className="w-4 h-4 text-muted-foreground" />
             <h2 className="font-semibold text-foreground">Goal Health Summary</h2>
           </div>
           
-          <p className="text-foreground/90 leading-relaxed mb-4">
+          <p className="text-foreground/85 leading-relaxed mb-5">
             {enrichedGoal.healthSummary}
           </p>
 
-          <div className="flex flex-wrap items-center gap-4 pt-3 border-t border-border/50">
+          <div className="flex flex-wrap items-center gap-5 pt-4 border-t border-border/40">
             <div className="flex items-center gap-2">
               <TrendIcon className={`w-4 h-4 ${trendConfig[trend].color}`} />
               <span className="text-sm text-muted-foreground">
-                Trend: <span className="font-medium text-foreground">{trendConfig[trend].label}</span>
+                Trend: <span className="text-foreground">{trendConfig[trend].label}</span>
               </span>
             </div>
             <div className="flex items-center gap-2">
               <Zap className="w-4 h-4 text-muted-foreground" />
               <span className="text-sm text-muted-foreground">
-                Confidence: <span className="font-medium text-foreground capitalize">{enrichedGoal.confidence}</span>
+                Confidence: <span className="text-foreground capitalize">{enrichedGoal.confidence}</span>
               </span>
             </div>
             {enrichedGoal.lastUpdated && (
               <div className="flex items-center gap-2">
                 <Clock className="w-4 h-4 text-muted-foreground" />
                 <span className="text-sm text-muted-foreground">
-                  Updated: <span className="font-medium text-foreground">{formatRelativeTime(enrichedGoal.lastUpdated)}</span>
+                  Updated: <span className="text-foreground">{formatRelativeTime(enrichedGoal.lastUpdated)}</span>
                 </span>
               </div>
             )}
@@ -274,32 +274,32 @@ export function GoalDetailView({ goal, onClose }: GoalDetailViewProps) {
 
       {/* Linked Signals and Insights */}
       {hasLinkedSignals && (
-        <section className="mb-8">
-          <h2 className="flex items-center gap-2 font-semibold text-foreground mb-4">
+        <section className="mb-10">
+          <h2 className="flex items-center gap-2 font-semibold text-foreground mb-5">
             <Lightbulb className="w-4 h-4 text-muted-foreground" />
             What's affecting this goal
           </h2>
           
-          <div className="space-y-3">
+          <div className="space-y-4">
             {enrichedGoal.linkedSignals!.map((signal, index) => (
               <motion.div
                 key={signal.id}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05 }}
-                className="bg-card rounded-xl p-4 shadow-card border border-border/50"
+                className="bg-card rounded-xl p-5 shadow-card"
               >
-                <div className="flex items-start justify-between gap-3 mb-2">
-                  <span className={`px-2 py-0.5 rounded text-xs font-medium capitalize ${signalTypeConfig[signal.type].color}`}>
+                <div className="flex items-start justify-between gap-3 mb-3">
+                  <span className={`px-2 py-0.5 rounded text-xs capitalize ${signalTypeConfig[signal.type].color}`}>
                     {signal.type}
                   </span>
                   <span className="text-xs text-muted-foreground">
                     {signal.sourceCount} sources
                   </span>
                 </div>
-                <h3 className="font-medium text-foreground mb-1">{signal.headline}</h3>
-                <p className="text-sm text-muted-foreground mb-2">{signal.explanation}</p>
-                <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                <h3 className="font-medium text-foreground mb-1.5">{signal.headline}</h3>
+                <p className="text-sm text-muted-foreground mb-3">{signal.explanation}</p>
+                <div className="flex items-center gap-1.5 text-xs text-muted-foreground/70">
                   <Bot className="w-3 h-3" />
                   {signal.agentName}
                 </div>
@@ -311,21 +311,21 @@ export function GoalDetailView({ goal, onClose }: GoalDetailViewProps) {
 
       {/* Related Data Sources */}
       {hasDataSources && (
-        <section className="mb-8">
-          <h2 className="flex items-center gap-2 font-semibold text-foreground mb-4">
+        <section className="mb-10">
+          <h2 className="flex items-center gap-2 font-semibold text-foreground mb-5">
             <FileText className="w-4 h-4 text-muted-foreground" />
             Connected sources
           </h2>
           
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-3">
             {enrichedGoal.dataSources!.map((source, index) => (
               <div
                 key={index}
-                className="bg-muted/50 rounded-lg px-3 py-2 text-sm"
+                className="bg-muted/40 rounded-lg px-4 py-2.5 text-sm"
               >
-                <span className="font-medium text-foreground">{source.name}</span>
+                <span className="text-foreground">{source.name}</span>
                 <span className="text-muted-foreground ml-2">
-                  {source.documentCount} docs • {formatRelativeTime(source.lastSync)}
+                  {source.documentCount} docs · {formatRelativeTime(source.lastSync)}
                 </span>
               </div>
             ))}
@@ -335,19 +335,19 @@ export function GoalDetailView({ goal, onClose }: GoalDetailViewProps) {
 
       {/* Goal Timeline */}
       {hasTimeline && (
-        <section className="mb-8">
-          <h2 className="flex items-center gap-2 font-semibold text-foreground mb-4">
+        <section className="mb-10">
+          <h2 className="flex items-center gap-2 font-semibold text-foreground mb-5">
             <Clock className="w-4 h-4 text-muted-foreground" />
             Timeline
           </h2>
           
-          <div className="space-y-3">
+          <div className="space-y-4">
             {enrichedGoal.timeline!.map((event, index) => (
               <div
                 key={event.id}
-                className="flex items-start gap-3 text-sm"
+                className="flex items-start gap-4 text-sm"
               >
-                <span className="text-muted-foreground whitespace-nowrap min-w-[80px]">
+                <span className="text-muted-foreground/70 whitespace-nowrap min-w-[80px]">
                   {formatRelativeTime(event.timestamp)}
                 </span>
                 <span className="text-foreground">{event.description}</span>
@@ -359,19 +359,19 @@ export function GoalDetailView({ goal, onClose }: GoalDetailViewProps) {
 
       {/* Monitoring Agents */}
       {hasMonitoringAgents && (
-        <section className="mb-8">
-          <h2 className="flex items-center gap-2 font-semibold text-foreground mb-4">
+        <section className="mb-10">
+          <h2 className="flex items-center gap-2 font-semibold text-foreground mb-5">
             <Bot className="w-4 h-4 text-muted-foreground" />
             Monitoring agents
           </h2>
           
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-3">
             {enrichedGoal.monitoringAgents!.map((agent) => (
               <div
                 key={agent.id}
-                className="flex items-center gap-2 bg-muted/50 rounded-lg px-3 py-2"
+                className="flex items-center gap-2.5 bg-muted/40 rounded-lg px-4 py-2.5"
               >
-                <span className="text-sm font-medium text-foreground">{agent.name}</span>
+                <span className="text-sm text-foreground">{agent.name}</span>
                 <Badge 
                   variant={agent.status === 'active' ? 'default' : 'secondary'}
                   className="text-xs"
@@ -386,19 +386,19 @@ export function GoalDetailView({ goal, onClose }: GoalDetailViewProps) {
 
       {/* Suggested Actions */}
       {hasSuggestedActions && (
-        <section className="mb-8">
-          <h2 className="flex items-center gap-2 font-semibold text-foreground mb-4">
+        <section className="mb-10">
+          <h2 className="flex items-center gap-2 font-semibold text-foreground mb-5">
             <Sparkles className="w-4 h-4 text-muted-foreground" />
             Suggested next steps
           </h2>
           
-          <div className="space-y-2">
+          <div className="space-y-3">
             {enrichedGoal.suggestedActions!.map((action, index) => (
               <div
                 key={index}
-                className="flex items-start gap-3 bg-secondary/5 rounded-lg px-4 py-3"
+                className="flex items-start gap-3 bg-muted/30 rounded-lg px-5 py-4"
               >
-                <span className="text-secondary font-medium text-sm">{index + 1}.</span>
+                <span className="text-muted-foreground text-sm">{index + 1}.</span>
                 <span className="text-foreground text-sm">{action}</span>
               </div>
             ))}
