@@ -53,7 +53,7 @@ export default function AnalysisPage() {
             onClick={() => navigate(-1)}
             className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors font-medium"
           >
-            <ArrowLeft className="w-4 h-4 stroke-[2.5]" />
+            <ArrowLeft className="w-4 h-4" strokeWidth={1.5} />
             <span>Back</span>
           </button>
         </div>
@@ -73,7 +73,7 @@ export default function AnalysisPage() {
           </h1>
           {documents.length > 0 && (
             <div className="flex items-center gap-2 text-muted-foreground">
-              <FileText className="w-4 h-4" />
+              <FileText className="w-4 h-4" strokeWidth={1.5} />
               <span className="text-sm font-medium">
                 Based on {documents.length} uploaded document{documents.length !== 1 ? 's' : ''}
               </span>
@@ -156,15 +156,15 @@ export default function AnalysisPage() {
                   transition={{ delay: 0.4 + i * 0.1 }}
                   className="bg-card rounded-2xl p-5 border border-border"
                 >
-                  <div className="flex gap-4">
-                    <div className="w-10 h-10 rounded-xl bg-secondary/10 flex items-center justify-center flex-shrink-0">
-                      <Icon className="w-5 h-5 text-secondary" />
+                    <div className="flex gap-4">
+                      <div className="w-9 h-9 rounded-xl bg-secondary/10 flex items-center justify-center flex-shrink-0">
+                        <Icon className="w-4 h-4 text-secondary" strokeWidth={1.5} />
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="font-semibold text-foreground">{item.title}</p>
                       <p className="text-sm text-muted-foreground mt-1">{item.detail}</p>
                       <p className="text-xs text-muted-foreground mt-3 flex items-center gap-1.5">
-                        <FileText className="w-3 h-3" />
+                        <FileText className="w-3 h-3" strokeWidth={1.5} />
                         Source: {item.source}
                       </p>
                     </div>
@@ -197,8 +197,8 @@ export default function AnalysisPage() {
                   className="bg-card hover:bg-muted/50 rounded-2xl p-5 border border-border text-left transition-colors group"
                 >
                   <div className="flex gap-4">
-                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-                      <Icon className="w-5 h-5 text-primary" />
+                    <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                      <Icon className="w-4 h-4 text-primary" strokeWidth={1.5} />
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="font-semibold text-foreground">{action.title}</p>

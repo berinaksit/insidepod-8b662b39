@@ -19,8 +19,8 @@ export function EmptyState({ icon: Icon, title, description, action }: EmptyStat
       transition={{ duration: 0.4 }}
       className="flex flex-col items-center justify-center py-16 px-8 text-center"
     >
-      <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mb-6">
-        <Icon className="w-8 h-8 text-muted-foreground" />
+      <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center mb-6">
+        <Icon className="w-5 h-5 text-muted-foreground" strokeWidth={1.5} />
       </div>
       
       <h3 className="text-xl font-medium text-foreground mb-2">

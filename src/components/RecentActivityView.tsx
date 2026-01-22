@@ -57,7 +57,7 @@ export function RecentActivityView({ onClose }: RecentActivityViewProps) {
           onClick={onClose}
           className="p-2 hover:bg-muted rounded-xl transition-colors"
         >
-          <ArrowLeft className="w-5 h-5 text-muted-foreground" />
+          <ArrowLeft className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
         </button>
         <h1 className="text-xl font-semibold text-foreground">Recent Activity</h1>
       </div>
@@ -74,8 +74,8 @@ export function RecentActivityView({ onClose }: RecentActivityViewProps) {
           >
             <div className="flex items-start justify-between gap-4 mb-4">
               <div className="flex items-start gap-3">
-                <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center mt-0.5">
-                  <FileText className="w-5 h-5 text-muted-foreground" />
+                <div className="w-9 h-9 rounded-lg bg-muted flex items-center justify-center mt-0.5">
+                  <FileText className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
                 </div>
                 <div>
                   <h3 className="font-medium text-foreground">{upload.name}</h3>
@@ -83,7 +83,7 @@ export function RecentActivityView({ onClose }: RecentActivityViewProps) {
                 </div>
               </div>
               <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                <Clock className="w-3.5 h-3.5" />
+                <Clock className="w-4 h-4" strokeWidth={1.5} />
                 <span>{formatDistanceToNow(upload.uploadTime, { addSuffix: true })}</span>
               </div>
             </div>
@@ -98,7 +98,7 @@ export function RecentActivityView({ onClose }: RecentActivityViewProps) {
                       key={agent}
                       className="flex items-center gap-1.5 px-2.5 py-1 bg-muted rounded-full text-xs font-medium text-foreground"
                     >
-                      <Bot className="w-3 h-3" />
+                      <Bot className="w-3 h-3" strokeWidth={1.5} />
                       {agent}
                     </span>
                   ))}
@@ -109,15 +109,15 @@ export function RecentActivityView({ onClose }: RecentActivityViewProps) {
             {/* Actions */}
             <div className="flex flex-wrap gap-2">
               <Button variant="ghost" size="sm" className="rounded-lg text-xs h-8">
-                <Eye className="w-3.5 h-3.5 mr-1.5" />
+                <Eye className="w-4 h-4 mr-1.5" strokeWidth={1.5} />
                 View document
               </Button>
               <Button variant="ghost" size="sm" className="rounded-lg text-xs h-8">
-                <Play className="w-3.5 h-3.5 mr-1.5" />
+                <Play className="w-4 h-4 mr-1.5" strokeWidth={1.5} />
                 Run agent
               </Button>
               <Button variant="ghost" size="sm" className="rounded-lg text-xs h-8">
-                <MessageSquare className="w-3.5 h-3.5 mr-1.5" />
+                <MessageSquare className="w-4 h-4 mr-1.5" strokeWidth={1.5} />
                 Ask about this
               </Button>
             </div>
@@ -127,8 +127,8 @@ export function RecentActivityView({ onClose }: RecentActivityViewProps) {
 
       {recentUploads.length === 0 && (
         <div className="flex flex-col items-center justify-center py-20">
-          <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mb-6">
-            <FileText className="w-8 h-8 text-muted-foreground" />
+          <div className="w-14 h-14 rounded-2xl bg-muted flex items-center justify-center mb-6">
+            <FileText className="w-5 h-5 text-muted-foreground" strokeWidth={1.5} />
           </div>
           <h2 className="text-xl font-semibold text-foreground mb-2">No recent uploads</h2>
           <p className="text-muted-foreground text-center max-w-sm">

@@ -63,14 +63,14 @@ export function AgentsList({ agents, onAgentClick }: AgentsListProps) {
             >
               <div className="flex gap-4">
                 {/* Icon container */}
-                <div className={`flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center ${
+                <div className={`flex-shrink-0 w-9 h-9 rounded-lg flex items-center justify-center ${
                   isInactive
                     ? 'bg-muted/40'
                     : isCustom
                       ? 'bg-violet-50'
                       : 'bg-muted/50'
                 }`}>
-                  <Icon className={`w-4.5 h-4.5 ${
+                  <Icon className={`w-4 h-4 ${
                     isInactive
                       ? 'text-muted-foreground/40'
                       : isCustom
