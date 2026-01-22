@@ -1,43 +1,34 @@
 import { motion } from 'framer-motion';
 import { Bell, User, Settings, LogOut, FolderOpen } from 'lucide-react';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 interface HeaderProps {
   onSettingsClick?: () => void;
   onLogoClick?: () => void;
   onProjectsClick?: () => void;
 }
-
-export function Header({ onSettingsClick, onLogoClick, onProjectsClick }: HeaderProps) {
-  return (
-    <motion.header
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4 }}
-      className="flex items-center justify-between px-6 py-4 border-b border-border/50"
-    >
-      <button 
-        onClick={onLogoClick}
-        className="flex items-center gap-2 hover:opacity-80 transition-opacity"
-      >
+export function Header({
+  onSettingsClick,
+  onLogoClick,
+  onProjectsClick
+}: HeaderProps) {
+  return <motion.header initial={{
+    opacity: 0,
+    y: -20
+  }} animate={{
+    opacity: 1,
+    y: 0
+  }} transition={{
+    duration: 0.4
+  }} className="flex items-center justify-between px-6 py-4 border-b border-border/50">
+      <button onClick={onLogoClick} className="flex items-center gap-2 hover:opacity-80 transition-opacity">
         <div className="w-5 h-5 rounded-xl flex items-center justify-center bg-foreground">
           <span className="text-background font-display text-lg"></span>
         </div>
-        <span className="font-display text-xl text-foreground">Inside Pōd</span>
+        <span className="font-display text-xl text-foreground">Pōd</span>
       </button>
 
       <div className="flex items-center gap-2">
-        <button 
-          onClick={onProjectsClick}
-          className="p-2.5 rounded-xl hover:bg-muted transition-colors"
-          title="Projects"
-        >
+        <button onClick={onProjectsClick} className="p-2.5 rounded-xl hover:bg-muted transition-colors" title="Projects">
           <FolderOpen className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
         </button>
 
@@ -65,6 +56,5 @@ export function Header({ onSettingsClick, onLogoClick, onProjectsClick }: Header
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-    </motion.header>
-  );
+    </motion.header>;
 }
