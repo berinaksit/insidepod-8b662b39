@@ -203,66 +203,66 @@ export function GoalDetailView({ goal, onClose }: GoalDetailViewProps) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, x: 12 }}
+      initial={{ opacity: 0, x: 16 }}
       animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: 12 }}
+      exit={{ opacity: 0, x: 16 }}
       className="min-h-full"
     >
       {/* Header */}
-      <div className="mb-8">
+      <div className="mb-12">
         <Button
           variant="ghost"
           size="sm"
           onClick={onClose}
-          className="mb-4 -ml-2 text-muted-foreground hover:text-foreground"
+          className="mb-6 -ml-2 text-muted-foreground hover:text-foreground"
         >
-          <ArrowLeft className="w-4 h-4 mr-1.5" strokeWidth={1.5} />
+          <ArrowLeft className="w-4 h-4 mr-1.5" />
           Back to Goals
         </Button>
 
-        <div className="flex flex-wrap items-start gap-2 mb-3">
+        <div className="flex flex-wrap items-start gap-2 mb-4">
           <span className={`px-2 py-0.5 rounded text-xs ${typeColors[enrichedGoal.type]}`}>
             {enrichedGoal.type}
           </span>
           <span className={`px-2 py-0.5 rounded text-xs flex items-center gap-1.5 ${statusConfig[status].color}`}>
-            <StatusIcon className="w-3 h-3" strokeWidth={1.5} />
+            <StatusIcon className="w-3 h-3" />
             {statusConfig[status].label}
           </span>
         </div>
 
-        <h1 className="text-xl font-display text-foreground">
+        <h1 className="text-2xl font-display text-foreground">
           {enrichedGoal.title}
         </h1>
       </div>
 
       {/* Goal Health Summary */}
-      <section className="mb-8">
-        <div className="bg-card rounded-lg p-6">
-          <div className="flex items-center gap-2 mb-3">
-            <Activity className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
+      <section className="mb-12">
+        <div className="bg-card rounded-xl p-6">
+          <div className="flex items-center gap-2 mb-4">
+            <Activity className="w-4 h-4 text-muted-foreground" />
             <h2 className="font-medium text-foreground">Goal Health Summary</h2>
           </div>
           
-          <p className="text-muted-foreground leading-relaxed mb-4">
+          <p className="text-foreground/80 leading-relaxed mb-6">
             {enrichedGoal.healthSummary}
           </p>
 
-          <div className="flex flex-wrap items-center gap-4 pt-4 border-t border-border">
+          <div className="flex flex-wrap items-center gap-6 pt-4 border-t border-border/50">
             <div className="flex items-center gap-2">
-              <TrendIcon className={`w-4 h-4 ${trendConfig[trend].color}`} strokeWidth={1.5} />
+              <TrendIcon className={`w-4 h-4 ${trendConfig[trend].color}`} />
               <span className="text-sm text-muted-foreground">
                 Trend: <span className="text-foreground">{trendConfig[trend].label}</span>
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <Zap className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
+              <Zap className="w-4 h-4 text-muted-foreground" />
               <span className="text-sm text-muted-foreground">
                 Confidence: <span className="text-foreground capitalize">{enrichedGoal.confidence}</span>
               </span>
             </div>
             {enrichedGoal.lastUpdated && (
               <div className="flex items-center gap-2">
-                <Clock className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
+                <Clock className="w-4 h-4 text-muted-foreground" />
                 <span className="text-sm text-muted-foreground">
                   Updated: <span className="text-foreground">{formatRelativeTime(enrichedGoal.lastUpdated)}</span>
                 </span>
@@ -274,22 +274,22 @@ export function GoalDetailView({ goal, onClose }: GoalDetailViewProps) {
 
       {/* Linked Signals and Insights */}
       {hasLinkedSignals && (
-        <section className="mb-8">
-          <h2 className="flex items-center gap-2 font-medium text-foreground mb-4">
-            <Lightbulb className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
+        <section className="mb-12">
+          <h2 className="flex items-center gap-2 font-medium text-foreground mb-6">
+            <Lightbulb className="w-4 h-4 text-muted-foreground" />
             What's affecting this goal
           </h2>
           
-          <div className="space-y-3">
+          <div className="space-y-4">
             {enrichedGoal.linkedSignals!.map((signal, index) => (
               <motion.div
                 key={signal.id}
-                initial={{ opacity: 0, y: 6 }}
+                initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.04 }}
-                className="bg-card rounded-lg p-4"
+                transition={{ delay: index * 0.05 }}
+                className="bg-card rounded-xl p-5"
               >
-                <div className="flex items-start justify-between gap-3 mb-2">
+                <div className="flex items-start justify-between gap-3 mb-3">
                   <span className={`px-2 py-0.5 rounded text-xs capitalize ${signalTypeConfig[signal.type].color}`}>
                     {signal.type}
                   </span>
@@ -297,10 +297,10 @@ export function GoalDetailView({ goal, onClose }: GoalDetailViewProps) {
                     {signal.sourceCount} sources
                   </span>
                 </div>
-                <h3 className="text-sm font-medium text-foreground mb-1">{signal.headline}</h3>
-                <p className="text-sm text-muted-foreground mb-2">{signal.explanation}</p>
+                <h3 className="font-medium text-foreground mb-1.5">{signal.headline}</h3>
+                <p className="text-sm text-muted-foreground mb-3">{signal.explanation}</p>
                 <div className="flex items-center gap-1.5 text-xs text-muted-foreground/60">
-                  <Bot className="w-3 h-3" strokeWidth={1.5} />
+                  <Bot className="w-3 h-3" />
                   {signal.agentName}
                 </div>
               </motion.div>
@@ -311,17 +311,17 @@ export function GoalDetailView({ goal, onClose }: GoalDetailViewProps) {
 
       {/* Related Data Sources */}
       {hasDataSources && (
-        <section className="mb-8">
-          <h2 className="flex items-center gap-2 font-medium text-foreground mb-4">
-            <FileText className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
+        <section className="mb-12">
+          <h2 className="flex items-center gap-2 font-medium text-foreground mb-6">
+            <FileText className="w-4 h-4 text-muted-foreground" />
             Connected sources
           </h2>
           
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-3">
             {enrichedGoal.dataSources!.map((source, index) => (
               <div
                 key={index}
-                className="bg-muted/30 rounded-md px-3 py-2 text-sm"
+                className="bg-muted/30 rounded-lg px-4 py-2.5 text-sm"
               >
                 <span className="text-foreground">{source.name}</span>
                 <span className="text-muted-foreground ml-2">
@@ -335,19 +335,19 @@ export function GoalDetailView({ goal, onClose }: GoalDetailViewProps) {
 
       {/* Goal Timeline */}
       {hasTimeline && (
-        <section className="mb-8">
-          <h2 className="flex items-center gap-2 font-medium text-foreground mb-4">
-            <Clock className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
+        <section className="mb-12">
+          <h2 className="flex items-center gap-2 font-medium text-foreground mb-6">
+            <Clock className="w-4 h-4 text-muted-foreground" />
             Timeline
           </h2>
           
-          <div className="space-y-3">
+          <div className="space-y-4">
             {enrichedGoal.timeline!.map((event) => (
               <div
                 key={event.id}
                 className="flex items-start gap-4 text-sm"
               >
-                <span className="text-muted-foreground/60 whitespace-nowrap min-w-[64px]">
+                <span className="text-muted-foreground/60 whitespace-nowrap min-w-[72px]">
                   {formatRelativeTime(event.timestamp)}
                 </span>
                 <span className="text-foreground">{event.description}</span>
@@ -359,22 +359,22 @@ export function GoalDetailView({ goal, onClose }: GoalDetailViewProps) {
 
       {/* Monitoring Agents */}
       {hasMonitoringAgents && (
-        <section className="mb-8">
-          <h2 className="flex items-center gap-2 font-medium text-foreground mb-4">
-            <Bot className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
+        <section className="mb-12">
+          <h2 className="flex items-center gap-2 font-medium text-foreground mb-6">
+            <Bot className="w-4 h-4 text-muted-foreground" />
             Monitoring agents
           </h2>
           
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-3">
             {enrichedGoal.monitoringAgents!.map((agent) => (
               <div
                 key={agent.id}
-                className="flex items-center gap-2 bg-muted/30 rounded-md px-3 py-2"
+                className="flex items-center gap-2.5 bg-muted/30 rounded-lg px-4 py-2.5"
               >
                 <span className="text-sm text-foreground">{agent.name}</span>
                 <Badge 
                   variant={agent.status === 'active' ? 'default' : 'secondary'}
-                  className="text-xs"
+                  className="text-xs font-normal"
                 >
                   {agent.status === 'active' ? 'Active' : 'Paused'}
                 </Badge>
@@ -386,17 +386,17 @@ export function GoalDetailView({ goal, onClose }: GoalDetailViewProps) {
 
       {/* Suggested Actions */}
       {hasSuggestedActions && (
-        <section className="mb-8">
-          <h2 className="flex items-center gap-2 font-medium text-foreground mb-4">
-            <Sparkles className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
+        <section className="mb-12">
+          <h2 className="flex items-center gap-2 font-medium text-foreground mb-6">
+            <Sparkles className="w-4 h-4 text-muted-foreground" />
             Suggested next steps
           </h2>
           
-          <div className="space-y-2">
+          <div className="space-y-3">
             {enrichedGoal.suggestedActions!.map((action, index) => (
               <div
                 key={index}
-                className="flex items-start gap-3 bg-muted/20 rounded-md px-4 py-3"
+                className="flex items-start gap-3 bg-muted/20 rounded-lg px-5 py-4"
               >
                 <span className="text-muted-foreground text-sm">{index + 1}.</span>
                 <span className="text-foreground text-sm">{action}</span>

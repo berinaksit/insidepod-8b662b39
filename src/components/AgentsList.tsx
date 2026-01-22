@@ -53,45 +53,65 @@ export function AgentsList({ agents, onAgentClick }: AgentsListProps) {
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.25, delay: index * 0.04 }}
-            className={index < sortedAgents.length - 1 ? 'border-b border-border pb-4 mb-4' : ''}
+            className={index < sortedAgents.length - 1 ? 'border-b border-border/30 pb-5 mb-5' : ''}
           >
             <button
               onClick={() => onAgentClick?.(agent)}
-              className={`w-full text-left flex flex-col md:flex-row md:items-start justify-between gap-3 group ${
+              className={`w-full text-left flex flex-col md:flex-row md:items-start justify-between gap-4 group ${
                 isInactive ? 'opacity-40' : ''
               }`}
             >
-              <div className="flex gap-3">
+              <div className="flex gap-4">
                 {/* Icon container */}
-                <div className={`flex-shrink-0 icon-container-lg ${
-                  isCustom ? 'bg-violet-50' : ''
+                <div className={`flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center ${
+                  isInactive
+                    ? 'bg-muted/40'
+                    : isCustom
+                      ? 'bg-violet-50'
+                      : 'bg-muted/50'
                 }`}>
-                  <Icon className={`w-5 h-5 ${
-                    isCustom ? 'text-violet-500' : 'text-muted-foreground'
+                  <Icon className={`w-4.5 h-4.5 ${
+                    isInactive
+                      ? 'text-muted-foreground/40'
+                      : isCustom
+                        ? 'text-violet-500'
+                        : 'text-muted-foreground'
                   }`} strokeWidth={1.5} />
                 </div>
                 
                 {/* Content */}
-                <div>
+                <div className="pt-0.5">
                   <div className="flex items-baseline gap-2 mb-1">
-                    <h3 className="text-sm font-medium text-foreground">
+                    <h3 className={`text-sm font-medium ${
+                      isInactive ? 'text-muted-foreground' : 'text-foreground'
+                    }`}>
                       {agent.name}
                     </h3>
-                    <span className="text-xs px-1.5 py-0.5 rounded bg-muted text-muted-foreground">
+                    <span className={`text-xs px-1.5 py-0.5 rounded ${
+                      isInactive 
+                        ? 'text-muted-foreground/50 bg-muted/30' 
+                        : 'text-muted-foreground bg-muted/40'
+                    }`}>
                       {agent.outputCount} outputs
                     </span>
                     {isCustom && (
-                      <span className="text-xs px-1.5 py-0.5 rounded bg-violet-50 text-violet-600">
+                      <span className={`text-xs px-1.5 py-0.5 rounded ${
+                        isInactive
+                          ? 'text-violet-400/40 bg-violet-50/40'
+                          : 'text-violet-600 bg-violet-50'
+                      }`}>
                         Custom
                       </span>
                     )}
                     {isInactive && (
-                      <span className="text-xs text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded">
+                      <span className="text-xs text-amber-600/80 bg-amber-50 px-1.5 py-0.5 rounded">
                         Inactive
                       </span>
                     )}
                   </div>
-                  <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl">
+                  <p className={`text-sm leading-relaxed max-w-2xl ${
+                    isInactive ? 'text-muted-foreground/50' : 'text-muted-foreground'
+                  }`}>
                     {agent.description}
                   </p>
                 </div>
@@ -99,7 +119,9 @@ export function AgentsList({ agents, onAgentClick }: AgentsListProps) {
               
               {/* Timestamp */}
               {agent.lastRun && (
-                <span className="flex-shrink-0 text-xs text-muted-foreground/60">
+                <span className={`flex-shrink-0 text-xs pt-1 ${
+                  isInactive ? 'text-muted-foreground/30' : 'text-muted-foreground/60'
+                }`}>
                   {formatDistanceToNow(agent.lastRun, { addSuffix: true })}
                 </span>
               )}

@@ -274,22 +274,22 @@ export function HomeView({
 
     return (
       <>
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between mb-8">
           <p className="text-muted-foreground">AI agents continuously monitoring your product signals</p>
           <button 
             onClick={() => onTabChange('create-agent')}
-            className="flex items-center gap-2 px-4 py-2 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary text-primary-foreground font-normal hover:bg-primary/90 transition-colors"
           >
-            <Plus className="w-4 h-4" strokeWidth={1.5} />
+            <Plus className="w-4 h-4 stroke-[2]" />
             Add Agent
           </button>
         </div>
         
-        <div className="grid gap-4 md:grid-cols-3 mb-6">
-          <div className="bg-card rounded-lg p-4">
+        <div className="grid gap-6 md:grid-cols-3 mb-8">
+          <div className="bg-card rounded-xl p-5">
             <div className="flex items-center gap-3">
-              <div className="icon-container-lg">
-                <Bot className="w-5 h-5 text-muted-foreground" strokeWidth={1.5} />
+              <div className="w-10 h-10 rounded-lg bg-muted/60 flex items-center justify-center">
+                <Bot className="w-4.5 h-4.5 text-muted-foreground stroke-[1.5]" />
               </div>
               <div>
                 <p className="text-xl font-medium text-foreground">{agents.filter(a => a.isActive).length}</p>
@@ -297,10 +297,10 @@ export function HomeView({
               </div>
             </div>
           </div>
-          <div className="bg-card rounded-lg p-4">
+          <div className="bg-card rounded-xl p-5">
             <div className="flex items-center gap-3">
-              <div className="icon-container-lg">
-                <FileUp className="w-5 h-5 text-muted-foreground" strokeWidth={1.5} />
+              <div className="w-10 h-10 rounded-lg bg-muted/60 flex items-center justify-center">
+                <FileUp className="w-4.5 h-4.5 text-muted-foreground stroke-[1.5]" />
               </div>
               <div>
                 <p className="text-xl font-medium text-foreground">
@@ -310,10 +310,10 @@ export function HomeView({
               </div>
             </div>
           </div>
-          <div className="bg-card rounded-lg p-4">
+          <div className="bg-card rounded-xl p-5">
             <div className="flex items-center gap-3">
-              <div className="icon-container-lg">
-                <RefreshCw className="w-5 h-5 text-muted-foreground" strokeWidth={1.5} />
+              <div className="w-10 h-10 rounded-lg bg-muted/60 flex items-center justify-center">
+                <RefreshCw className="w-4.5 h-4.5 text-muted-foreground stroke-[1.5]" />
               </div>
               <div>
                 <p className="text-xl font-medium text-foreground">
@@ -325,7 +325,7 @@ export function HomeView({
           </div>
         </div>
         
-        <div className="bg-card rounded-lg p-6">
+        <div className="bg-card rounded-xl p-6">
           <AgentsList agents={agents} onAgentClick={handleAgentClick} />
         </div>
       </>
@@ -358,50 +358,50 @@ export function HomeView({
 
     return (
       <>
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between mb-8">
           <p className="text-muted-foreground">Track product outcomes over time</p>
           <Button
             onClick={() => setIsGoalModalOpen(true)}
-            className="flex items-center gap-2 rounded-md"
+            className="flex items-center gap-1.5 rounded-lg font-normal"
           >
-            <Plus className="w-4 h-4" strokeWidth={1.5} />
+            <Plus className="w-4 h-4 stroke-[2]" />
             Add Goal
           </Button>
         </div>
 
         {goals.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-16">
-            <div className="icon-container-lg mb-4">
-              <Target className="w-5 h-5 text-muted-foreground" strokeWidth={1.5} />
+          <div className="flex flex-col items-center justify-center py-24">
+            <div className="w-14 h-14 rounded-xl bg-muted/60 flex items-center justify-center mb-6">
+              <Target className="w-6 h-6 text-muted-foreground" />
             </div>
-            <h2 className="text-lg font-medium text-foreground mb-1">No goals yet</h2>
-            <p className="text-muted-foreground text-center max-w-sm mb-6">
+            <h2 className="text-lg font-medium text-foreground mb-2">No goals yet</h2>
+            <p className="text-muted-foreground text-center max-w-sm mb-8">
               Create goals to track product outcomes over time
             </p>
             <Button
               onClick={() => setIsGoalModalOpen(true)}
-              className="rounded-md"
+              className="rounded-lg font-normal"
             >
               Add your first goal
             </Button>
           </div>
         ) : (
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {goals.map((goal, index) => (
               <motion.div
                 key={goal.id}
-                initial={{ opacity: 0, y: 12 }}
+                initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: index * 0.04 }}
+                transition={{ duration: 0.3, delay: index * 0.05 }}
                 onClick={() => handleGoalClick(goal)}
-                className="bg-card rounded-lg p-4 hover:shadow-card-hover transition-shadow cursor-pointer"
+                className="bg-card rounded-xl p-5 hover:shadow-card-hover transition-shadow cursor-pointer"
               >
-                <div className="flex items-start justify-between gap-3 mb-3">
+                <div className="flex items-start justify-between gap-3 mb-4">
                   <span className={`px-2 py-0.5 rounded text-xs ${typeColors[goal.type]}`}>
                     {goal.type}
                   </span>
                 </div>
-                <h3 className="text-sm font-medium text-foreground leading-snug">
+                <h3 className="text-base font-medium text-foreground leading-snug">
                   {goal.title}
                 </h3>
               </motion.div>
@@ -424,50 +424,50 @@ export function HomeView({
       <motion.section 
         initial={{ opacity: 0 }} 
         animate={{ opacity: 1 }} 
-        transition={{ duration: 0.4 }} 
-        className="px-6 py-12 md:py-16"
+        transition={{ duration: 0.5 }} 
+        className="px-6 py-16 md:py-24"
       >
-        <div className="max-w-xl mx-auto text-center mb-12">
+        <div className="max-w-2xl mx-auto text-center mb-16">
           <motion.h1 
-            initial={{ opacity: 0, y: 12 }} 
+            initial={{ opacity: 0, y: 16 }} 
             animate={{ opacity: 1, y: 0 }} 
-            transition={{ duration: 0.4, delay: 0.1 }} 
-            className="font-display text-3xl text-foreground mb-2"
+            transition={{ duration: 0.5, delay: 0.1 }} 
+            className="font-display text-3xl md:text-4xl text-foreground mb-3"
           >
             Clarity at a glance
           </motion.h1>
           <motion.p 
-            initial={{ opacity: 0, y: 12 }} 
+            initial={{ opacity: 0, y: 16 }} 
             animate={{ opacity: 1, y: 0 }} 
-            transition={{ duration: 0.4, delay: 0.15 }} 
-            className="text-muted-foreground"
+            transition={{ duration: 0.5, delay: 0.2 }} 
+            className="text-muted-foreground text-base"
           >
             Here's what matters for your product today
           </motion.p>
         </div>
 
         <motion.div 
-          initial={{ opacity: 0, y: 12 }} 
+          initial={{ opacity: 0, y: 16 }} 
           animate={{ opacity: 1, y: 0 }} 
-          transition={{ duration: 0.4, delay: 0.2 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
         >
           <SearchBar isProcessing={isSearching} />
         </motion.div>
       </motion.section>
 
       {/* Tabs */}
-      <section className="px-6 pb-12">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center">
+      <section className="px-6 pb-16">
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-0.5">
             {tabs.map(tab => {
               const isActive = currentTab === tab.id;
               return (
                 <button 
                   key={tab.id} 
                   onClick={() => onTabChange(tab.id)} 
-                  className={`px-4 py-2 border-b-2 transition-colors ${isActive ? 'border-foreground text-foreground' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
+                  className={`px-4 py-2.5 border-b-2 transition-colors ${isActive ? 'border-foreground text-foreground' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
                 >
-                  <span className={isActive ? 'font-medium' : ''}>{tab.label}</span>
+                  <span className={isActive ? 'font-medium' : 'font-normal'}>{tab.label}</span>
                   {tab.id === 'home' && (
                     <span className="ml-2 px-1.5 py-0.5 text-xs bg-muted text-muted-foreground rounded">
                       {allInsights.filter(i => i.isNew).length}
@@ -479,13 +479,13 @@ export function HomeView({
           </div>
 
           {/* Right aligned controls */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
             <button
               onClick={() => generateExecutiveSummaryPDF({ insights: allInsights, goals, documents })}
-              className="p-2 rounded-md hover:bg-muted/50 transition-colors"
+              className="p-2 rounded-lg hover:bg-muted/50 transition-colors"
               title="Download executive summary"
             >
-              <Download className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
+              <Download className="w-4.5 h-4.5 text-muted-foreground" />
             </button>
             <ProjectSelector />
           </div>
