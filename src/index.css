@@ -4,12 +4,23 @@
 
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=DM+Serif+Display&display=swap');
 
-@import url("https://fonts.googleapis.com/css2?family=Inter&display=swap");
-
-/* Inside Pōd Design System
+/* ========================================
+   INSIDE PŌD DESIGN SYSTEM
+   ----------------------------------------
    Calm, editorial, decision-oriented
-   Sana Labs-inspired restraint
-*/
+   Premium enterprise with visual restraint
+   ======================================== */
+
+/* ========================================
+   ICON SYSTEM
+   ----------------------------------------
+   Consistent iconography:
+   - Default: 16px (w-4 h-4)
+   - Secondary: 20px (w-5 h-5) - rare, focal only
+   - Stroke: 1.5 (matches body text optically)
+   - Style: Outline only, sharp geometric joins
+   - Color: Inherits text-muted-foreground by default
+   ======================================== */
 
 @layer base {
   :root {

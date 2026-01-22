@@ -38,28 +38,28 @@ export function Header({ onSettingsClick, onLogoClick, onProjectsClick }: Header
           className="p-2.5 rounded-xl hover:bg-muted transition-colors"
           title="Projects"
         >
-          <FolderOpen className="w-5 h-5 text-muted-foreground" />
+          <FolderOpen className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
         </button>
 
         <button className="p-2.5 rounded-xl hover:bg-muted transition-colors relative">
-          <Bell className="w-5 h-5 text-muted-foreground" />
+          <Bell className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
           <span className="absolute top-2 right-2 w-2 h-2 bg-secondary rounded-full" />
         </button>
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button className="p-2.5 rounded-xl hover:bg-muted transition-colors">
-              <User className="w-5 h-5 text-muted-foreground" />
+              <User className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-48">
             <DropdownMenuItem onClick={onSettingsClick} className="cursor-pointer">
-              <Settings className="w-4 h-4 mr-2" />
+              <Settings className="w-4 h-4 mr-2" strokeWidth={1.5} />
               Settings
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem className="cursor-pointer text-destructive">
-              <LogOut className="w-4 h-4 mr-2" />
+              <LogOut className="w-4 h-4 mr-2" strokeWidth={1.5} />
               Log out
             </DropdownMenuItem>
           </DropdownMenuContent>
