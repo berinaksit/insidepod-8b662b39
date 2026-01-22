@@ -43,6 +43,7 @@ export default {
 				'serif'
 			],
 			mono: [
+				'Geist Mono',
 				'ui-monospace',
 				'SFMono-Regular',
 				'Menlo',
