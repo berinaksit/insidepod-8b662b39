@@ -142,16 +142,18 @@
 @layer base {
   * {
     @apply border-border;
+    font-family: 'Geist', var(--font-sans);
   }
 
   html {
-    font-family: var(--font-sans);
+    font-family: 'Geist', var(--font-sans);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
   body {
     @apply bg-background text-foreground font-medium;
+    font-family: 'Geist', var(--font-sans);
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     line-height: 1.28;
   }
@@ -162,12 +164,13 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
+    font-family: 'Geist', var(--font-sans);
     line-height: 1.15;
   }
 
   /* Display typography - for headlines */
   .font-display {
-    font-family: var(--font-display);
+    font-family: 'Geist', var(--font-display);
   }
 
   /* Calm focus states */
