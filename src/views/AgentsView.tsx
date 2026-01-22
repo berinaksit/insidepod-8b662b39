@@ -18,7 +18,7 @@ export function AgentsView() {
         </p>
         
         <button className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors shadow-sm">
-          <Plus className="w-4 h-4" strokeWidth={1.5} />
+          <Plus className="w-4 h-4" strokeWidth={1.8} />
           Add Agent
         </button>
       </motion.div>
@@ -33,7 +33,7 @@ export function AgentsView() {
         <div className="bg-card border border-border/30 rounded-2xl p-6">
           <div className="flex items-center gap-4">
             <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center flex-shrink-0">
-              <Bot className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
+              <Bot className="w-4 h-4 text-muted-foreground" strokeWidth={1.8} />
             </div>
             <div>
               <p className="text-3xl font-bold text-foreground leading-none">{mockAgents.length}</p>
@@ -45,7 +45,7 @@ export function AgentsView() {
         <div className="bg-card border border-border/30 rounded-2xl p-6">
           <div className="flex items-center gap-4">
             <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center flex-shrink-0">
-              <FileText className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
+              <FileText className="w-4 h-4 text-muted-foreground" strokeWidth={1.8} />
             </div>
             <div>
               <p className="text-3xl font-bold text-foreground leading-none">
@@ -59,7 +59,7 @@ export function AgentsView() {
         <div className="bg-card border border-border/30 rounded-2xl p-6">
           <div className="flex items-center gap-4">
             <div className="w-10 h-10 rounded-xl bg-violet-100 dark:bg-violet-950 flex items-center justify-center flex-shrink-0">
-              <Wand2 className="w-4 h-4 text-violet-600 dark:text-violet-400" strokeWidth={1.5} />
+              <Wand2 className="w-4 h-4 text-violet-600 dark:text-violet-400" strokeWidth={1.8} />
             </div>
             <div>
               <p className="text-3xl font-bold text-foreground leading-none">

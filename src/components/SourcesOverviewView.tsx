@@ -69,14 +69,14 @@ export function SourcesOverviewView({ onClose }: SourcesOverviewViewProps) {
           onClick={onClose}
           className="p-2 hover:bg-muted rounded-xl transition-colors"
         >
-          <ArrowLeft className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
+          <ArrowLeft className="w-4 h-4 text-muted-foreground" strokeWidth={1.8} />
         </button>
         <h1 className="text-xl font-semibold text-foreground">Connected Sources</h1>
       </div>
 
       {/* Search */}
       <div className="relative mb-8">
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" strokeWidth={1.8} />
         <input
           type="text"
           value={searchQuery}
@@ -93,7 +93,7 @@ export function SourcesOverviewView({ onClose }: SourcesOverviewViewProps) {
           return (
             <div key={group.type}>
               <div className="flex items-center gap-2 mb-3">
-                <Icon className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
+                <Icon className="w-4 h-4 text-muted-foreground" strokeWidth={1.8} />
                 <h2 className="text-sm font-medium text-muted-foreground">{group.type}</h2>
               </div>
               <div className="space-y-2">
@@ -122,11 +122,11 @@ export function SourcesOverviewView({ onClose }: SourcesOverviewViewProps) {
       {/* Actions */}
       <div className="flex flex-wrap gap-3">
         <Button variant="outline" className="rounded-xl">
-          <Upload className="w-4 h-4 mr-2" strokeWidth={1.5} />
+          <Upload className="w-4 h-4 mr-2" strokeWidth={1.8} />
           Upload new source
         </Button>
         <Button variant="outline" className="rounded-xl">
-          <MessageSquare className="w-4 h-4 mr-2" strokeWidth={1.5} />
+          <MessageSquare className="w-4 h-4 mr-2" strokeWidth={1.8} />
           Ask a question using these sources
         </Button>
       </div>
