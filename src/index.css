@@ -17,7 +17,7 @@
    Consistent iconography:
    - Default: 16px (w-4 h-4)
    - Secondary: 20px (w-5 h-5) - rare, focal only
-   - Stroke: 1.5 (matches body text optically)
+   - Stroke: 1.8 (20% heavier for visual confidence)
    - Style: Outline only, sharp geometric joins
    - Color: Inherits text-muted-foreground by default
    ======================================== */

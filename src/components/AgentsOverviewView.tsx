@@ -31,7 +31,7 @@ export function AgentsOverviewView({ onClose }: AgentsOverviewViewProps) {
           onClick={onClose}
           className="p-2 hover:bg-muted rounded-xl transition-colors"
         >
-          <ArrowLeft className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
+          <ArrowLeft className="w-4 h-4 text-muted-foreground" strokeWidth={1.8} />
         </button>
         <h1 className="text-xl font-semibold text-foreground">Active Agents</h1>
         <span className="text-sm text-muted-foreground">
@@ -52,7 +52,7 @@ export function AgentsOverviewView({ onClose }: AgentsOverviewViewProps) {
             <div className="flex items-start justify-between gap-4 mb-4">
               <div className="flex items-start gap-3">
                 <div className="w-9 h-9 rounded-lg bg-muted flex items-center justify-center">
-                  <Bot className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
+                  <Bot className="w-4 h-4 text-muted-foreground" strokeWidth={1.8} />
                 </div>
                 <div>
                   <h3 className="font-medium text-foreground">{agent.name}</h3>
@@ -88,7 +88,7 @@ export function AgentsOverviewView({ onClose }: AgentsOverviewViewProps) {
             {/* Last run */}
             {agent.lastRun && (
               <div className="flex items-center gap-1.5 text-sm text-muted-foreground mb-4">
-                <Clock className="w-4 h-4" strokeWidth={1.5} />
+                <Clock className="w-4 h-4" strokeWidth={1.8} />
                 <span>Last run {formatDistanceToNow(agent.lastRun, { addSuffix: true })}</span>
               </div>
             )}
@@ -96,15 +96,15 @@ export function AgentsOverviewView({ onClose }: AgentsOverviewViewProps) {
             {/* Actions */}
             <div className="flex flex-wrap gap-2">
               <Button variant="ghost" size="sm" className="rounded-lg text-xs h-8">
-                <Eye className="w-4 h-4 mr-1.5" strokeWidth={1.5} />
+                <Eye className="w-4 h-4 mr-1.5" strokeWidth={1.8} />
                 Open agent
               </Button>
               <Button variant="ghost" size="sm" className="rounded-lg text-xs h-8">
-                <Pause className="w-4 h-4 mr-1.5" strokeWidth={1.5} />
+                <Pause className="w-4 h-4 mr-1.5" strokeWidth={1.8} />
                 Pause agent
               </Button>
               <Button variant="ghost" size="sm" className="rounded-lg text-xs h-8">
-                <MessageSquare className="w-4 h-4 mr-1.5" strokeWidth={1.5} />
+                <MessageSquare className="w-4 h-4 mr-1.5" strokeWidth={1.8} />
                 Ask agent a question
               </Button>
             </div>
@@ -115,7 +115,7 @@ export function AgentsOverviewView({ onClose }: AgentsOverviewViewProps) {
       {allAgents.length === 0 && (
         <div className="flex flex-col items-center justify-center py-20">
           <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center mb-6">
-            <Bot className="w-5 h-5 text-muted-foreground" strokeWidth={1.5} />
+            <Bot className="w-5 h-5 text-muted-foreground" strokeWidth={1.8} />
           </div>
           <h2 className="text-xl font-semibold text-foreground mb-2">No active agents</h2>
           <p className="text-muted-foreground text-center max-w-sm">
