@@ -102,7 +102,7 @@ export function ProjectsView({ onBack }: ProjectsViewProps) {
             onClick={onBack}
             className="p-2 rounded-xl hover:bg-muted transition-colors"
           >
-            <ArrowLeft className="w-5 h-5 text-muted-foreground" />
+            <ArrowLeft className="w-5 h-5 text-muted-foreground" strokeWidth={1.5} />
           </button>
           <div>
             <h1 className="font-display text-2xl md:text-3xl text-foreground">
@@ -117,7 +117,7 @@ export function ProjectsView({ onBack }: ProjectsViewProps) {
         {/* Search and Actions Bar */}
         <div className="flex items-center gap-4 mb-6">
           <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
             <Input
               type="text"
               placeholder="Search projects..."
@@ -130,7 +130,7 @@ export function ProjectsView({ onBack }: ProjectsViewProps) {
             onClick={() => setIsCreateModalOpen(true)}
             className="gap-1.5 rounded-xl"
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-4 h-4" strokeWidth={1.5} />
             New project
           </Button>
         </div>
@@ -149,7 +149,7 @@ export function ProjectsView({ onBack }: ProjectsViewProps) {
               {projects.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-12 text-center">
                   <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mb-4">
-                    <FolderOpen className="w-8 h-8 text-muted-foreground" />
+                    <FolderOpen className="w-6 h-6 text-muted-foreground" strokeWidth={1.5} />
                   </div>
                   <h3 className="text-lg font-semibold text-foreground mb-2">No projects yet</h3>
                   <p className="text-sm text-muted-foreground mb-4">
@@ -160,13 +160,13 @@ export function ProjectsView({ onBack }: ProjectsViewProps) {
                     variant="outline"
                     className="gap-1.5 rounded-xl"
                   >
-                    <Plus className="w-4 h-4" />
+                    <Plus className="w-4 h-4" strokeWidth={1.5} />
                     Create project
                   </Button>
                 </div>
               ) : filteredProjects.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-8 text-center">
-                  <Search className="w-8 h-8 text-muted-foreground mb-3" />
+                  <Search className="w-6 h-6 text-muted-foreground mb-3" strokeWidth={1.5} />
                   <p className="text-sm text-muted-foreground">No projects match "{searchQuery}"</p>
                 </div>
               ) : (
@@ -228,7 +228,7 @@ export function ProjectsView({ onBack }: ProjectsViewProps) {
                       variant="outline"
                       className="gap-1.5 rounded-xl"
                     >
-                      <Upload className="w-4 h-4" />
+                      <Upload className="w-4 h-4" strokeWidth={1.5} />
                       Upload files
                     </Button>
                     <input
@@ -243,7 +243,7 @@ export function ProjectsView({ onBack }: ProjectsViewProps) {
 
                   {activeProjectFiles.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-16 text-center border border-dashed border-border rounded-xl">
-                      <Upload className="w-10 h-10 text-muted-foreground mb-4" />
+                      <Upload className="w-6 h-6 text-muted-foreground mb-4" strokeWidth={1.5} />
                       <h3 className="text-lg font-medium text-foreground mb-2">No files yet</h3>
                       <p className="text-sm text-muted-foreground mb-4">
                         Upload PDF, CSV, or DOCX files to this project
@@ -253,7 +253,7 @@ export function ProjectsView({ onBack }: ProjectsViewProps) {
                         variant="outline"
                         className="gap-1.5 rounded-xl"
                       >
-                        <Upload className="w-4 h-4" />
+                        <Upload className="w-4 h-4" strokeWidth={1.5} />
                         Upload files
                       </Button>
                     </div>
@@ -273,7 +273,7 @@ export function ProjectsView({ onBack }: ProjectsViewProps) {
                               className="flex items-center gap-4 p-4 rounded-xl border border-border bg-background hover:border-primary/30 transition-colors"
                             >
                               <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center">
-                                <FileIcon className="w-6 h-6 text-muted-foreground" />
+                                <FileIcon className="w-5 h-5 text-muted-foreground" strokeWidth={1.5} />
                               </div>
                               <div className="flex-1 min-w-0">
                                 <p className="font-medium text-foreground truncate">
@@ -287,7 +287,7 @@ export function ProjectsView({ onBack }: ProjectsViewProps) {
                                 {file.type}
                               </span>
                               <button className="p-2 rounded-lg hover:bg-muted transition-colors">
-                                <MoreHorizontal className="w-4 h-4 text-muted-foreground" />
+                                <MoreHorizontal className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
                               </button>
                             </motion.div>
                           );
@@ -299,7 +299,7 @@ export function ProjectsView({ onBack }: ProjectsViewProps) {
               ) : (
                 <div className="flex flex-col items-center justify-center py-20 text-center">
                   <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mb-4">
-                    <FolderOpen className="w-8 h-8 text-muted-foreground" />
+                    <FolderOpen className="w-6 h-6 text-muted-foreground" strokeWidth={1.5} />
                   </div>
                   <h3 className="text-lg font-semibold text-foreground mb-2">
                     Select a project

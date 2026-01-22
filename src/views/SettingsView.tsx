@@ -68,7 +68,7 @@ export function SettingsView({ onNavigate }: SettingsViewProps) {
               className="w-full flex items-center gap-4 p-5 bg-card border border-border/50 rounded-2xl hover:border-border hover:shadow-lg hover:shadow-primary/5 transition-all text-left group"
             >
               <div className="p-3 rounded-xl bg-muted group-hover:bg-primary/10 transition-colors">
-                <Icon className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                <Icon className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" strokeWidth={1.5} />
               </div>
               
               <div className="flex-1">
@@ -84,9 +84,9 @@ export function SettingsView({ onNavigate }: SettingsViewProps) {
               </div>
               
               {section.title === 'Data Sources' ? (
-                <Upload className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                <Upload className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" strokeWidth={1.5} />
               ) : (
-                <Settings className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                <Settings className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" strokeWidth={1.5} />
               )}
             </motion.button>
           );
