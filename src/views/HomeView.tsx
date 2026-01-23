@@ -280,7 +280,7 @@ export function HomeView({
             onClick={() => onTabChange('create-agent')}
             className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary text-primary-foreground font-normal hover:bg-primary/90 transition-colors"
           >
-            <Plus className="w-4 h-4" strokeWidth={1.8} />
+            <Plus className="w-4 h-4" strokeWidth={1.5} />
             Add Agent
           </button>
         </div>
@@ -289,7 +289,7 @@ export function HomeView({
           <div className="bg-card rounded-xl p-5">
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 rounded-lg bg-muted/60 flex items-center justify-center">
-                <Bot className="w-4 h-4 text-muted-foreground" strokeWidth={1.8} />
+                <Bot className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
               </div>
               <div>
                 <p className="text-xl font-medium text-foreground">{agents.filter(a => a.isActive).length}</p>
@@ -300,7 +300,7 @@ export function HomeView({
           <div className="bg-card rounded-xl p-5">
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 rounded-lg bg-muted/60 flex items-center justify-center">
-                <FileUp className="w-4 h-4 text-muted-foreground" strokeWidth={1.8} />
+                <FileUp className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
               </div>
               <div>
                 <p className="text-xl font-medium text-foreground">
@@ -313,7 +313,7 @@ export function HomeView({
           <div className="bg-card rounded-xl p-5">
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 rounded-lg bg-muted/60 flex items-center justify-center">
-                <RefreshCw className="w-4 h-4 text-muted-foreground" strokeWidth={1.8} />
+                <RefreshCw className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
               </div>
               <div>
                 <p className="text-xl font-medium text-foreground">
@@ -364,7 +364,7 @@ export function HomeView({
             onClick={() => setIsGoalModalOpen(true)}
             className="flex items-center gap-1.5 rounded-lg font-normal"
           >
-            <Plus className="w-4 h-4" strokeWidth={1.8} />
+            <Plus className="w-4 h-4" strokeWidth={1.5} />
             Add Goal
           </Button>
         </div>
@@ -372,7 +372,7 @@ export function HomeView({
         {goals.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24">
             <div className="w-12 h-12 rounded-xl bg-muted/60 flex items-center justify-center mb-6">
-              <Target className="w-5 h-5 text-muted-foreground" strokeWidth={1.8} />
+              <Target className="w-5 h-5 text-muted-foreground" strokeWidth={1.5} />
             </div>
             <h2 className="text-lg font-medium text-foreground mb-2">No goals yet</h2>
             <p className="text-muted-foreground text-center max-w-sm mb-8">
@@ -485,7 +485,7 @@ export function HomeView({
               className="p-2 rounded-lg hover:bg-muted/50 transition-colors"
               title="Download executive summary"
             >
-              <Download className="w-4 h-4 text-muted-foreground" strokeWidth={1.8} />
+              <Download className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
             </button>
             <ProjectSelector />
           </div>

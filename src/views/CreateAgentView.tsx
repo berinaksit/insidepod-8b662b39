@@ -139,7 +139,7 @@ export function CreateAgentView({ onCancel, onCreate }: CreateAgentViewProps) {
             onClick={onCancel}
             className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center hover:bg-muted/80 transition-colors"
           >
-            <ArrowLeft className="w-5 h-5 text-muted-foreground" strokeWidth={1.8} />
+            <ArrowLeft className="w-5 h-5 text-muted-foreground" strokeWidth={1.5} />
           </button>
           <div>
             <h1 className="text-2xl font-semibold text-foreground">Create Agent</h1>
@@ -260,7 +260,7 @@ export function CreateAgentView({ onCancel, onCreate }: CreateAgentViewProps) {
               <div className="relative">
                 {!uploadedFile ? (
                   <label className="flex items-center justify-center gap-2 w-full h-24 border-2 border-dashed border-border rounded-xl cursor-pointer hover:border-primary/50 hover:bg-muted/30 transition-colors">
-                    <Upload className="w-5 h-5 text-muted-foreground" strokeWidth={1.8} />
+                    <Upload className="w-5 h-5 text-muted-foreground" strokeWidth={1.5} />
                     <span className="text-sm text-muted-foreground">
                       Upload PDF, CSV, or DOCX
                     </span>
@@ -281,7 +281,7 @@ export function CreateAgentView({ onCancel, onCreate }: CreateAgentViewProps) {
                       onClick={handleRemoveFile}
                       className="w-6 h-6 rounded-full bg-muted flex items-center justify-center hover:bg-destructive/20 transition-colors"
                     >
-                      <X className="w-4 h-4 text-muted-foreground" strokeWidth={1.8} />
+                      <X className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
                     </button>
                   </div>
                 )}
