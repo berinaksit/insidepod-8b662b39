@@ -24,67 +24,67 @@
 
 @layer base {
   :root {
-    /* Core surfaces - icy stone background */
-    --background: 200 8% 96%;
-    --foreground: 200 15% 15%;
+    /* Core surfaces - single calm background */
+    --background: 0 0% 98%;
+    --foreground: 0 0% 15%;
 
-    /* Card surfaces - warm white with subtle warmth */
-    --card: 40 20% 99%;
-    --card-foreground: 200 15% 15%;
+    /* Card surfaces - pure white, minimal lift */
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 15%;
 
     /* Popover */
-    --popover: 40 20% 99%;
-    --popover-foreground: 200 15% 15%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 15%;
 
-    /* Primary - slate charcoal */
-    --primary: 200 15% 18%;
-    --primary-foreground: 40 15% 98%;
+    /* Primary - confident dark */
+    --primary: 0 0% 12%;
+    --primary-foreground: 0 0% 100%;
 
-    /* Primary surface - icy tint */
-    --primary-surface: 200 8% 96%;
-    --primary-surface-foreground: 200 15% 20%;
+    /* Primary surface - matches background for calm */
+    --primary-surface: 0 0% 98%;
+    --primary-surface-foreground: 0 0% 15%;
 
-    /* Secondary text - stone gray */
-    --secondary: 30 8% 50%;
-    --secondary-foreground: 40 15% 98%;
+    /* Secondary text - softer for hierarchy */
+    --secondary: 0 0% 55%;
+    --secondary-foreground: 0 0% 100%;
 
-    /* Secondary surface - warm stone */
-    --secondary-surface: 35 12% 95%;
-    --secondary-surface-foreground: 30 10% 40%;
+    /* Secondary surface - minimal */
+    --secondary-surface: 0 0% 98%;
+    --secondary-surface-foreground: 0 0% 40%;
 
-    /* Tertiary - icy blue-gray */
-    --tertiary-surface: 200 10% 95%;
-    --tertiary-surface-foreground: 200 10% 45%;
+    /* Tertiary - very subtle */
+    --tertiary-surface: 0 0% 98%;
+    --tertiary-surface-foreground: 0 0% 45%;
 
-    /* Muted - soft stone */
-    --muted: 35 10% 93%;
-    --muted-foreground: 200 10% 45%;
+    /* Muted - for subdued elements */
+    --muted: 0 0% 95%;
+    --muted-foreground: 0 0% 50%;
 
-    /* Accent - warm earth hint */
-    --accent: 35 12% 94%;
-    --accent-foreground: 200 15% 18%;
+    /* Accent */
+    --accent: 0 0% 96%;
+    --accent-foreground: 0 0% 15%;
 
-    /* Destructive - earthy rust */
-    --destructive: 15 55% 45%;
-    --destructive-foreground: 40 15% 98%;
+    /* Destructive */
+    --destructive: 0 55% 50%;
+    --destructive-foreground: 0 0% 100%;
 
-    /* Borders - icy subtle */
-    --border: 200 8% 90%;
-    --input: 200 8% 90%;
-    --ring: 200 15% 25%;
+    /* Borders - very subtle */
+    --border: 0 0% 92%;
+    --input: 0 0% 92%;
+    --ring: 0 0% 15%;
 
     /* Radius */
     --radius: 0.75rem;
 
-    /* Sidebar - icy stone */
-    --sidebar-background: 200 8% 96%;
-    --sidebar-foreground: 200 10% 40%;
-    --sidebar-primary: 200 15% 18%;
-    --sidebar-primary-foreground: 40 15% 98%;
-    --sidebar-accent: 35 10% 93%;
-    --sidebar-accent-foreground: 200 15% 18%;
-    --sidebar-border: 200 8% 90%;
-    --sidebar-ring: 200 15% 25%;
+    /* Sidebar */
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 0 0% 40%;
+    --sidebar-primary: 0 0% 12%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 0% 95%;
+    --sidebar-accent-foreground: 0 0% 15%;
+    --sidebar-border: 0 0% 92%;
+    --sidebar-ring: 0 0% 15%;
 
     /* Typography */
     --font-sans: 'DM Sans', system-ui, sans-serif;
@@ -94,68 +94,63 @@
     --transition-calm: 280ms cubic-bezier(0.4, 0, 0.2, 1);
     --transition-subtle: 180ms cubic-bezier(0.4, 0, 0.2, 1);
 
-    /* Featured cards - deep slate with teal undertone */
-    --highlight: 190 20% 18%;
-    --highlight-foreground: 40 15% 98%;
-    --highlight-surface: 190 25% 12%;
+    /* Featured cards */
+    --highlight: 0 0% 12%;
+    --highlight-foreground: 0 0% 100%;
+    --highlight-surface: 0 0% 8%;
   }
 
   .dark {
-    /* Deep slate with teal undertone */
-    --background: 190 20% 8%;
-    --foreground: 40 12% 92%;
+    --background: 220 15% 8%;
+    --foreground: 40 15% 95%;
 
-    --card: 190 18% 12%;
-    --card-foreground: 40 12% 92%;
+    --card: 220 15% 10%;
+    --card-foreground: 40 15% 95%;
 
-    --popover: 190 18% 12%;
-    --popover-foreground: 40 12% 92%;
+    --popover: 220 15% 10%;
+    --popover-foreground: 40 15% 95%;
 
-    /* Icy teal accent */
-    --primary: 175 25% 55%;
-    --primary-foreground: 190 20% 8%;
+    --primary: 150 30% 55%;
+    --primary-foreground: 220 15% 8%;
 
-    --primary-surface: 175 15% 18%;
-    --primary-surface-foreground: 175 20% 80%;
+    --primary-surface: 150 20% 15%;
+    --primary-surface-foreground: 150 30% 85%;
 
-    /* Warm earth accent */
-    --secondary: 30 25% 55%;
-    --secondary-foreground: 190 20% 8%;
+    --secondary: 15 40% 55%;
+    --secondary-foreground: 220 15% 8%;
 
-    --secondary-surface: 30 15% 18%;
-    --secondary-surface-foreground: 30 20% 80%;
+    --secondary-surface: 15 25% 15%;
+    --secondary-surface-foreground: 15 40% 85%;
 
-    /* Icy slate */
-    --tertiary-surface: 200 18% 15%;
-    --tertiary-surface-foreground: 200 15% 75%;
+    --tertiary-surface: 210 25% 15%;
+    --tertiary-surface-foreground: 210 35% 85%;
 
-    --muted: 190 15% 15%;
-    --muted-foreground: 200 10% 55%;
+    --muted: 220 15% 15%;
+    --muted-foreground: 220 10% 60%;
 
-    --accent: 190 15% 15%;
-    --accent-foreground: 40 12% 92%;
+    --accent: 220 15% 15%;
+    --accent-foreground: 40 15% 95%;
 
-    /* Earthy rust */
-    --destructive: 15 50% 45%;
-    --destructive-foreground: 40 12% 98%;
+    --destructive: 0 60% 45%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 190 15% 18%;
-    --input: 190 15% 18%;
-    --ring: 175 25% 55%;
+    --border: 220 15% 18%;
+    --input: 220 15% 18%;
+    --ring: 150 30% 55%;
 
-    --sidebar-background: 190 20% 6%;
-    --sidebar-foreground: 40 10% 85%;
-    --sidebar-primary: 175 25% 55%;
-    --sidebar-primary-foreground: 190 20% 8%;
-    --sidebar-accent: 190 15% 15%;
-    --sidebar-accent-foreground: 40 12% 92%;
-    --sidebar-border: 190 15% 18%;
-    --sidebar-ring: 175 25% 55%;
+    --sidebar-background: 220 15% 6%;
+    --sidebar-foreground: 40 15% 90%;
+    --sidebar-primary: 150 30% 55%;
+    --sidebar-primary-foreground: 220 15% 8%;
+    --sidebar-accent: 220 15% 15%;
+    --sidebar-accent-foreground: 40 15% 95%;
+    --sidebar-border: 220 15% 18%;
+    --sidebar-ring: 150 30% 55%;
 
-    /* Featured cards - deep teal-slate */
-    --highlight: 185 25% 22%;
-    --highlight-foreground: 40 12% 95%;
-    --highlight-surface: 185 30% 15%;
+    /* Highlight for featured cards - dark mode */
+    --highlight: 0 0% 30%;
+    --highlight-foreground: 0 0% 100%;
+    --highlight-surface: 0 0% 15%;
   }
 }
 
