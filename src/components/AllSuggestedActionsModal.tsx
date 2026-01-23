@@ -293,9 +293,9 @@ export default function AllSuggestedActionsModal({
             className="flex items-center gap-3 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
           >
             {allSelected ? (
-              <CheckSquare className="w-5 h-5 text-primary" strokeWidth={1.8} />
+              <CheckSquare className="w-5 h-5 text-primary" strokeWidth={1.5} />
             ) : (
-              <Square className="w-5 h-5" strokeWidth={1.8} />
+              <Square className="w-5 h-5" strokeWidth={1.5} />
             )}
             <span>{allSelected ? 'Deselect all' : 'Select all'}</span>
           </button>
@@ -329,7 +329,7 @@ export default function AllSuggestedActionsModal({
                     </div>
                     <p className="text-sm text-muted-foreground">{action.detail}</p>
                     <div className="flex items-center gap-1.5 mt-3 text-xs text-muted-foreground">
-                      <TrendingUp className="w-4 h-4" strokeWidth={1.8} />
+                      <TrendingUp className="w-4 h-4" strokeWidth={1.5} />
                       <span>Expected impact: {action.impact}</span>
                     </div>
                   </div>
@@ -349,7 +349,7 @@ export default function AllSuggestedActionsModal({
               }
             </p>
             <Button onClick={downloadPRD} className="gap-2">
-              <Download className="w-4 h-4" strokeWidth={1.8} />
+              <Download className="w-4 h-4" strokeWidth={1.5} />
               Download as PRD
             </Button>
           </div>

@@ -205,7 +205,7 @@ export default function InsightDetailPage() {
           </h1>
           <div className="flex items-center gap-4 text-muted-foreground">
             <span className="flex items-center gap-1.5">
-              <FileText className="w-4 h-4" strokeWidth={1.8} />
+              <FileText className="w-4 h-4" strokeWidth={1.5} />
               <span className="text-sm font-medium">{insight.evidenceCount} sources analyzed</span>
             </span>
             <span className="flex items-center gap-1.5">
@@ -256,9 +256,9 @@ export default function InsightDetailPage() {
                   metric.trend === 'down' ? 'text-destructive' : 'text-amber-600'
                 }`}>
                   {metric.trend === 'down' ? (
-                    <TrendingDown className="w-4 h-4" strokeWidth={1.8} />
+                    <TrendingDown className="w-4 h-4" strokeWidth={1.5} />
                   ) : (
-                    <TrendingUp className="w-4 h-4" strokeWidth={1.8} />
+                    <TrendingUp className="w-4 h-4" strokeWidth={1.5} />
                   )}
                   {metric.change}
                 </span>
@@ -277,7 +277,7 @@ export default function InsightDetailPage() {
             className="space-y-4"
           >
             <div className="flex items-center gap-2">
-              <BarChart3 className="w-4 h-4 text-muted-foreground" strokeWidth={1.8} />
+              <BarChart3 className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
               <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
                 Completion trend
               </h2>
@@ -324,7 +324,7 @@ export default function InsightDetailPage() {
             className="space-y-4"
           >
             <div className="flex items-center gap-2">
-              <Activity className="w-4 h-4 text-muted-foreground" strokeWidth={1.8} />
+              <Activity className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
               <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
                 User engagement over time
               </h2>
@@ -389,7 +389,7 @@ export default function InsightDetailPage() {
             className="space-y-4"
           >
             <div className="flex items-center gap-2">
-              <PieChart className="w-4 h-4 text-muted-foreground" strokeWidth={1.8} />
+              <PieChart className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
               <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
                 Affected segments
               </h2>
@@ -449,7 +449,7 @@ export default function InsightDetailPage() {
             className="space-y-4"
           >
             <div className="flex items-center gap-2">
-              <Target className="w-4 h-4 text-muted-foreground" strokeWidth={1.8} />
+              <Target className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
               <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
                 Conversion funnel
               </h2>
@@ -510,7 +510,7 @@ export default function InsightDetailPage() {
                 >
                   <div className="flex gap-4">
                     <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center flex-shrink-0">
-                      <Icon className="w-5 h-5 text-muted-foreground" strokeWidth={1.8} />
+                      <Icon className="w-5 h-5 text-muted-foreground" strokeWidth={1.5} />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
@@ -525,7 +525,7 @@ export default function InsightDetailPage() {
                       </div>
                       <p className="text-sm text-muted-foreground mt-1">{item.detail}</p>
                       <p className="text-xs text-muted-foreground mt-3 flex items-center gap-1.5">
-                        <FileText className="w-4 h-4" strokeWidth={1.8} />
+                        <FileText className="w-4 h-4" strokeWidth={1.5} />
                         Source: {item.source}
                       </p>
                     </div>
@@ -567,7 +567,7 @@ export default function InsightDetailPage() {
                 >
                   <div className="flex gap-4">
                     <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center flex-shrink-0">
-                      <Icon className="w-5 h-5 text-muted-foreground" strokeWidth={1.8} />
+                      <Icon className="w-5 h-5 text-muted-foreground" strokeWidth={1.5} />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between gap-2 mb-1">
@@ -579,10 +579,10 @@ export default function InsightDetailPage() {
                       <p className="text-sm text-muted-foreground mt-1">{action.detail}</p>
                       <div className="flex items-center justify-between mt-3">
                         <span className="text-xs text-muted-foreground flex items-center gap-1">
-                          <TrendingUp className="w-4 h-4" strokeWidth={1.8} />
+                          <TrendingUp className="w-4 h-4" strokeWidth={1.5} />
                           Expected impact: {action.impact}
                         </span>
-                        <ExternalLink className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" strokeWidth={1.8} />
+                        <ExternalLink className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" strokeWidth={1.5} />
                       </div>
                     </div>
                   </div>

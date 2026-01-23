@@ -38,7 +38,7 @@ export function InsightDetailView({ onClose, insight }: InsightDetailViewProps) 
           onClick={onClose}
           className="p-2 hover:bg-muted rounded-xl transition-colors"
         >
-          <ArrowLeft className="w-4 h-4 text-muted-foreground" strokeWidth={1.8} />
+          <ArrowLeft className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
         </button>
         <div className="flex items-center gap-2">
           <span className={`px-2.5 py-1 rounded-md text-xs font-medium ${
@@ -109,15 +109,15 @@ export function InsightDetailView({ onClose, insight }: InsightDetailViewProps) 
       {/* Actions */}
       <div className="flex flex-wrap gap-3">
         <Button variant="outline" className="rounded-xl">
-          <MessageSquare className="w-4 h-4 mr-2" strokeWidth={1.8} />
+          <MessageSquare className="w-4 h-4 mr-2" strokeWidth={1.5} />
           Ask follow-up question
         </Button>
         <Button variant="outline" className="rounded-xl">
-          <FileText className="w-4 h-4 mr-2" strokeWidth={1.8} />
+          <FileText className="w-4 h-4 mr-2" strokeWidth={1.5} />
           View supporting sources
         </Button>
         <Button variant="outline" className="rounded-xl">
-          <Target className="w-4 h-4 mr-2" strokeWidth={1.8} />
+          <Target className="w-4 h-4 mr-2" strokeWidth={1.5} />
           Link to a goal
         </Button>
       </div>

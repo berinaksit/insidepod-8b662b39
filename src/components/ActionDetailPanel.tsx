@@ -38,7 +38,7 @@ export function ActionDetailPanel({ onClose, task }: ActionDetailPanelProps) {
           onClick={onClose}
           className="p-2 hover:bg-muted rounded-xl transition-colors"
         >
-          <ArrowLeft className="w-4 h-4 text-muted-foreground" strokeWidth={1.8} />
+          <ArrowLeft className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
         </button>
         <span className="px-2.5 py-1 bg-secondary/20 text-secondary rounded-md text-xs font-medium">
           Suggested Task
@@ -83,7 +83,7 @@ export function ActionDetailPanel({ onClose, task }: ActionDetailPanelProps) {
       {/* Linked Agent */}
       <div className="bg-muted/50 rounded-xl p-4 mb-8 flex items-center gap-3">
         <div className="w-9 h-9 rounded-lg bg-muted flex items-center justify-center">
-          <Bot className="w-4 h-4 text-muted-foreground" strokeWidth={1.8} />
+          <Bot className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
         </div>
         <div>
           <p className="text-sm text-muted-foreground">Linked agent</p>
@@ -101,7 +101,7 @@ export function ActionDetailPanel({ onClose, task }: ActionDetailPanelProps) {
               className="bg-card rounded-xl p-4 shadow-card border border-border/50 flex items-center justify-between"
             >
               <div className="flex items-center gap-3">
-                <Database className="w-4 h-4 text-muted-foreground" strokeWidth={1.8} />
+                <Database className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
                 <span className="text-foreground font-medium">{source.name}</span>
               </div>
               <span className="text-sm text-muted-foreground">{source.count} items</span>
@@ -113,15 +113,15 @@ export function ActionDetailPanel({ onClose, task }: ActionDetailPanelProps) {
       {/* Actions */}
       <div className="flex flex-wrap gap-3">
         <Button variant="outline" className="rounded-xl">
-          <ExternalLink className="w-4 h-4 mr-2" strokeWidth={1.8} />
+          <ExternalLink className="w-4 h-4 mr-2" strokeWidth={1.5} />
           Open relevant sources
         </Button>
         <Button variant="outline" className="rounded-xl">
-          <MessageSquare className="w-4 h-4 mr-2" strokeWidth={1.8} />
+          <MessageSquare className="w-4 h-4 mr-2" strokeWidth={1.5} />
           Ask agent about this
         </Button>
         <Button variant="outline" className="rounded-xl text-muted-foreground">
-          <X className="w-4 h-4 mr-2" strokeWidth={1.8} />
+          <X className="w-4 h-4 mr-2" strokeWidth={1.5} />
           Dismiss suggestion
         </Button>
       </div>
