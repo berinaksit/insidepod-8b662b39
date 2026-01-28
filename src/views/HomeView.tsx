@@ -218,7 +218,7 @@ export function HomeView({
             />
           </div>
           {/* Still show mock insights */}
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             {mockInsights.map((insight, index) => (
               <InsightCard 
                 key={insight.id} 
@@ -241,7 +241,7 @@ export function HomeView({
     };
 
     return (
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
         {allInsights.map((insight, index) => (
           <InsightCard 
             key={insight.id} 
@@ -274,18 +274,18 @@ export function HomeView({
 
     return (
       <>
-        <div className="flex items-center justify-between mb-8">
-          <p className="text-muted-foreground">AI agents continuously monitoring your product signals</p>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sm:mb-8">
+          <p className="text-muted-foreground text-sm sm:text-base">AI agents continuously monitoring your product signals</p>
           <button 
             onClick={() => onTabChange('create-agent')}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary text-primary-foreground font-normal hover:bg-primary/90 transition-colors"
+            className="flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg bg-primary text-primary-foreground font-normal hover:bg-primary/90 transition-colors w-full sm:w-auto"
           >
             <Plus className="w-4 h-4" strokeWidth={1.5} />
             Add Agent
           </button>
         </div>
         
-        <div className="grid gap-6 md:grid-cols-3 mb-8">
+        <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 mb-6 sm:mb-8">
           <div className="bg-card rounded-xl p-5">
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 rounded-lg bg-muted/60 flex items-center justify-center">
@@ -325,7 +325,7 @@ export function HomeView({
           </div>
         </div>
         
-        <div className="bg-card rounded-xl p-6">
+        <div className="bg-card rounded-xl p-4 sm:p-6">
           <AgentsList agents={agents} onAgentClick={handleAgentClick} />
         </div>
       </>
@@ -358,11 +358,11 @@ export function HomeView({
 
     return (
       <>
-        <div className="flex items-center justify-between mb-8">
-          <p className="text-muted-foreground">Track product outcomes over time</p>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sm:mb-8">
+          <p className="text-muted-foreground text-sm sm:text-base">Track product outcomes over time</p>
           <Button
             onClick={() => setIsGoalModalOpen(true)}
-            className="flex items-center gap-1.5 rounded-lg font-normal"
+            className="flex items-center justify-center gap-1.5 rounded-lg font-normal w-full sm:w-auto"
           >
             <Plus className="w-4 h-4" strokeWidth={1.5} />
             Add Goal
@@ -370,23 +370,23 @@ export function HomeView({
         </div>
 
         {goals.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-24">
+          <div className="flex flex-col items-center justify-center py-16 sm:py-24 px-4">
             <div className="w-12 h-12 rounded-xl bg-muted/60 flex items-center justify-center mb-6">
               <Target className="w-5 h-5 text-muted-foreground" strokeWidth={1.5} />
             </div>
-            <h2 className="text-lg font-medium text-foreground mb-2">No goals yet</h2>
-            <p className="text-muted-foreground text-center max-w-sm mb-8">
+            <h2 className="text-lg font-medium text-foreground mb-2 text-center">No goals yet</h2>
+            <p className="text-muted-foreground text-center max-w-sm mb-8 text-sm sm:text-base">
               Create goals to track product outcomes over time
             </p>
             <Button
               onClick={() => setIsGoalModalOpen(true)}
-              className="rounded-lg font-normal"
+              className="rounded-lg font-normal w-full sm:w-auto"
             >
               Add your first goal
             </Button>
           </div>
         ) : (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             {goals.map((goal, index) => (
               <motion.div
                 key={goal.id}
@@ -425,14 +425,14 @@ export function HomeView({
         initial={{ opacity: 0 }} 
         animate={{ opacity: 1 }} 
         transition={{ duration: 0.5 }} 
-        className="px-6 py-16 md:py-24"
+        className="px-4 sm:px-6 py-10 sm:py-16 md:py-24"
       >
-        <div className="max-w-2xl mx-auto text-center mb-16">
+        <div className="max-w-2xl mx-auto text-center mb-10 sm:mb-16">
           <motion.h1 
             initial={{ opacity: 0, y: 16 }} 
             animate={{ opacity: 1, y: 0 }} 
             transition={{ duration: 0.5, delay: 0.1 }} 
-            className="font-display text-3xl md:text-4xl text-foreground mb-3"
+            className="font-display text-2xl sm:text-3xl md:text-4xl text-foreground mb-2 sm:mb-3"
           >
             Clarity at a glance
           </motion.h1>
@@ -440,7 +440,7 @@ export function HomeView({
             initial={{ opacity: 0, y: 16 }} 
             animate={{ opacity: 1, y: 0 }} 
             transition={{ duration: 0.5, delay: 0.2 }} 
-            className="text-muted-foreground text-base"
+            className="text-muted-foreground text-sm sm:text-base"
           >
             Here's what matters for your product today
           </motion.p>
@@ -456,20 +456,20 @@ export function HomeView({
       </motion.section>
 
       {/* Tabs */}
-      <section className="px-6 pb-16">
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-0.5">
+      <section className="px-4 sm:px-6 pb-10 sm:pb-16">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sm:mb-8">
+          <div className="flex items-center gap-0.5 overflow-x-auto pb-2 sm:pb-0 -mx-4 px-4 sm:mx-0 sm:px-0">
             {tabs.map(tab => {
               const isActive = currentTab === tab.id;
               return (
                 <button 
                   key={tab.id} 
                   onClick={() => onTabChange(tab.id)} 
-                  className={`px-4 py-2.5 border-b-2 transition-colors ${isActive ? 'border-foreground text-foreground' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
+                  className={`px-3 sm:px-4 py-2 sm:py-2.5 border-b-2 transition-colors whitespace-nowrap ${isActive ? 'border-foreground text-foreground' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
                 >
-                  <span className={isActive ? 'font-medium' : 'font-normal'}>{tab.label}</span>
+                  <span className={`text-sm sm:text-base ${isActive ? 'font-medium' : 'font-normal'}`}>{tab.label}</span>
                   {tab.id === 'home' && (
-                    <span className="ml-2 px-1.5 py-0.5 text-xs bg-muted text-muted-foreground rounded">
+                    <span className="ml-1.5 sm:ml-2 px-1 sm:px-1.5 py-0.5 text-xs bg-muted text-muted-foreground rounded">
                       {allInsights.filter(i => i.isNew).length}
                     </span>
                   )}
@@ -479,7 +479,7 @@ export function HomeView({
           </div>
 
           {/* Right aligned controls */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 sm:gap-4">
             <button
               onClick={() => generateExecutiveSummaryPDF({ insights: allInsights, goals, documents })}
               className="p-2 rounded-lg hover:bg-muted/50 transition-colors"
@@ -583,7 +583,7 @@ export function HomeView({
 
               {/* Dashboard Cards Grid */}
               {dashboardView === 'none' && (
-                <div className="grid gap-3.5 md:grid-cols-2 lg:grid-cols-3">
+                <div className="grid gap-3 sm:gap-3.5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                   {/* Featured Insight Card - Purple */}
                   <div 
                     onClick={() => setDashboardView('insight')}

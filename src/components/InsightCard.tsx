@@ -119,14 +119,14 @@ export function InsightCard({
           delay: index * 0.08,
           ease: [0.4, 0, 0.2, 1]
         }}
-        className="bg-foreground rounded-xl p-6 cursor-pointer group min-h-[260px] flex flex-col"
+        className="bg-foreground rounded-xl p-4 sm:p-6 cursor-pointer group min-h-[220px] sm:min-h-[260px] flex flex-col"
         onClick={handleClick}
       >
-        <h3 className="text-lg font-medium text-background leading-snug mb-auto">
+        <h3 className="text-base sm:text-lg font-medium text-background leading-snug mb-auto">
           {insight.title}
         </h3>
         
-        <div className="mt-8">
+        <div className="mt-6 sm:mt-8">
           <div className="w-10 h-10 rounded-lg bg-background/10 flex items-center justify-center mb-4">
             <Icon className="w-4 h-4 text-background/50" strokeWidth={1.5} />
           </div>
@@ -152,7 +152,7 @@ export function InsightCard({
           delay: index * 0.08,
           ease: [0.4, 0, 0.2, 1]
         }}
-        className="insight-card cursor-pointer group min-h-[260px] flex flex-col"
+        className="insight-card cursor-pointer group min-h-[220px] sm:min-h-[260px] flex flex-col"
         onClick={handleClick}
       >
         <div className="flex items-center gap-2 mb-4">
@@ -166,7 +166,7 @@ export function InsightCard({
           "{insight.synthesis}"
         </h3>
         
-        <div className="mt-8 flex items-center gap-3">
+        <div className="mt-6 sm:mt-8 flex items-center gap-3">
           <div className="w-8 h-8 rounded-lg bg-muted/50 flex items-center justify-center">
             <FileText className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
           </div>
@@ -191,7 +191,7 @@ export function InsightCard({
           delay: index * 0.08,
           ease: [0.4, 0, 0.2, 1]
         }}
-        className="insight-card cursor-pointer group min-h-[260px] flex flex-col"
+        className="insight-card cursor-pointer group min-h-[220px] sm:min-h-[260px] flex flex-col"
         onClick={handleClick}
       >
         <h3 className="text-base font-medium text-foreground leading-snug mb-6">
@@ -223,7 +223,7 @@ export function InsightCard({
         delay: index * 0.08,
         ease: [0.4, 0, 0.2, 1]
       }}
-      className="insight-card cursor-pointer group min-h-[260px] flex flex-col"
+      className="insight-card cursor-pointer group min-h-[220px] sm:min-h-[260px] flex flex-col"
       onClick={handleClick}
     >
       <div className="flex items-center justify-between mb-4">
@@ -239,7 +239,7 @@ export function InsightCard({
         {insight.title}
       </h3>
       
-      <div className="mt-8">
+      <div className="mt-6 sm:mt-8">
         <div className="flex items-center gap-2 mb-3">
           <div className="flex-1 h-1 bg-muted/50 rounded-full overflow-hidden">
             <div 
