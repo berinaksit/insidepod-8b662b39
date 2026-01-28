@@ -64,7 +64,7 @@ const Index = () => {
           onProjectsClick={() => setCurrentView('projects')}
         />
         
-        <main className="flex-1 overflow-auto px-[150px]">
+        <main className="flex-1 overflow-auto px-4 sm:px-6 md:px-12 lg:px-24 xl:px-[150px]">
           <AnimatePresence mode="wait">
             <motion.div
               key={currentView}

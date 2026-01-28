@@ -126,7 +126,7 @@ export function CreateAgentView({ onCancel, onCreate }: CreateAgentViewProps) {
   const isFormValid = agentName.trim() !== '' && prompt.trim() !== '';
 
   return (
-    <div className="min-h-full px-6 py-8">
+    <div className="min-h-full px-4 sm:px-6 py-6 sm:py-8">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -134,22 +134,22 @@ export function CreateAgentView({ onCancel, onCreate }: CreateAgentViewProps) {
         className="max-w-2xl mx-auto"
       >
         {/* Header */}
-        <div className="flex items-center gap-4 mb-8">
+        <div className="flex items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
           <button
             onClick={onCancel}
-            className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center hover:bg-muted/80 transition-colors"
+            className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-muted flex items-center justify-center hover:bg-muted/80 transition-colors"
           >
-            <ArrowLeft className="w-5 h-5 text-muted-foreground" strokeWidth={1.5} />
+            <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" strokeWidth={1.5} />
           </button>
           <div>
-            <h1 className="text-2xl font-semibold text-foreground">Create Agent</h1>
-            <p className="text-muted-foreground">Configure a new AI agent to monitor your data</p>
+            <h1 className="text-xl sm:text-2xl font-semibold text-foreground">Create Agent</h1>
+            <p className="text-muted-foreground text-sm sm:text-base">Configure a new AI agent to monitor your data</p>
           </div>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="bg-card border border-border/30 rounded-2xl p-6 space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+          <div className="bg-card border border-border/30 rounded-xl sm:rounded-2xl p-4 sm:p-6 space-y-4 sm:space-y-6">
             {/* Agent Name */}
             <div className="space-y-2">
               <Label htmlFor="agentName" className="text-sm font-medium">
@@ -309,12 +309,12 @@ export function CreateAgentView({ onCancel, onCreate }: CreateAgentViewProps) {
           </div>
 
           {/* Action Buttons */}
-          <div className="flex items-center justify-end gap-3">
+          <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-3">
             <Button
               type="button"
               variant="outline"
               onClick={onCancel}
-              className="px-6"
+              className="px-6 w-full sm:w-auto"
               disabled={isCreating}
             >
               Cancel
@@ -322,7 +322,7 @@ export function CreateAgentView({ onCancel, onCreate }: CreateAgentViewProps) {
             <Button
               type="submit"
               disabled={!isFormValid || isCreating}
-              className="px-6"
+              className="px-6 w-full sm:w-auto"
             >
               {isCreating ? 'Creating...' : 'Create Agent'}
             </Button>

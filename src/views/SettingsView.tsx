@@ -41,20 +41,20 @@ export function SettingsView({ onNavigate }: SettingsViewProps) {
   ];
 
   return (
-    <div className="min-h-full px-6 py-8">
+    <div className="min-h-full px-4 sm:px-6 py-6 sm:py-8">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        className="mb-8"
+        className="mb-6 sm:mb-8"
       >
-        <h1 className="font-display text-2xl text-foreground mb-1">Settings</h1>
-        <p className="text-muted-foreground">
+        <h1 className="font-display text-xl sm:text-2xl text-foreground mb-1">Settings</h1>
+        <p className="text-muted-foreground text-sm sm:text-base">
           Configure your Inside Pōd workspace
         </p>
       </motion.div>
       
-      <div className="space-y-3 max-w-2xl">
+      <div className="space-y-2 sm:space-y-3 max-w-2xl">
         {settingsSections.map((section, index) => {
           const Icon = section.icon;
           
@@ -65,10 +65,10 @@ export function SettingsView({ onNavigate }: SettingsViewProps) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: index * 0.05 }}
               onClick={section.onClick}
-              className="w-full flex items-center gap-4 p-5 bg-card border border-border/50 rounded-2xl hover:border-border hover:shadow-lg hover:shadow-primary/5 transition-all text-left group"
+              className="w-full flex items-center gap-3 sm:gap-4 p-4 sm:p-5 bg-card border border-border/50 rounded-xl sm:rounded-2xl hover:border-border hover:shadow-lg hover:shadow-primary/5 transition-all text-left group"
             >
-              <div className="p-3 rounded-xl bg-muted group-hover:bg-primary/10 transition-colors">
-                <Icon className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" strokeWidth={1.5} />
+              <div className="p-2.5 sm:p-3 rounded-lg sm:rounded-xl bg-muted group-hover:bg-primary/10 transition-colors">
+                <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground group-hover:text-primary transition-colors" strokeWidth={1.5} />
               </div>
               
               <div className="flex-1">

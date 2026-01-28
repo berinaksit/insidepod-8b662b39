@@ -95,28 +95,28 @@ export function ProjectsView({ onBack }: ProjectsViewProps) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
-        className="px-6 py-8"
+        className="px-4 sm:px-6 py-6 sm:py-8"
       >
-        <div className="flex items-center gap-4 mb-8">
+        <div className="flex items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
           <button
             onClick={onBack}
             className="p-2 rounded-xl hover:bg-muted transition-colors"
           >
-            <ArrowLeft className="w-5 h-5 text-muted-foreground" strokeWidth={1.5} />
+            <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" strokeWidth={1.5} />
           </button>
           <div>
-            <h1 className="font-display text-2xl md:text-3xl text-foreground">
+            <h1 className="font-display text-xl sm:text-2xl md:text-3xl text-foreground">
               Projects
             </h1>
-            <p className="text-muted-foreground mt-1">
+            <p className="text-muted-foreground mt-1 text-sm sm:text-base">
               Organize your research and documents
             </p>
           </div>
         </div>
 
         {/* Search and Actions Bar */}
-        <div className="flex items-center gap-4 mb-6">
-          <div className="relative flex-1 max-w-md">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 mb-6">
+          <div className="relative flex-1 sm:max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
             <Input
               type="text"
@@ -128,7 +128,7 @@ export function ProjectsView({ onBack }: ProjectsViewProps) {
           </div>
           <Button
             onClick={() => setIsCreateModalOpen(true)}
-            className="gap-1.5 rounded-xl"
+            className="gap-1.5 rounded-xl w-full sm:w-auto"
           >
             <Plus className="w-4 h-4" strokeWidth={1.5} />
             New project
@@ -137,12 +137,12 @@ export function ProjectsView({ onBack }: ProjectsViewProps) {
       </motion.section>
 
       {/* Main Content */}
-      <section className="px-6 pb-10">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <section className="px-4 sm:px-6 pb-10">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
           {/* Projects List */}
-          <div className="lg:col-span-1">
-            <div className="bg-card rounded-2xl border border-border/50 p-4 shadow-card">
-              <h2 className="text-sm font-medium text-muted-foreground mb-4">
+          <div className="lg:col-span-1 order-2 lg:order-1">
+            <div className="bg-card rounded-xl sm:rounded-2xl border border-border/50 p-3 sm:p-4 shadow-card">
+              <h2 className="text-sm font-medium text-muted-foreground mb-3 sm:mb-4">
                 All Projects ({filteredProjects.length})
               </h2>
 
@@ -170,7 +170,7 @@ export function ProjectsView({ onBack }: ProjectsViewProps) {
                   <p className="text-sm text-muted-foreground">No projects match "{searchQuery}"</p>
                 </div>
               ) : (
-                <ScrollArea className="h-[calc(100vh-380px)]">
+                <ScrollArea className="h-[200px] sm:h-[calc(100vh-380px)]">
                   <div className="space-y-2 pr-2">
                     {filteredProjects.map((project, index) => {
                       const fileCount = getFilesForProject(project.id).length;
@@ -210,11 +210,11 @@ export function ProjectsView({ onBack }: ProjectsViewProps) {
           </div>
 
           {/* Files Section */}
-          <div className="lg:col-span-2">
-            <div className="bg-card rounded-2xl border border-border/50 p-4 shadow-card">
+          <div className="lg:col-span-2 order-1 lg:order-2">
+            <div className="bg-card rounded-xl sm:rounded-2xl border border-border/50 p-3 sm:p-4 shadow-card">
               {activeProject ? (
                 <>
-                  <div className="flex items-center justify-between mb-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
                     <div>
                       <h2 className="text-lg font-semibold text-foreground">
                         {activeProject.name}
@@ -226,7 +226,7 @@ export function ProjectsView({ onBack }: ProjectsViewProps) {
                     <Button
                       onClick={handleUploadClick}
                       variant="outline"
-                      className="gap-1.5 rounded-xl"
+                      className="gap-1.5 rounded-xl w-full sm:w-auto"
                     >
                       <Upload className="w-4 h-4" strokeWidth={1.5} />
                       Upload files
@@ -258,7 +258,7 @@ export function ProjectsView({ onBack }: ProjectsViewProps) {
                       </Button>
                     </div>
                   ) : (
-                    <ScrollArea className="h-[calc(100vh-380px)]">
+                    <ScrollArea className="h-[300px] sm:h-[calc(100vh-380px)]">
                       <div className="space-y-2 pr-2">
                         {activeProjectFiles.map((file, index) => {
                           const FileIcon = fileTypeIcons[file.type] || File;

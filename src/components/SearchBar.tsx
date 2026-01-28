@@ -62,7 +62,7 @@ export function SearchBar({ onSearch, isProcessing = false, placeholder }: Searc
     <div className="relative w-full max-w-2xl mx-auto">
       <form onSubmit={handleSubmit}>
         <div className="search-container">
-          <div className="flex items-center gap-2.5 px-4 py-3.5">
+          <div className="flex items-center gap-2 sm:gap-2.5 px-3 sm:px-4 py-3 sm:py-3.5">
             <div className="flex-shrink-0">
               {isProcessing ? (
                 <motion.div
@@ -84,7 +84,7 @@ export function SearchBar({ onSearch, isProcessing = false, placeholder }: Searc
               onFocus={() => setIsFocused(true)}
               onBlur={() => setTimeout(() => setIsFocused(false), 200)}
               placeholder={placeholder || "Ask anything about your product..."}
-              className="flex-1 bg-transparent text-foreground placeholder:text-muted-foreground focus:outline-none text-base font-medium"
+              className="flex-1 bg-transparent text-foreground placeholder:text-muted-foreground focus:outline-none text-sm sm:text-base font-medium"
               disabled={isProcessing}
             />
             

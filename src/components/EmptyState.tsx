@@ -17,17 +17,17 @@ export function EmptyState({ icon: Icon, title, description, action }: EmptyStat
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="flex flex-col items-center justify-center py-16 px-8 text-center"
+      className="flex flex-col items-center justify-center py-12 sm:py-16 px-4 sm:px-8 text-center"
     >
-      <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center mb-6">
-        <Icon className="w-5 h-5 text-muted-foreground" strokeWidth={1.5} />
+      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-muted flex items-center justify-center mb-4 sm:mb-6">
+        <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" strokeWidth={1.5} />
       </div>
       
-      <h3 className="text-xl font-medium text-foreground mb-2">
+      <h3 className="text-lg sm:text-xl font-medium text-foreground mb-2">
         {title}
       </h3>
       
-      <p className="text-muted-foreground max-w-sm mb-6">
+      <p className="text-muted-foreground max-w-sm mb-4 sm:mb-6 text-sm sm:text-base">
         {description}
       </p>
       
