@@ -241,7 +241,7 @@ export function InsightCard({
       
       <div className="mt-6 sm:mt-8">
         <div className="flex items-center gap-2 mb-3">
-          <div className="flex-1 h-1 bg-muted/50 rounded-full overflow-hidden">
+          <div className="flex-1 h-2 bg-muted/50 rounded-full overflow-hidden">
             <div 
               className="h-full bg-foreground/30 rounded-full"
               style={{ width: `${insight.confidence * 100}%` }}
