@@ -2,7 +2,6 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, Bot, Pause, Play, MessageSquare, Clock, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useDocuments } from '@/contexts/DocumentsContext';
-import { mockAgents } from '@/data/mockData';
 import { formatDistanceToNow } from 'date-fns';
 
 interface AgentsOverviewViewProps {
@@ -10,13 +9,10 @@ interface AgentsOverviewViewProps {
 }
 
 export function AgentsOverviewView({ onClose }: AgentsOverviewViewProps) {
-  const { agents: userAgents } = useDocuments();
+  const { agents } = useDocuments();
 
-  // Combine user agents with mock agents for display
-  const allAgents = [
-    ...userAgents,
-    ...mockAgents.filter(ma => !userAgents.some(ua => ua.id === ma.id))
-  ].filter(a => a.isActive);
+  // Show only active agents from context
+  const allAgents = agents.filter(a => a.isActive);
 
   return (
     <motion.div

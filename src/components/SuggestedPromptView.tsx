@@ -2,27 +2,38 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, Bot, Database, Send, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState, useEffect, useRef } from 'react';
+import { StoredDocument } from '@/contexts/DocumentsContext';
+import { getDocumentIcon, getSourceTypeLabel } from '@/utils/documentSynthesis';
+import { useDocuments } from '@/contexts/DocumentsContext';
 
 interface SuggestedPromptViewProps {
   onClose: () => void;
   prompt: string;
+  sourceDocuments?: StoredDocument[];
 }
 
-export function SuggestedPromptView({ onClose, prompt }: SuggestedPromptViewProps) {
+export function SuggestedPromptView({ onClose, prompt, sourceDocuments = [] }: SuggestedPromptViewProps) {
   const [inputValue, setInputValue] = useState(prompt);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const { agents } = useDocuments();
 
-  // Mock data for agents and sources that will be used
-  const relatedAgents = [
-    { name: 'Trend Summarizer', status: 'Active' },
-    { name: 'Insight Synthesizer', status: 'Active' }
-  ];
+  // Get active agents for display
+  const relatedAgents = agents
+    .filter(a => a.isActive)
+    .slice(0, 2)
+    .map(agent => ({
+      name: agent.name,
+      status: 'Active'
+    }));
 
-  const referencedSources = [
-    { name: 'Amplitude Analytics', type: 'Product Analytics' },
-    { name: 'User Interviews Q1', type: 'Research' },
-    { name: 'Salesforce CRM', type: 'CRM Data' }
-  ];
+  // Generate sources from real documents
+  const referencedSources = sourceDocuments.length > 0
+    ? sourceDocuments.map(doc => ({
+        name: doc.aiTitle || doc.name,
+        type: getSourceTypeLabel(doc),
+        icon: getDocumentIcon(doc)
+      }))
+    : [];
 
   // Auto-focus the input on mount
   useEffect(() => {
@@ -96,23 +107,28 @@ export function SuggestedPromptView({ onClose, prompt }: SuggestedPromptViewProp
       </div>
 
       {/* Sources that will be referenced */}
-      <div className="mb-10">
-        <h3 className="text-sm font-medium text-muted-foreground mb-3 flex items-center gap-2">
-          <Database className="w-4 h-4" strokeWidth={1.5} />
-          Sources that will be referenced
-        </h3>
-        <div className="space-y-2">
-          {referencedSources.map((source) => (
-            <div
-              key={source.name}
-              className="bg-card rounded-xl p-4 shadow-card border border-border/50 flex items-center justify-between"
-            >
-              <span className="font-medium text-foreground">{source.name}</span>
-              <span className="text-sm text-muted-foreground">{source.type}</span>
-            </div>
-          ))}
+      {referencedSources.length > 0 && (
+        <div className="mb-10">
+          <h3 className="text-sm font-medium text-muted-foreground mb-3 flex items-center gap-2">
+            <Database className="w-4 h-4" strokeWidth={1.5} />
+            Sources that will be referenced
+          </h3>
+          <div className="space-y-2">
+            {referencedSources.map((source) => (
+              <div
+                key={source.name}
+                className="bg-card rounded-xl p-4 shadow-card border border-border/50 flex items-center justify-between"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-lg">{source.icon}</span>
+                  <span className="font-medium text-foreground">{source.name}</span>
+                </div>
+                <span className="text-sm text-muted-foreground">{source.type}</span>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Actions */}
       <div className="flex flex-wrap gap-3">

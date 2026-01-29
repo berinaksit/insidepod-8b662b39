@@ -1,28 +1,42 @@
 import { motion } from 'framer-motion';
 import { ArrowLeft, FileText, Bot, Database, ExternalLink, MessageSquare, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { StoredDocument } from '@/contexts/DocumentsContext';
+import { getDocumentIcon, getSourceTypeLabel } from '@/utils/documentSynthesis';
 
 interface ActionDetailPanelProps {
   onClose: () => void;
   task: {
     title: string;
   };
+  sourceDocuments?: StoredDocument[];
 }
 
-export function ActionDetailPanel({ onClose, task }: ActionDetailPanelProps) {
-  // Mock data for the suggested task
+export function ActionDetailPanel({ onClose, task, sourceDocuments = [] }: ActionDetailPanelProps) {
+  // Generate task context from real documents
+  const hasRealSources = sourceDocuments.length > 0;
+  
   const taskData = {
-    reason: "Step-two activation dropped 18% compared to last week. This pattern correlates with recent changes to the onboarding flow and may indicate friction in the workspace configuration step.",
-    relatedInsights: [
-      { id: '1', title: 'Onboarding completion rate declining', type: 'Insight' },
-      { id: '2', title: 'Workspace setup friction detected', type: 'Signal' }
-    ],
-    linkedAgent: 'Adoption Tracker',
-    linkedSources: [
-      { name: 'Amplitude Analytics', count: 847 },
-      { name: 'User Interviews Q1', count: 12 },
-      { name: 'Support Tickets', count: 34 }
-    ]
+    reason: hasRealSources
+      ? `This task was synthesized from ${sourceDocuments.length} uploaded document${sourceDocuments.length !== 1 ? 's' : ''}. Key patterns and themes from your data suggest this action would be valuable.`
+      : "This task is based on analysis of your connected data sources.",
+    relatedInsights: hasRealSources
+      ? sourceDocuments.slice(0, 2).map((doc, i) => ({
+          id: doc.id,
+          title: `Patterns from ${doc.aiTitle || doc.name}`,
+          type: i === 0 ? 'Insight' : 'Signal'
+        }))
+      : [
+          { id: '1', title: 'Key theme detected', type: 'Insight' }
+        ],
+    linkedAgent: 'Insight Synthesizer',
+    linkedSources: hasRealSources
+      ? sourceDocuments.map(doc => ({
+          name: doc.aiTitle || doc.name,
+          type: getSourceTypeLabel(doc),
+          icon: getDocumentIcon(doc)
+        }))
+      : []
   };
 
   return (
@@ -92,23 +106,25 @@ export function ActionDetailPanel({ onClose, task }: ActionDetailPanelProps) {
       </div>
 
       {/* Linked Sources */}
-      <div className="mb-10">
-        <h3 className="text-sm font-medium text-muted-foreground mb-3">Linked data sources</h3>
-        <div className="space-y-2">
-          {taskData.linkedSources.map((source) => (
-            <div
-              key={source.name}
-              className="bg-card rounded-xl p-4 shadow-card border border-border/50 flex items-center justify-between"
-            >
-              <div className="flex items-center gap-3">
-                <Database className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
-                <span className="text-foreground font-medium">{source.name}</span>
+      {taskData.linkedSources.length > 0 && (
+        <div className="mb-10">
+          <h3 className="text-sm font-medium text-muted-foreground mb-3">Linked data sources</h3>
+          <div className="space-y-2">
+            {taskData.linkedSources.map((source) => (
+              <div
+                key={source.name}
+                className="bg-card rounded-xl p-4 shadow-card border border-border/50 flex items-center justify-between"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-base">{source.icon}</span>
+                  <span className="text-foreground font-medium">{source.name}</span>
+                </div>
+                <span className="text-sm text-muted-foreground">{source.type}</span>
               </div>
-              <span className="text-sm text-muted-foreground">{source.count} items</span>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Actions */}
       <div className="flex flex-wrap gap-3">

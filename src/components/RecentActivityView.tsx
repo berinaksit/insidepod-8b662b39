@@ -1,48 +1,28 @@
 import { motion } from 'framer-motion';
-import { ArrowLeft, FileText, Bot, Eye, Play, MessageSquare, Clock } from 'lucide-react';
+import { ArrowLeft, FileText, Bot, Eye, Play, MessageSquare, Clock, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useDocuments } from '@/contexts/DocumentsContext';
 import { formatDistanceToNow } from 'date-fns';
+import { getDocumentIcon, getSourceTypeLabel } from '@/utils/documentSynthesis';
 
 interface RecentActivityViewProps {
   onClose: () => void;
 }
 
 export function RecentActivityView({ onClose }: RecentActivityViewProps) {
-  const { documents, agents } = useDocuments();
+  const { documents, agents, openUploadModal } = useDocuments();
 
-  // Create recent uploads from documents with mock processing status
-  const recentUploads = [
-    ...documents.map((doc) => ({
+  // Create recent uploads from real documents only
+  const recentUploads = documents
+    .map((doc) => ({
       id: doc.id,
       name: doc.aiTitle || doc.name,
-      type: doc.type === 'pdf' ? 'PDF Document' : doc.type === 'csv' ? 'Spreadsheet' : 'Document',
-      uploadTime: doc.uploadedAt,
+      type: getSourceTypeLabel(doc),
+      icon: getDocumentIcon(doc),
+      uploadTime: new Date(doc.uploadedAt),
       processedBy: agents.filter(a => a.isActive).slice(0, 2).map(a => a.name)
-    })),
-    // Mock data for demo
-    {
-      id: 'mock-1',
-      name: 'E-commerce Trends 2025',
-      type: 'PDF Document',
-      uploadTime: new Date(Date.now() - 2 * 60 * 60 * 1000),
-      processedBy: ['Trend Summarizer', 'Risk Scanner']
-    },
-    {
-      id: 'mock-2',
-      name: 'Customer Interview Batch 3',
-      type: 'Audio Transcript',
-      uploadTime: new Date(Date.now() - 6 * 60 * 60 * 1000),
-      processedBy: ['Insight Synthesizer']
-    },
-    {
-      id: 'mock-3',
-      name: 'Q1 Sales Performance',
-      type: 'Spreadsheet',
-      uploadTime: new Date(Date.now() - 24 * 60 * 60 * 1000),
-      processedBy: ['Retention Monitor', 'Adoption Tracker']
-    }
-  ].sort((a, b) => b.uploadTime.getTime() - a.uploadTime.getTime());
+    }))
+    .sort((a, b) => b.uploadTime.getTime() - a.uploadTime.getTime());
 
   return (
     <motion.div
@@ -73,11 +53,11 @@ export function RecentActivityView({ onClose }: RecentActivityViewProps) {
             className="bg-card rounded-2xl p-5 shadow-card border border-border/50"
           >
             <div className="flex items-start justify-between gap-4 mb-4">
-              <div className="flex items-start gap-3">
-                <div className="w-9 h-9 rounded-lg bg-muted flex items-center justify-center mt-0.5">
-                  <FileText className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
-                </div>
-                <div>
+                <div className="flex items-start gap-3">
+                  <div className="w-9 h-9 rounded-lg bg-muted flex items-center justify-center mt-0.5 text-lg">
+                    {upload.icon}
+                  </div>
+                  <div>
                   <h3 className="font-medium text-foreground">{upload.name}</h3>
                   <p className="text-sm text-muted-foreground">{upload.type}</p>
                 </div>
@@ -128,12 +108,16 @@ export function RecentActivityView({ onClose }: RecentActivityViewProps) {
       {recentUploads.length === 0 && (
         <div className="flex flex-col items-center justify-center py-20">
           <div className="w-14 h-14 rounded-2xl bg-muted flex items-center justify-center mb-6">
-            <FileText className="w-5 h-5 text-muted-foreground" strokeWidth={1.5} />
+            <Upload className="w-5 h-5 text-muted-foreground" strokeWidth={1.5} />
           </div>
           <h2 className="text-xl font-semibold text-foreground mb-2">No recent uploads</h2>
-          <p className="text-muted-foreground text-center max-w-sm">
+          <p className="text-muted-foreground text-center max-w-sm mb-6">
             Upload documents to see them appear here
           </p>
+          <Button onClick={() => openUploadModal('recent-activity')} className="rounded-xl">
+            <Upload className="w-4 h-4 mr-2" strokeWidth={1.5} />
+            Upload Document
+          </Button>
         </div>
       )}
     </motion.div>

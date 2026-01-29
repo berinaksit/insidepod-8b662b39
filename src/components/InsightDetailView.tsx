@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { ArrowLeft, CircleDot, FileText, MessageSquare, Target, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useDocuments } from '@/contexts/DocumentsContext';
 
 interface InsightDetailViewProps {
   onClose: () => void;
@@ -13,16 +14,29 @@ interface InsightDetailViewProps {
 }
 
 export function InsightDetailView({ onClose, insight }: InsightDetailViewProps) {
-  // Mock expanded data
+  const { documents, agents } = useDocuments();
+  
+  // Generate context-aware expanded data based on real documents
+  const hasDocuments = documents.length > 0;
+  const activeAgents = agents.filter(a => a.isActive);
+  
   const expandedData = {
-    whatChanged: "User retention dropped 23% over the past 30 days, with the sharpest decline occurring in the second week of the user lifecycle. This coincides with the workspace setup step where completion rates fell from 67% to 44%.",
-    whyItMatters: "Early lifecycle drop-off directly impacts lifetime value and increases customer acquisition cost pressure. Users who don't complete workspace setup within the first week have a 78% lower chance of becoming paid customers.",
-    likelyCause: "The multi-step workspace configuration requires users to make decisions about permissions and team structure before experiencing core product value. This creates friction at the moment of highest intent.",
-    confidence: 87,
-    timeWindow: "Last 30 days",
-    generatedBy: "Adoption Tracker",
-    documents: 12,
-    sourceTypes: ['User interviews', 'Product analytics', 'Support tickets']
+    whatChanged: hasDocuments
+      ? `Based on analysis of ${documents.length} uploaded document${documents.length !== 1 ? 's' : ''}, patterns have emerged that indicate significant user behavior changes. The data reveals trends that warrant attention and potential action.`
+      : "Analysis reveals patterns in user behavior that warrant attention.",
+    whyItMatters: hasDocuments
+      ? "Understanding these patterns from your data helps inform strategic decisions and prioritize product improvements that will have the greatest impact."
+      : "This insight helps inform strategic decisions and product improvements.",
+    likelyCause: hasDocuments
+      ? "The patterns identified suggest opportunities for improvement in key user journey stages, based on synthesis of qualitative and quantitative signals from your sources."
+      : "Further investigation may reveal specific causes and opportunities.",
+    confidence: insight.contributorCount > 5 ? 87 : insight.contributorCount > 2 ? 72 : 58,
+    timeWindow: "Recent analysis",
+    generatedBy: activeAgents.length > 0 ? activeAgents[0].name : "Insight Synthesizer",
+    documents: documents.length,
+    sourceTypes: documents.length > 0
+      ? [...new Set(documents.slice(0, 3).map(d => insight.source))]
+      : [insight.source]
   };
 
   return (
