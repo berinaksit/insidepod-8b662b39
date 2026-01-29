@@ -66,6 +66,109 @@ export function getDocumentIcon(doc: StoredDocument): string {
   }
 }
 
+// Get the primary source type across all documents (most common type)
+function getPrimarySourceType(documents: StoredDocument[]): string {
+  const typeCounts: Record<string, number> = {};
+  
+  for (const doc of documents) {
+    const type = getSourceTypeLabel(doc);
+    typeCounts[type] = (typeCounts[type] || 0) + 1;
+  }
+  
+  // Find the most common type
+  let maxCount = 0;
+  let primaryType = 'User interviews';
+  
+  for (const [type, count] of Object.entries(typeCounts)) {
+    if (count > maxCount) {
+      maxCount = count;
+      primaryType = type;
+    }
+  }
+  
+  // Pluralize the source type for display
+  const pluralMap: Record<string, string> = {
+    'User interview': 'User interviews',
+    'Customer call': 'Customer calls',
+    'Support ticket': 'Support tickets',
+    'Survey response': 'Survey responses',
+    'Customer feedback': 'Customer feedback',
+    'Product review': 'Product reviews',
+    'Analytics report': 'Analytics reports',
+    'Research document': 'Research documents',
+    'Business report': 'Business reports',
+    'NPS data': 'NPS data',
+    'Data export': 'Data exports',
+    'PDF document': 'PDF documents',
+    'Uploaded document': 'Uploaded documents',
+  };
+  
+  return pluralMap[primaryType] || primaryType;
+}
+
+// Generate high-level theme synthesis based on document patterns
+function generateThemeSynthesis(documents: StoredDocument[]): string {
+  const docCount = documents.length;
+  const docNames = documents.map(d => (d.aiTitle || d.name).toLowerCase());
+  
+  // Analyze document types to generate appropriate synthesis
+  const hasInterviews = docNames.some(n => n.includes('interview') || n.includes('user'));
+  const hasSurveys = docNames.some(n => n.includes('survey') || n.includes('nps'));
+  const hasSupport = docNames.some(n => n.includes('support') || n.includes('ticket'));
+  const hasFeedback = docNames.some(n => n.includes('feedback') || n.includes('review'));
+  const hasAnalytics = docNames.some(n => n.includes('analytics') || n.includes('metrics') || n.includes('data'));
+  const hasResearch = docNames.some(n => n.includes('research') || n.includes('study'));
+  const hasSales = docNames.some(n => n.includes('sales') || n.includes('call'));
+  
+  // Generate synthesis based on document mix (max 23 words)
+  if (hasInterviews && hasSupport) {
+    return "Pain point: Users struggle with onboarding clarity. Need: Better progress indicators. Opportunity: Streamlined first-run experience could reduce support volume.";
+  }
+  
+  if (hasSurveys && hasFeedback) {
+    return "Pain point: Response times feel slow. Need: Faster resolution paths. Opportunity: Proactive communication could boost satisfaction scores.";
+  }
+  
+  if (hasAnalytics && hasInterviews) {
+    return "Pain point: Feature discovery is low. Need: Intuitive navigation. Opportunity: Guided tours could improve activation rates significantly.";
+  }
+  
+  if (hasSupport) {
+    return "Pain point: Recurring issues with account settings. Need: Simpler self-service options. Opportunity: UX improvements could cut ticket volume.";
+  }
+  
+  if (hasSales) {
+    return "Pain point: Pricing confusion during evaluation. Need: Clearer value communication. Opportunity: Comparison tools could accelerate decisions.";
+  }
+  
+  if (hasResearch) {
+    return "Need: Better personalization and performance. Opportunity: Differentiation through speed and relevance could strengthen market position.";
+  }
+  
+  if (hasSurveys) {
+    return "Pain point: Mobile experience gaps. Need: Responsive design improvements. Opportunity: Mobile-first updates could increase engagement.";
+  }
+  
+  if (hasFeedback) {
+    return "Pain point: Recent UI changes caused friction. Need: Change communication. Opportunity: User education could smooth feature adoption.";
+  }
+  
+  if (hasInterviews) {
+    return "Pain point: Unclear next steps in workflows. Need: Better guidance. Opportunity: Contextual help could reduce user confusion.";
+  }
+  
+  if (hasAnalytics) {
+    return "Pain point: Users drop off at key milestones. Need: Friction reduction. Opportunity: Funnel optimization could improve conversions.";
+  }
+  
+  // Default synthesis based on document count
+  if (docCount === 1) {
+    return "Initial themes emerging from your document reveal patterns worth exploring for actionable product insights.";
+  }
+  
+  return `Across ${docCount} sources: common pain points around usability, unmet needs for clarity, and opportunities in experience optimization.`;
+}
+
 // Synthesize a primary insight from documents
 export function synthesizePrimaryInsight(documents: StoredDocument[]): {
   text: string;
@@ -74,20 +177,14 @@ export function synthesizePrimaryInsight(documents: StoredDocument[]): {
 } | null {
   if (documents.length === 0) return null;
   
-  // Use the most recent document as primary source
-  const sortedDocs = [...documents].sort(
-    (a, b) => new Date(b.uploadedAt).getTime() - new Date(a.uploadedAt).getTime()
-  );
+  // Get primary source type (most common across all docs)
+  const sourceLabel = getPrimarySourceType(documents);
   
-  const primaryDoc = sortedDocs[0];
-  const sourceLabel = getSourceTypeLabel(primaryDoc);
-  
-  // Generate insight based on document context
-  const docName = primaryDoc.aiTitle || primaryDoc.name;
-  const insights = generateContextualInsights(docName, documents.length);
+  // Generate high-level theme synthesis
+  const text = generateThemeSynthesis(documents);
   
   return {
-    text: insights.primary,
+    text,
     sourceLabel,
     sourceCount: documents.length,
   };

@@ -628,19 +628,8 @@ export function HomeView({
                           <div className="flex items-center gap-2.5">
                             <span className="px-2.5 py-1 bg-highlight/20 rounded-full text-sm font-semibold">
                               {primaryInsight.sourceLabel}
+                              {primaryInsight.sourceCount > 1 && ` +${primaryInsight.sourceCount - 1}`}
                             </span>
-                            {primaryInsight.sourceCount > 1 && (
-                              <>
-                                <div className="flex -space-x-2">
-                                  {Array.from({ length: Math.min(3, primaryInsight.sourceCount) }).map((_, i) => (
-                                    <div key={i} className="w-5 h-5 rounded-full bg-highlight/30" style={{ opacity: 0.3 + i * 0.2 }} />
-                                  ))}
-                                </div>
-                                <span className="text-sm text-highlight-foreground/70 font-medium">
-                                  +{primaryInsight.sourceCount}
-                                </span>
-                              </>
-                            )}
                           </div>
                         </div>
                       )}
