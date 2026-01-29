@@ -106,7 +106,7 @@ function getPrimarySourceType(documents: StoredDocument[]): string {
   return pluralMap[primaryType] || primaryType;
 }
 
-// Generate high-level theme synthesis based on document patterns
+// Generate high-level theme synthesis based on document patterns (min 20, max 23 words)
 function generateThemeSynthesis(documents: StoredDocument[]): string {
   const docCount = documents.length;
   const docNames = documents.map(d => (d.aiTitle || d.name).toLowerCase());
@@ -120,53 +120,53 @@ function generateThemeSynthesis(documents: StoredDocument[]): string {
   const hasResearch = docNames.some(n => n.includes('research') || n.includes('study'));
   const hasSales = docNames.some(n => n.includes('sales') || n.includes('call'));
   
-  // Generate synthesis based on document mix (max 23 words)
+  // Generate synthesis based on document mix (min 20, max 23 words)
   if (hasInterviews && hasSupport) {
-    return "Pain point: Users struggle with onboarding clarity. Need: Better progress indicators. Opportunity: Streamlined first-run experience could reduce support volume.";
+    return "Pain point: Users struggle with onboarding clarity and lack progress indicators. Opportunity: Streamlined first-run experiences could significantly reduce support ticket volume.";
   }
   
   if (hasSurveys && hasFeedback) {
-    return "Pain point: Response times feel slow. Need: Faster resolution paths. Opportunity: Proactive communication could boost satisfaction scores.";
+    return "Pain point: Response times feel slow across customer touchpoints. Need: Faster resolution paths. Opportunity: Proactive communication strategies could boost satisfaction scores.";
   }
   
   if (hasAnalytics && hasInterviews) {
-    return "Pain point: Feature discovery is low. Need: Intuitive navigation. Opportunity: Guided tours could improve activation rates significantly.";
+    return "Pain point: Feature discovery remains notably low. Need: More intuitive navigation patterns. Opportunity: Guided onboarding tours could significantly improve activation rates.";
   }
   
   if (hasSupport) {
-    return "Pain point: Recurring issues with account settings. Need: Simpler self-service options. Opportunity: UX improvements could cut ticket volume.";
+    return "Pain point: Recurring issues around account settings and billing. Need: Simpler self-service options. Opportunity: Targeted UX improvements could cut ticket volume.";
   }
   
   if (hasSales) {
-    return "Pain point: Pricing confusion during evaluation. Need: Clearer value communication. Opportunity: Comparison tools could accelerate decisions.";
+    return "Pain point: Customers report pricing confusion during evaluation. Need: Clearer value communication. Opportunity: Better comparison tools could accelerate purchase decisions.";
   }
   
   if (hasResearch) {
-    return "Need: Better personalization and performance. Opportunity: Differentiation through speed and relevance could strengthen market position.";
+    return "Need: Better personalization and faster performance across experiences. Opportunity: Differentiation through speed and relevance could significantly strengthen market position.";
   }
   
   if (hasSurveys) {
-    return "Pain point: Mobile experience gaps. Need: Responsive design improvements. Opportunity: Mobile-first updates could increase engagement.";
+    return "Pain point: Mobile experience gaps frustrate users. Need: Responsive design improvements across flows. Opportunity: Mobile-first updates could substantially increase engagement.";
   }
   
   if (hasFeedback) {
-    return "Pain point: Recent UI changes caused friction. Need: Change communication. Opportunity: User education could smooth feature adoption.";
+    return "Pain point: Recent interface changes caused notable friction. Need: Better change communication. Opportunity: Improved user education could smooth feature adoption.";
   }
   
   if (hasInterviews) {
-    return "Pain point: Unclear next steps in workflows. Need: Better guidance. Opportunity: Contextual help could reduce user confusion.";
+    return "Pain point: Users report unclear next steps in key workflows. Need: Better contextual guidance. Opportunity: Inline help could reduce confusion significantly.";
   }
   
   if (hasAnalytics) {
-    return "Pain point: Users drop off at key milestones. Need: Friction reduction. Opportunity: Funnel optimization could improve conversions.";
+    return "Pain point: Users consistently drop off at key activation milestones. Need: Friction reduction. Opportunity: Funnel optimization could notably improve conversion rates.";
   }
   
   // Default synthesis based on document count
   if (docCount === 1) {
-    return "Initial themes emerging from your document reveal patterns worth exploring for actionable product insights.";
+    return "Initial themes emerging from your document reveal patterns worth exploring. These signals suggest actionable product insights requiring further investigation and validation.";
   }
   
-  return `Across ${docCount} sources: common pain points around usability, unmet needs for clarity, and opportunities in experience optimization.`;
+  return `Across ${docCount} sources: recurring pain points around usability, unmet needs for clarity, and clear opportunities in overall experience optimization.`;
 }
 
 // Synthesize a primary insight from documents
