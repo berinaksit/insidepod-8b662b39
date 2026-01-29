@@ -1,7 +1,10 @@
 import { motion } from 'framer-motion';
 import { ArrowLeft, Search, Upload, MessageSquare, FileText, Users, Database, FolderOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
+import { useDocuments } from '@/contexts/DocumentsContext';
+import { getDocumentIcon, getSourceTypeLabel } from '@/utils/documentSynthesis';
+import { formatDistanceToNow } from 'date-fns';
 
 interface SourcesOverviewViewProps {
   onClose: () => void;
@@ -9,45 +12,51 @@ interface SourcesOverviewViewProps {
 
 export function SourcesOverviewView({ onClose }: SourcesOverviewViewProps) {
   const [searchQuery, setSearchQuery] = useState('');
+  const { documents, openUploadModal } = useDocuments();
 
-  // Mock sources grouped by type
-  const sourceGroups = [
-    {
-      type: 'Research',
-      icon: FileText,
-      sources: [
-        { name: 'User Research Q1 2025', lastUpdated: '2 days ago', documents: 24 },
-        { name: 'Competitor Analysis', lastUpdated: '1 week ago', documents: 8 },
-        { name: 'Market Trends Report', lastUpdated: '3 days ago', documents: 15 }
-      ]
-    },
-    {
-      type: 'CRM',
-      icon: Database,
-      sources: [
-        { name: 'Salesforce_CRM Data', lastUpdated: '1 hour ago', documents: 1247 },
-        { name: 'HubSpot Contacts', lastUpdated: '3 hours ago', documents: 892 }
-      ]
-    },
-    {
-      type: 'Interviews',
-      icon: Users,
-      sources: [
-        { name: 'Customer Interviews 2025', lastUpdated: '1 day ago', documents: 41 },
-        { name: 'Churned User Interviews', lastUpdated: '5 days ago', documents: 12 },
-        { name: 'Enterprise Feedback', lastUpdated: '2 days ago', documents: 8 }
-      ]
-    },
-    {
-      type: 'Documents',
-      icon: FolderOpen,
-      sources: [
-        { name: 'Product Roadmap', lastUpdated: '1 week ago', documents: 3 },
-        { name: 'Technical Specs', lastUpdated: '2 weeks ago', documents: 17 },
-        { name: 'Meeting Transcripts', lastUpdated: '1 day ago', documents: 156 }
-      ]
-    }
-  ];
+  // Group documents by source type
+  const sourceGroups = useMemo(() => {
+    if (documents.length === 0) return [];
+
+    // Create a map to group documents by type
+    const typeMap: Record<string, {
+      type: string;
+      icon: typeof FileText;
+      sources: { name: string; lastUpdated: string; icon: string; id: string }[];
+    }> = {};
+
+    documents.forEach(doc => {
+      const sourceType = getSourceTypeLabel(doc);
+      const groupKey = sourceType;
+      
+      if (!typeMap[groupKey]) {
+        // Determine icon based on source type
+        let groupIcon = FileText;
+        if (sourceType.includes('interview') || sourceType.includes('call')) {
+          groupIcon = Users;
+        } else if (sourceType.includes('data') || sourceType.includes('export')) {
+          groupIcon = Database;
+        } else {
+          groupIcon = FolderOpen;
+        }
+        
+        typeMap[groupKey] = {
+          type: sourceType,
+          icon: groupIcon,
+          sources: []
+        };
+      }
+      
+      typeMap[groupKey].sources.push({
+        id: doc.id,
+        name: doc.aiTitle || doc.name,
+        lastUpdated: formatDistanceToNow(new Date(doc.uploadedAt), { addSuffix: true }),
+        icon: getDocumentIcon(doc)
+      });
+    });
+
+    return Object.values(typeMap);
+  }, [documents]);
 
   const filteredGroups = sourceGroups.map(group => ({
     ...group,
@@ -88,48 +97,66 @@ export function SourcesOverviewView({ onClose }: SourcesOverviewViewProps) {
 
       {/* Source Groups */}
       <div className="space-y-8 mb-10">
-        {filteredGroups.map((group) => {
-          const Icon = group.icon;
-          return (
-            <div key={group.type}>
-              <div className="flex items-center gap-2 mb-3">
-                <Icon className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
-                <h2 className="text-sm font-medium text-muted-foreground">{group.type}</h2>
-              </div>
-              <div className="space-y-2">
-                {group.sources.map((source) => (
-                  <div
-                    key={source.name}
-                    className="bg-card rounded-xl p-4 shadow-card border border-border/50 flex items-center justify-between"
-                  >
-                    <div>
-                      <p className="font-medium text-foreground">{source.name}</p>
-                      <p className="text-sm text-muted-foreground">
-                        Last updated {source.lastUpdated}
-                      </p>
+        {filteredGroups.length > 0 ? (
+          filteredGroups.map((group) => {
+            const Icon = group.icon;
+            return (
+              <div key={group.type}>
+                <div className="flex items-center gap-2 mb-3">
+                  <Icon className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
+                  <h2 className="text-sm font-medium text-muted-foreground">{group.type}</h2>
+                </div>
+                <div className="space-y-2">
+                  {group.sources.map((source) => (
+                    <div
+                      key={source.id}
+                      className="bg-card rounded-xl p-4 shadow-card border border-border/50 flex items-center justify-between"
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="text-lg">{source.icon}</span>
+                        <div>
+                          <p className="font-medium text-foreground">{source.name}</p>
+                          <p className="text-sm text-muted-foreground">
+                            Uploaded {source.lastUpdated}
+                          </p>
+                        </div>
+                      </div>
                     </div>
-                    <span className="text-sm text-muted-foreground bg-muted px-2 py-1 rounded-md">
-                      {source.documents} docs
-                    </span>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
+            );
+          })
+        ) : (
+          <div className="flex flex-col items-center justify-center py-16">
+            <div className="w-14 h-14 rounded-2xl bg-muted flex items-center justify-center mb-6">
+              <Upload className="w-5 h-5 text-muted-foreground" strokeWidth={1.5} />
             </div>
-          );
-        })}
+            <h2 className="text-xl font-semibold text-foreground mb-2">No sources connected</h2>
+            <p className="text-muted-foreground text-center max-w-sm mb-6">
+              Upload documents to see them organized here
+            </p>
+            <Button onClick={() => openUploadModal('sources-overview')} className="rounded-xl">
+              <Upload className="w-4 h-4 mr-2" strokeWidth={1.5} />
+              Upload Document
+            </Button>
+          </div>
+        )}
       </div>
 
       {/* Actions */}
-      <div className="flex flex-wrap gap-3">
-        <Button variant="outline" className="rounded-xl">
-          <Upload className="w-4 h-4 mr-2" strokeWidth={1.5} />
-          Upload new source
-        </Button>
-        <Button variant="outline" className="rounded-xl">
-          <MessageSquare className="w-4 h-4 mr-2" strokeWidth={1.5} />
-          Ask a question using these sources
-        </Button>
-      </div>
+      {documents.length > 0 && (
+        <div className="flex flex-wrap gap-3">
+          <Button variant="outline" className="rounded-xl" onClick={() => openUploadModal('sources-overview')}>
+            <Upload className="w-4 h-4 mr-2" strokeWidth={1.5} />
+            Upload new source
+          </Button>
+          <Button variant="outline" className="rounded-xl">
+            <MessageSquare className="w-4 h-4 mr-2" strokeWidth={1.5} />
+            Ask a question using these sources
+          </Button>
+        </div>
+      )}
     </motion.div>
   );
 }
