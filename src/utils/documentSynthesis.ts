@@ -2,58 +2,50 @@
 
 import { StoredDocument } from '@/contexts/DocumentsContext';
 
-// Truncate text to a maximum word count
-export function truncateToWords(text: string, maxWords: number): string {
-  const words = text.split(/\s+/);
-  if (words.length <= maxWords) return text;
-  return words.slice(0, maxWords).join(' ') + '…';
-}
-
 // Determine source type label based on document name/type (AI-generated style)
-// Returns plural form for badge display (e.g., "User interviews")
-export function getSourceTypeLabel(doc: StoredDocument, plural: boolean = false): string {
+export function getSourceTypeLabel(doc: StoredDocument): string {
   const name = doc.name.toLowerCase();
   const aiTitle = doc.aiTitle?.toLowerCase() || '';
   
   // Check for common document patterns
   if (name.includes('interview') || aiTitle.includes('interview')) {
-    return plural ? 'User interviews' : 'User interview';
+    return 'User interview';
   }
   if (name.includes('survey') || aiTitle.includes('survey')) {
-    return plural ? 'Survey responses' : 'Survey response';
+    return 'Survey response';
   }
   if (name.includes('support') || name.includes('ticket') || aiTitle.includes('support')) {
-    return plural ? 'Support tickets' : 'Support ticket';
+    return 'Support ticket';
   }
   if (name.includes('call') || name.includes('transcript') || aiTitle.includes('call')) {
-    return plural ? 'Customer calls' : 'Customer call';
+    return 'Customer call';
   }
   if (name.includes('feedback') || aiTitle.includes('feedback')) {
-    return plural ? 'Customer feedback' : 'Customer feedback';
+    return 'Customer feedback';
   }
   if (name.includes('review') || aiTitle.includes('review')) {
-    return plural ? 'Product reviews' : 'Product review';
+    return 'Product review';
   }
   if (name.includes('analytics') || name.includes('metrics') || aiTitle.includes('analytics')) {
-    return plural ? 'Analytics reports' : 'Analytics report';
+    return 'Analytics report';
   }
   if (name.includes('research') || aiTitle.includes('research')) {
-    return plural ? 'Research documents' : 'Research document';
+    return 'Research document';
   }
   if (name.includes('report') || aiTitle.includes('report')) {
-    return plural ? 'Business reports' : 'Business report';
+    return 'Business report';
   }
   if (name.includes('nps') || aiTitle.includes('nps')) {
-    return plural ? 'NPS data' : 'NPS data';
+    return 'NPS data';
   }
   if (doc.type === 'csv' || doc.type === 'xlsx') {
-    return plural ? 'Data exports' : 'Data export';
+    return 'Data export';
   }
   if (doc.type === 'pdf') {
-    return plural ? 'PDF documents' : 'PDF document';
+    return 'PDF document';
   }
   
-  return plural ? 'Uploaded documents' : 'Uploaded document';
+  return 'Uploaded document';
 }
 
 // Get document icon based on type
@@ -79,7 +71,6 @@ export function synthesizePrimaryInsight(documents: StoredDocument[]): {
   text: string;
   sourceLabel: string;
   sourceCount: number;
-  additionalSourceCount: number;
 } | null {
   if (documents.length === 0) return null;
   
@@ -89,21 +80,16 @@ export function synthesizePrimaryInsight(documents: StoredDocument[]): {
   );
   
   const primaryDoc = sortedDocs[0];
-  const hasMultipleSources = documents.length > 1;
-  const sourceLabel = getSourceTypeLabel(primaryDoc, hasMultipleSources);
+  const sourceLabel = getSourceTypeLabel(primaryDoc);
   
   // Generate insight based on document context
   const docName = primaryDoc.aiTitle || primaryDoc.name;
   const insights = generateContextualInsights(docName, documents.length);
   
-  // Truncate to max 23 words
-  const truncatedText = truncateToWords(insights.primary, 23);
-  
   return {
-    text: truncatedText,
+    text: insights.primary,
     sourceLabel,
     sourceCount: documents.length,
-    additionalSourceCount: documents.length > 1 ? documents.length - 1 : 0,
   };
 }
 
