@@ -25,7 +25,7 @@
 @layer base {
   :root {
     /* Core surfaces - single calm background */
-    --background: 0 0% 98%;
+    --background: 0 0% 98.4%;
     --foreground: 0 0% 15%;
 
     /* Card surfaces - pure white, minimal lift */
