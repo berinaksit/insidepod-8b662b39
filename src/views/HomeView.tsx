@@ -378,8 +378,8 @@ export function HomeView({
           <div className="flex items-center gap-4 sm:gap-6 overflow-x-auto pb-2 sm:pb-0 -mx-4 px-4 sm:mx-0 sm:px-0">
             {tabs.map(tab => {
             const isActive = currentTab === tab.id;
-            return <button key={tab.id} onClick={() => onTabChange(tab.id)} className={`py-2 transition-colors whitespace-nowrap ${isActive ? 'text-foreground font-semibold' : 'text-muted-foreground/40 font-normal hover:text-muted-foreground/60'}`}>
-                  <span className="text-base">{tab.label}</span>
+            return <button key={tab.id} onClick={() => onTabChange(tab.id)} className={`py-2 transition-colors whitespace-nowrap ${isActive ? 'text-foreground' : 'text-muted-foreground/60 hover:text-muted-foreground'}`}>
+                  <span className="text-base font-medium">{tab.label}</span>
                   {tab.id === 'home' && <span className="ml-1.5 sm:ml-2 px-1 sm:px-1.5 py-0.5 text-xs bg-muted text-muted-foreground rounded">
                       {allInsights.filter(i => i.isNew).length}
                     </span>}
