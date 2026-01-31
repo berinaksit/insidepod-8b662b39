@@ -221,13 +221,13 @@ export function GoalDetailView({ goal, onClose }: GoalDetailViewProps) {
         </Button>
 
         <div className="flex flex-wrap items-start gap-2 mb-4">
-          <span className={`px-2 py-0.5 rounded text-xs font-bold ${typeColors[enrichedGoal.type]}`}>
+          <Badge variant="neutral">
             {enrichedGoal.type}
-          </span>
-          <span className={`px-2 py-0.5 rounded text-xs font-bold flex items-center gap-1.5 ${statusConfig[status].color}`}>
+          </Badge>
+          <Badge variant="neutral" className="flex items-center gap-1.5">
             <StatusIcon className="w-3 h-3" strokeWidth={1.5} />
             {statusConfig[status].label}
-          </span>
+          </Badge>
         </div>
 
         <h1 className="text-2xl font-display text-foreground">
@@ -290,9 +290,9 @@ export function GoalDetailView({ goal, onClose }: GoalDetailViewProps) {
                 className="bg-card rounded-xl p-5"
               >
                 <div className="flex items-start justify-between gap-3 mb-3">
-                  <span className={`px-2 py-0.5 rounded text-xs font-bold capitalize ${signalTypeConfig[signal.type].color}`}>
+                  <Badge variant="neutral" className="capitalize">
                     {signal.type}
-                  </span>
+                  </Badge>
                   <span className="text-xs text-muted-foreground">
                     {signal.sourceCount} sources
                   </span>

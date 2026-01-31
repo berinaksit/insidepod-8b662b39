@@ -1,9 +1,9 @@
 import { motion } from 'framer-motion';
 import { ArrowLeft, Bot, Pause, Play, MessageSquare, Clock, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { useDocuments } from '@/contexts/DocumentsContext';
 import { formatDistanceToNow } from 'date-fns';
-
 interface AgentsOverviewViewProps {
   onClose: () => void;
 }
@@ -55,15 +55,9 @@ export function AgentsOverviewView({ onClose }: AgentsOverviewViewProps) {
                   <p className="text-sm text-muted-foreground">{agent.description}</p>
                 </div>
               </div>
-              <span className={`px-2.5 py-1 rounded-md text-xs font-medium ${
-                agent.status === 'running'
-                  ? 'bg-green-100 text-green-700'
-                  : agent.status === 'active'
-                  ? 'bg-blue-100 text-blue-700'
-                  : 'bg-muted text-muted-foreground'
-              }`}>
+              <Badge variant={agent.status === 'running' ? 'warm' : 'accent'}>
                 {agent.status === 'running' ? 'Running' : 'Active'}
-              </span>
+              </Badge>
             </div>
 
             {/* What it monitors */}
@@ -71,12 +65,9 @@ export function AgentsOverviewView({ onClose }: AgentsOverviewViewProps) {
               <p className="text-xs text-muted-foreground mb-2">Monitors</p>
               <div className="flex flex-wrap gap-2">
                 {agent.dataSources.map((source) => (
-                  <span
-                    key={source}
-                    className="px-2 py-0.5 bg-muted rounded-md text-xs font-bold text-foreground capitalize"
-                  >
+                  <Badge key={source} variant="neutral" className="capitalize">
                     {source}
-                  </span>
+                  </Badge>
                 ))}
               </div>
             </div>
