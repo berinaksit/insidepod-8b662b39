@@ -17,7 +17,6 @@ import {
   Clock,
   ExternalLink
 } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
 import AllSuggestedActionsModal from '@/components/AllSuggestedActionsModal';
 import { 
   BarChart, 
@@ -194,9 +193,9 @@ export default function InsightDetailPage() {
           className="space-y-3"
         >
           <div className="flex items-center gap-3 mb-2">
-            <Badge variant="neutral">
+            <span className="px-2.5 py-1 rounded-md text-xs font-semibold bg-muted text-foreground">
               {insight.type.charAt(0).toUpperCase() + insight.type.slice(1)}
-            </Badge>
+            </span>
             <span className="text-sm text-muted-foreground font-medium">
               {insight.source.name}
             </span>

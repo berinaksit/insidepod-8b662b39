@@ -1,7 +1,6 @@
 import { motion } from 'framer-motion';
 import { ArrowLeft, FileText, Bot, Eye, Play, MessageSquare, Clock, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { useDocuments } from '@/contexts/DocumentsContext';
 import { formatDistanceToNow } from 'date-fns';
 import { getDocumentIcon, getSourceTypeLabel } from '@/utils/documentSynthesis';
@@ -75,10 +74,13 @@ export function RecentActivityView({ onClose }: RecentActivityViewProps) {
                 <p className="text-xs text-muted-foreground mb-2">Processed by</p>
                 <div className="flex flex-wrap gap-2">
                   {upload.processedBy.map((agent) => (
-                    <Badge key={agent} variant="neutral" className="flex items-center gap-1.5">
+                    <span
+                      key={agent}
+                      className="flex items-center gap-1.5 px-2 py-0.5 bg-muted rounded-md text-xs font-bold text-foreground"
+                    >
                       <Bot className="w-3 h-3" strokeWidth={1.5} />
                       {agent}
-                    </Badge>
+                    </span>
                   ))}
                 </div>
               </div>
