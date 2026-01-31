@@ -76,7 +76,7 @@ export function RecentActivityView({ onClose }: RecentActivityViewProps) {
                   {upload.processedBy.map((agent) => (
                     <span
                       key={agent}
-                      className="flex items-center gap-1.5 px-2.5 py-1 bg-muted rounded-full text-xs font-medium text-foreground"
+                      className="flex items-center gap-1.5 px-2.5 py-1 bg-muted rounded-full text-xs font-bold text-foreground"
                     >
                       <Bot className="w-3 h-3" strokeWidth={1.5} />
                       {agent}
