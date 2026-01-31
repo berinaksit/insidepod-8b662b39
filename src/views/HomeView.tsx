@@ -481,7 +481,7 @@ export function HomeView({
                   onClick={() => onTabChange(tab.id)} 
                   className={`py-2 transition-colors whitespace-nowrap ${isActive ? 'text-foreground' : 'text-muted-foreground/60 hover:text-muted-foreground'}`}
                 >
-                  <span className="text-sm font-normal">{tab.label}</span>
+                  <span className="text-sm font-medium">{tab.label}</span>
                   {tab.id === 'home' && (
                     <span className="ml-1.5 sm:ml-2 px-1 sm:px-1.5 py-0.5 text-xs bg-muted text-muted-foreground rounded">
                       {allInsights.filter(i => i.isNew).length}
