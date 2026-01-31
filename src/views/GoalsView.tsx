@@ -112,7 +112,7 @@ export function GoalsView() {
               className="bg-card rounded-2xl p-5 shadow-card border border-border/50 hover:border-border transition-colors"
             >
               <div className="flex items-start justify-between gap-3 mb-3">
-                <span className={`px-2.5 py-1 rounded-md text-xs font-medium ${typeColors[goal.type]}`}>
+                <span className={`px-2.5 py-1 rounded-md text-xs font-bold ${typeColors[goal.type]}`}>
                   {goal.type}
                 </span>
               </div>

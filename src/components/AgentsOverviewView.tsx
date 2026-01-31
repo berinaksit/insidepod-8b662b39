@@ -73,7 +73,7 @@ export function AgentsOverviewView({ onClose }: AgentsOverviewViewProps) {
                 {agent.dataSources.map((source) => (
                   <span
                     key={source}
-                    className="px-2.5 py-1 bg-muted rounded-full text-xs font-medium text-foreground capitalize"
+                    className="px-2.5 py-1 bg-muted rounded-full text-xs font-bold text-foreground capitalize"
                   >
                     {source}
                   </span>

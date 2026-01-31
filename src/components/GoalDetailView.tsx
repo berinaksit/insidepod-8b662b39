@@ -221,10 +221,10 @@ export function GoalDetailView({ goal, onClose }: GoalDetailViewProps) {
         </Button>
 
         <div className="flex flex-wrap items-start gap-2 mb-4">
-          <span className={`px-2 py-0.5 rounded text-xs ${typeColors[enrichedGoal.type]}`}>
+          <span className={`px-2 py-0.5 rounded text-xs font-bold ${typeColors[enrichedGoal.type]}`}>
             {enrichedGoal.type}
           </span>
-          <span className={`px-2 py-0.5 rounded text-xs flex items-center gap-1.5 ${statusConfig[status].color}`}>
+          <span className={`px-2 py-0.5 rounded text-xs font-bold flex items-center gap-1.5 ${statusConfig[status].color}`}>
             <StatusIcon className="w-3 h-3" strokeWidth={1.5} />
             {statusConfig[status].label}
           </span>
@@ -290,7 +290,7 @@ export function GoalDetailView({ goal, onClose }: GoalDetailViewProps) {
                 className="bg-card rounded-xl p-5"
               >
                 <div className="flex items-start justify-between gap-3 mb-3">
-                  <span className={`px-2 py-0.5 rounded text-xs capitalize ${signalTypeConfig[signal.type].color}`}>
+                  <span className={`px-2 py-0.5 rounded text-xs font-bold capitalize ${signalTypeConfig[signal.type].color}`}>
                     {signal.type}
                   </span>
                   <span className="text-xs text-muted-foreground">

@@ -488,7 +488,7 @@ export function HomeView({
                             {primaryInsight.text}
                           </p>
                           <div className="flex items-center gap-2.5">
-                            <span className="px-2.5 py-1 bg-highlight/20 rounded-full text-sm font-semibold">
+                            <span className="px-2.5 py-1 bg-highlight/20 rounded-full text-sm font-bold">
                               {primaryInsight.sourceLabel}
                               {primaryInsight.sourceCount > 1 && ` +${primaryInsight.sourceCount - 1}`}
                             </span>
