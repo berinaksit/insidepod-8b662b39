@@ -69,10 +69,10 @@ export function SearchBar({ onSearch, isProcessing = false, placeholder }: Searc
                   animate={{ rotate: 360 }}
                   transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
                 >
-                  <Sparkles className="w-4 h-4 text-primary" strokeWidth={3} />
+                  <Sparkles className="w-4 h-4 text-primary" strokeWidth={1.5} />
                 </motion.div>
               ) : (
-                <Search className="w-4 h-4 text-muted-foreground" strokeWidth={3} />
+                <Search className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
               )}
             </div>
             
@@ -97,7 +97,7 @@ export function SearchBar({ onSearch, isProcessing = false, placeholder }: Searc
                   type="submit"
                   className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-colors flex items-center justify-center"
                 >
-                  <ArrowRight className="w-4 h-4" strokeWidth={3} />
+                  <ArrowRight className="w-4 h-4" strokeWidth={1.5} />
                 </motion.button>
               )}
             </AnimatePresence>
@@ -119,7 +119,7 @@ export function SearchBar({ onSearch, isProcessing = false, placeholder }: Searc
           className="w-8 h-8 rounded-full bg-muted/60 hover:bg-muted flex items-center justify-center transition-colors"
           title="Add documents"
         >
-          <Plus className="w-4 h-4 text-muted-foreground" strokeWidth={3} />
+          <Plus className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
         </button>
 
         {/* Document badges */}

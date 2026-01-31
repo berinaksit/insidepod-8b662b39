@@ -304,7 +304,7 @@ export function EditAgentModal({ agent, open, onOpenChange }: EditAgentModalProp
               <div className="relative">
                 {!uploadedFile ? (
                   <label className="flex items-center justify-center gap-2 w-full h-24 border-2 border-dashed border-border rounded-xl cursor-pointer hover:border-primary/50 hover:bg-muted/30 transition-colors">
-                    <Upload className="w-4 h-4 text-muted-foreground" strokeWidth={3} />
+                    <Upload className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
                     <span className="text-sm text-muted-foreground">
                       Upload PDF, CSV, or DOCX
                     </span>
@@ -325,7 +325,7 @@ export function EditAgentModal({ agent, open, onOpenChange }: EditAgentModalProp
                       onClick={handleRemoveFile}
                       className="w-6 h-6 rounded-full bg-muted flex items-center justify-center hover:bg-destructive/20 transition-colors"
                     >
-                      <X className="w-4 h-4 text-muted-foreground" strokeWidth={3} />
+                      <X className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
                     </button>
                   </div>
                 )}
@@ -361,7 +361,7 @@ export function EditAgentModal({ agent, open, onOpenChange }: EditAgentModalProp
                   onClick={() => setShowDeleteConfirm(true)}
                   className="gap-2"
                 >
-                  <Trash2 className="w-4 h-4" strokeWidth={3} />
+                  <Trash2 className="w-4 h-4" strokeWidth={1.5} />
                   Delete agent
                 </Button>
               ) : (

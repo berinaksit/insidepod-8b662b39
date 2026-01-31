@@ -76,7 +76,7 @@ export function AgentsList({ agents, onAgentClick }: AgentsListProps) {
                       : isCustom
                         ? 'text-violet-500'
                         : 'text-muted-foreground'
-                  }`} strokeWidth={3} />
+                  }`} strokeWidth={1.5} />
                 </div>
                 
                 {/* Content */}

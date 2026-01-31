@@ -60,7 +60,7 @@ export function AnalysisResultsModal({
         <div className="analysis-panel analysis-panel-primary p-6 pb-8">
           <div className="flex items-start justify-between mb-4">
             <div className="flex items-center gap-2 text-primary-surface-foreground/70">
-              <FileText className="w-4 h-4" strokeWidth={3} />
+              <FileText className="w-4 h-4" strokeWidth={1.5} />
               <span className="text-sm font-medium">
                 {documents.length} document{documents.length !== 1 ? 's' : ''} analyzed
               </span>
@@ -69,7 +69,7 @@ export function AnalysisResultsModal({
               onClick={() => onOpenChange(false)}
               className="p-1.5 rounded-lg hover:bg-white/10 transition-colors"
             >
-              <X className="w-5 h-5 text-primary-surface-foreground" strokeWidth={3} />
+              <X className="w-5 h-5 text-primary-surface-foreground" strokeWidth={1.5} />
             </button>
           </div>
 
@@ -136,13 +136,13 @@ export function AnalysisResultsModal({
                     className="flex gap-3 p-4 bg-muted/30 rounded-xl"
                   >
                     <div className="w-9 h-9 rounded-xl bg-secondary/10 flex items-center justify-center flex-shrink-0">
-                      <Icon className="w-4 h-4 text-secondary" strokeWidth={3} />
+                      <Icon className="w-4 h-4 text-secondary" strokeWidth={1.5} />
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="font-semibold text-foreground">{item.title}</p>
                       <p className="text-sm text-muted-foreground mt-0.5">{item.detail}</p>
                       <p className="text-xs text-muted-foreground mt-2 flex items-center gap-1.5">
-                        <FileText className="w-4 h-4" strokeWidth={3} />
+                        <FileText className="w-4 h-4" strokeWidth={1.5} />
                         Source: {item.source}
                       </p>
                     </div>
@@ -169,13 +169,13 @@ export function AnalysisResultsModal({
                     className="w-full flex items-center gap-3 p-4 bg-primary/5 hover:bg-primary/10 rounded-xl text-left transition-colors group"
                   >
                     <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-                      <Icon className="w-4 h-4 text-primary" strokeWidth={3} />
+                      <Icon className="w-4 h-4 text-primary" strokeWidth={1.5} />
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="font-semibold text-foreground">{action.title}</p>
                       <p className="text-sm text-muted-foreground mt-0.5">{action.detail}</p>
                     </div>
-                    <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" strokeWidth={3} />
+                    <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" strokeWidth={1.5} />
                   </motion.button>
                 );
               })}

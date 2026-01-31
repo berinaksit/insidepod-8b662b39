@@ -482,7 +482,7 @@ export function HomeView({
                       {/* Featured Insight Card - Purple */}
                       {primaryInsight && <div onClick={() => setDashboardView('insight')} className="bg-highlight-surface rounded-2xl p-5 text-highlight-foreground cursor-pointer hover:opacity-90 transition-opacity">
                           <div className="w-7 h-7 rounded-full bg-highlight/20 flex items-center justify-center mb-3">
-                            <CircleDot className="w-4 h-4" strokeWidth={3} />
+                            <CircleDot className="w-4 h-4" strokeWidth={1.5} />
                           </div>
                           <p className="text-xl font-semibold mb-5 line-clamp-3">
                             {primaryInsight.text}
@@ -498,14 +498,14 @@ export function HomeView({
                       {/* Suggested Task Card */}
                       {suggestedTask && <div onClick={() => setDashboardView('task')} className="insight-card flex flex-col cursor-pointer hover:border-border transition-colors">
                           <div className="flex items-center gap-1.5 text-muted-foreground mb-2.5">
-                            <FileText className="w-4 h-4" strokeWidth={3} />
+                            <FileText className="w-4 h-4" strokeWidth={1.5} />
                             <span className="text-sm font-medium">Suggested task</span>
                           </div>
                           <h3 className="text-xl font-semibold text-foreground line-clamp-2">
                             {suggestedTask.text}
                           </h3>
                           <div className="gap-1.5 mt-auto pb-0 text-muted-foreground flex items-end justify-start">
-                            <Link2 className="w-4 h-4" strokeWidth={3} />
+                            <Link2 className="w-4 h-4" strokeWidth={1.5} />
                             <span className="text-sm font-medium">Used {suggestedTask.sourceCount} source{suggestedTask.sourceCount !== 1 ? 's' : ''}</span>
                             <span className="text-sm font-medium">›</span>
                           </div>
@@ -514,7 +514,7 @@ export function HomeView({
                       {/* Connected Sources Card */}
                       <div onClick={() => setDashboardView('sources')} className="insight-card flex flex-col cursor-pointer hover:border-border transition-colors">
                         <div className="flex items-center gap-1.5 text-muted-foreground mb-3">
-                          <Link2 className="w-4 h-4" strokeWidth={3} />
+                          <Link2 className="w-4 h-4" strokeWidth={1.5} />
                           <span className="text-sm font-medium">Connected sources</span>
                         </div>
                         {connectedSources.length > 0 ? <div className="space-y-2.5 flex-1 max-h-32 overflow-y-auto">
@@ -526,7 +526,7 @@ export function HomeView({
                             No documents uploaded
                           </div>}
                         <div className="relative mt-auto pb-0" onClick={e => e.stopPropagation()}>
-                          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" strokeWidth={3} />
+                          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
                           <input type="text" placeholder="Search for documents" className="w-full bg-muted/50 rounded-full pl-9 pr-3.5 py-1.5 text-sm placeholder:text-muted-foreground focus:outline-none font-medium" />
                         </div>
                       </div>
@@ -534,14 +534,14 @@ export function HomeView({
                       {/* Suggested Prompt Card */}
                       {suggestedPrompt && <div onClick={() => setDashboardView('prompt')} className="insight-card flex flex-col cursor-pointer hover:border-border transition-colors">
                           <div className="flex items-center gap-1.5 text-muted-foreground mb-2.5">
-                            <Code2 className="w-4 h-4" strokeWidth={3} />
+                            <Code2 className="w-4 h-4" strokeWidth={1.5} />
                             <span className="text-sm font-medium">Suggested prompt</span>
                           </div>
                           <h3 className="text-xl font-semibold text-foreground line-clamp-2">
                             {suggestedPrompt.text}
                           </h3>
                           <div className="flex items-center gap-1.5 mt-auto pb-0 text-muted-foreground">
-                            <Link2 className="w-4 h-4" strokeWidth={3} />
+                            <Link2 className="w-4 h-4" strokeWidth={1.5} />
                             <span className="text-sm font-medium">Used {suggestedPrompt.sourceCount} source{suggestedPrompt.sourceCount !== 1 ? 's' : ''}</span>
                             <span className="text-xs font-medium">›</span>
                           </div>
@@ -550,7 +550,7 @@ export function HomeView({
                       {/* Recently Uploaded Card */}
                       {recentGuidance && <div onClick={() => setDashboardView('recent')} className="insight-card flex flex-col cursor-pointer hover:border-border transition-colors">
                           <div className="flex items-center gap-1.5 text-muted-foreground mb-2.5">
-                            <FileUp className="w-4 h-4" strokeWidth={3} />
+                            <FileUp className="w-4 h-4" strokeWidth={1.5} />
                             <span className="text-sm font-medium">Recently uploaded</span>
                           </div>
                           <h3 className="text-xl font-semibold text-foreground line-clamp-2">
@@ -567,14 +567,14 @@ export function HomeView({
                       {/* Active Agents Card */}
                       <div onClick={() => setDashboardView('agents')} className="insight-card cursor-pointer hover:border-border transition-colors">
                         <div className="flex items-center gap-1.5 text-muted-foreground mb-3">
-                          <Bot className="w-4 h-4" strokeWidth={3} />
+                          <Bot className="w-4 h-4" strokeWidth={1.5} />
                           <span className="text-sm font-medium">Active Agents</span>
                         </div>
                         {activeAgents.length > 0 ? <div className="grid grid-cols-2 gap-1.5">
                             {activeAgents.map(agent => {
                     const Icon = agent.icon;
                     return <div key={agent.name} className="flex items-center gap-1.5 bg-muted/50 rounded-xl text-sm text-foreground font-medium py-[28px] px-[10px]">
-                                  <Icon className="w-4 h-4 text-muted-foreground" strokeWidth={3} />
+                                  <Icon className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
                                   <span className="truncate">{agent.name}</span>
                                 </div>;
                   })}

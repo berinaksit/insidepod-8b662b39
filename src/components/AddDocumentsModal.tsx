@@ -145,7 +145,7 @@ export function AddDocumentsModal({
             
             <div className="flex flex-col items-center gap-3">
               <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
-                <Upload className="w-5 h-5 text-muted-foreground" strokeWidth={3} />
+                <Upload className="w-5 h-5 text-muted-foreground" strokeWidth={1.5} />
               </div>
               <div>
                 <p className="text-foreground font-medium">
@@ -177,7 +177,7 @@ export function AddDocumentsModal({
                   >
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
-                        <FileText className="w-4 h-4 text-muted-foreground" strokeWidth={3} />
+                        <FileText className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
                       </div>
                       <div>
                         <p className="text-sm font-medium text-foreground">{doc.aiTitle}</p>
@@ -188,7 +188,7 @@ export function AddDocumentsModal({
                       onClick={() => removeDocument(doc.id)}
                       className="p-1.5 rounded-lg hover:bg-muted transition-colors"
                     >
-                      <X className="w-4 h-4 text-muted-foreground" strokeWidth={3} />
+                      <X className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
                     </button>
                   </motion.div>
                 ))}

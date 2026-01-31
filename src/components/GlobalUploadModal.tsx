@@ -170,7 +170,7 @@ export function GlobalUploadModal({
             
             <div className="flex flex-col items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
-                <Upload className="w-4 h-4 text-muted-foreground" strokeWidth={3} />
+                <Upload className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
               </div>
               <div>
                 <p className="text-foreground font-medium">
@@ -202,7 +202,7 @@ export function GlobalUploadModal({
                   >
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
-                        <FileText className="w-4 h-4 text-muted-foreground" strokeWidth={3} />
+                        <FileText className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
                       </div>
                       <div>
                         <p className="text-sm font-medium text-foreground">{doc.aiTitle}</p>
@@ -214,7 +214,7 @@ export function GlobalUploadModal({
                         onClick={() => removeDocument(doc.id)}
                         className="p-1.5 rounded-lg hover:bg-muted transition-colors"
                       >
-                        <X className="w-4 h-4 text-muted-foreground" strokeWidth={3} />
+                        <X className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
                       </button>
                     )}
                   </motion.div>

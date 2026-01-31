@@ -47,7 +47,7 @@ function Badge({ className, variant, onRemove, children, ...props }: BadgeProps)
           className="ml-0.5 hover:text-foreground transition-colors"
           aria-label="Remove"
         >
-          <X className="w-3.5 h-3.5" strokeWidth={3} />
+          <X className="w-3.5 h-3.5" strokeWidth={1.5} />
         </button>
       )}
     </div>

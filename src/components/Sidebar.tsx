@@ -56,7 +56,7 @@ export function Sidebar({
               <span className="font-display text-xl text-sidebar-foreground">Inside Pōd</span>
             </div>
             <button onClick={onClose} className="p-2 rounded-xl hover:bg-sidebar-accent transition-colors">
-              <X className="w-4 h-4 text-sidebar-foreground" strokeWidth={3} />
+              <X className="w-4 h-4 text-sidebar-foreground" strokeWidth={1.5} />
             </button>
           </div>
           
@@ -71,7 +71,7 @@ export function Sidebar({
                     w-full flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl transition-all duration-200
                     ${isActive ? 'bg-sidebar-accent text-sidebar-foreground' : 'text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground'}
                   `}>
-                  <Icon className="w-4 h-4" strokeWidth={3} />
+                  <Icon className="w-4 h-4" strokeWidth={1.5} />
                   <span className="font-medium">{item.label}</span>
                 </button>;
           })}
