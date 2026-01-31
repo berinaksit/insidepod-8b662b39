@@ -70,7 +70,7 @@ export function GoalsView() {
           onClick={() => setIsModalOpen(true)}
           className="flex items-center gap-2 rounded-xl"
         >
-          <Plus className="w-4 h-4" strokeWidth={1.5} />
+          <Plus className="w-4 h-4" strokeWidth={3} />
           Add Goal
         </Button>
       </motion.div>
@@ -84,7 +84,7 @@ export function GoalsView() {
           className="flex flex-col items-center justify-center py-24"
         >
           <div className="w-16 h-16 rounded-2xl bg-muted flex items-center justify-center mb-6">
-            <Target className="w-6 h-6 text-muted-foreground" strokeWidth={1.5} />
+            <Target className="w-6 h-6 text-muted-foreground" strokeWidth={3} />
           </div>
           <h2 className="text-xl font-semibold text-foreground mb-2">No goals yet</h2>
           <p className="text-muted-foreground text-center max-w-sm mb-6">
