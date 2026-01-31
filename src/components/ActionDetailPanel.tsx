@@ -52,7 +52,7 @@ export function ActionDetailPanel({ onClose, task, sourceDocuments = [] }: Actio
           onClick={onClose}
           className="p-2 hover:bg-muted rounded-xl transition-colors"
         >
-          <ArrowLeft className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
+          <ArrowLeft className="w-4 h-4 text-muted-foreground" strokeWidth={3} />
         </button>
         <span className="px-2.5 py-1 bg-secondary/20 text-secondary rounded-md text-xs font-medium">
           Suggested Task
@@ -97,7 +97,7 @@ export function ActionDetailPanel({ onClose, task, sourceDocuments = [] }: Actio
       {/* Linked Agent */}
       <div className="bg-muted/50 rounded-xl p-4 mb-8 flex items-center gap-3">
         <div className="w-9 h-9 rounded-lg bg-muted flex items-center justify-center">
-          <Bot className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
+          <Bot className="w-4 h-4 text-muted-foreground" strokeWidth={3} />
         </div>
         <div>
           <p className="text-sm text-muted-foreground">Linked agent</p>
@@ -129,15 +129,15 @@ export function ActionDetailPanel({ onClose, task, sourceDocuments = [] }: Actio
       {/* Actions */}
       <div className="flex flex-wrap gap-3">
         <Button variant="outline" className="rounded-xl">
-          <ExternalLink className="w-4 h-4 mr-2" strokeWidth={1.5} />
+          <ExternalLink className="w-4 h-4 mr-2" strokeWidth={3} />
           Open relevant sources
         </Button>
         <Button variant="outline" className="rounded-xl">
-          <MessageSquare className="w-4 h-4 mr-2" strokeWidth={1.5} />
+          <MessageSquare className="w-4 h-4 mr-2" strokeWidth={3} />
           Ask agent about this
         </Button>
         <Button variant="outline" className="rounded-xl text-muted-foreground">
-          <X className="w-4 h-4 mr-2" strokeWidth={1.5} />
+          <X className="w-4 h-4 mr-2" strokeWidth={3} />
           Dismiss suggestion
         </Button>
       </div>

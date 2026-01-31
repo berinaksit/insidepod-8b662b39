@@ -216,7 +216,7 @@ export function GoalDetailView({ goal, onClose }: GoalDetailViewProps) {
           onClick={onClose}
           className="mb-6 -ml-2 text-muted-foreground hover:text-foreground"
         >
-          <ArrowLeft className="w-4 h-4 mr-1.5" strokeWidth={1.5} />
+          <ArrowLeft className="w-4 h-4 mr-1.5" strokeWidth={3} />
           Back to Goals
         </Button>
 
@@ -225,7 +225,7 @@ export function GoalDetailView({ goal, onClose }: GoalDetailViewProps) {
             {enrichedGoal.type}
           </Badge>
           <Badge variant="neutral" className="flex items-center gap-1.5">
-            <StatusIcon className="w-3 h-3" strokeWidth={1.5} />
+            <StatusIcon className="w-3 h-3" strokeWidth={3} />
             {statusConfig[status].label}
           </Badge>
         </div>
@@ -239,7 +239,7 @@ export function GoalDetailView({ goal, onClose }: GoalDetailViewProps) {
       <section className="mb-12">
         <div className="bg-card rounded-xl p-6">
           <div className="flex items-center gap-2 mb-4">
-            <Activity className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
+            <Activity className="w-4 h-4 text-muted-foreground" strokeWidth={3} />
             <h2 className="font-medium text-foreground">Goal Health Summary</h2>
           </div>
           
@@ -249,20 +249,20 @@ export function GoalDetailView({ goal, onClose }: GoalDetailViewProps) {
 
           <div className="flex flex-wrap items-center gap-6 pt-4 border-t border-border/50">
             <div className="flex items-center gap-2">
-              <TrendIcon className={`w-4 h-4 ${trendConfig[trend].color}`} strokeWidth={1.5} />
+              <TrendIcon className={`w-4 h-4 ${trendConfig[trend].color}`} strokeWidth={3} />
               <span className="text-sm text-muted-foreground">
                 Trend: <span className="text-foreground">{trendConfig[trend].label}</span>
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <Zap className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
+              <Zap className="w-4 h-4 text-muted-foreground" strokeWidth={3} />
               <span className="text-sm text-muted-foreground">
                 Confidence: <span className="text-foreground capitalize">{enrichedGoal.confidence}</span>
               </span>
             </div>
             {enrichedGoal.lastUpdated && (
               <div className="flex items-center gap-2">
-                <Clock className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
+                <Clock className="w-4 h-4 text-muted-foreground" strokeWidth={3} />
                 <span className="text-sm text-muted-foreground">
                   Updated: <span className="text-foreground">{formatRelativeTime(enrichedGoal.lastUpdated)}</span>
                 </span>
@@ -276,7 +276,7 @@ export function GoalDetailView({ goal, onClose }: GoalDetailViewProps) {
       {hasLinkedSignals && (
         <section className="mb-12">
           <h2 className="flex items-center gap-2 font-medium text-foreground mb-6">
-            <Lightbulb className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
+            <Lightbulb className="w-4 h-4 text-muted-foreground" strokeWidth={3} />
             What's affecting this goal
           </h2>
           
@@ -300,7 +300,7 @@ export function GoalDetailView({ goal, onClose }: GoalDetailViewProps) {
                 <h3 className="font-medium text-foreground mb-1.5">{signal.headline}</h3>
                 <p className="text-sm text-muted-foreground mb-3">{signal.explanation}</p>
                 <div className="flex items-center gap-1.5 text-xs text-muted-foreground/60">
-                  <Bot className="w-3 h-3" strokeWidth={1.5} />
+                  <Bot className="w-3 h-3" strokeWidth={3} />
                   {signal.agentName}
                 </div>
               </motion.div>
@@ -313,7 +313,7 @@ export function GoalDetailView({ goal, onClose }: GoalDetailViewProps) {
       {hasDataSources && (
         <section className="mb-12">
           <h2 className="flex items-center gap-2 font-medium text-foreground mb-6">
-            <FileText className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
+            <FileText className="w-4 h-4 text-muted-foreground" strokeWidth={3} />
             Connected sources
           </h2>
           
@@ -337,7 +337,7 @@ export function GoalDetailView({ goal, onClose }: GoalDetailViewProps) {
       {hasTimeline && (
         <section className="mb-12">
           <h2 className="flex items-center gap-2 font-medium text-foreground mb-6">
-            <Clock className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
+            <Clock className="w-4 h-4 text-muted-foreground" strokeWidth={3} />
             Timeline
           </h2>
           
@@ -361,7 +361,7 @@ export function GoalDetailView({ goal, onClose }: GoalDetailViewProps) {
       {hasMonitoringAgents && (
         <section className="mb-12">
           <h2 className="flex items-center gap-2 font-medium text-foreground mb-6">
-            <Bot className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
+            <Bot className="w-4 h-4 text-muted-foreground" strokeWidth={3} />
             Monitoring agents
           </h2>
           
@@ -388,7 +388,7 @@ export function GoalDetailView({ goal, onClose }: GoalDetailViewProps) {
       {hasSuggestedActions && (
         <section className="mb-12">
           <h2 className="flex items-center gap-2 font-medium text-foreground mb-6">
-            <Sparkles className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
+            <Sparkles className="w-4 h-4 text-muted-foreground" strokeWidth={3} />
             Suggested next steps
           </h2>
           
