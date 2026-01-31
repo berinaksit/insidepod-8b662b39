@@ -38,7 +38,7 @@ export function RecentActivityView({ onClose }: RecentActivityViewProps) {
           onClick={onClose}
           className="p-2 hover:bg-muted rounded-xl transition-colors"
         >
-          <ArrowLeft className="w-4 h-4 text-muted-foreground" strokeWidth={3} />
+          <ArrowLeft className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
         </button>
         <h1 className="text-xl font-semibold text-foreground">Recent Activity</h1>
       </div>
@@ -64,7 +64,7 @@ export function RecentActivityView({ onClose }: RecentActivityViewProps) {
                 </div>
               </div>
               <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                <Clock className="w-4 h-4" strokeWidth={3} />
+                <Clock className="w-4 h-4" strokeWidth={1.5} />
                 <span>{formatDistanceToNow(upload.uploadTime, { addSuffix: true })}</span>
               </div>
             </div>
@@ -76,7 +76,7 @@ export function RecentActivityView({ onClose }: RecentActivityViewProps) {
                 <div className="flex flex-wrap gap-2">
                   {upload.processedBy.map((agent) => (
                     <Badge key={agent} variant="neutral" className="flex items-center gap-1.5">
-                      <Bot className="w-3 h-3" strokeWidth={3} />
+                      <Bot className="w-3 h-3" strokeWidth={1.5} />
                       {agent}
                     </Badge>
                   ))}
@@ -87,15 +87,15 @@ export function RecentActivityView({ onClose }: RecentActivityViewProps) {
             {/* Actions */}
             <div className="flex flex-wrap gap-2">
               <Button variant="ghost" size="sm" className="rounded-lg text-xs h-8">
-                <Eye className="w-4 h-4 mr-1.5" strokeWidth={3} />
+                <Eye className="w-4 h-4 mr-1.5" strokeWidth={1.5} />
                 View document
               </Button>
               <Button variant="ghost" size="sm" className="rounded-lg text-xs h-8">
-                <Play className="w-4 h-4 mr-1.5" strokeWidth={3} />
+                <Play className="w-4 h-4 mr-1.5" strokeWidth={1.5} />
                 Run agent
               </Button>
               <Button variant="ghost" size="sm" className="rounded-lg text-xs h-8">
-                <MessageSquare className="w-4 h-4 mr-1.5" strokeWidth={3} />
+                <MessageSquare className="w-4 h-4 mr-1.5" strokeWidth={1.5} />
                 Ask about this
               </Button>
             </div>
@@ -106,14 +106,14 @@ export function RecentActivityView({ onClose }: RecentActivityViewProps) {
       {recentUploads.length === 0 && (
         <div className="flex flex-col items-center justify-center py-20">
           <div className="w-14 h-14 rounded-2xl bg-muted flex items-center justify-center mb-6">
-            <Upload className="w-5 h-5 text-muted-foreground" strokeWidth={3} />
+            <Upload className="w-5 h-5 text-muted-foreground" strokeWidth={1.5} />
           </div>
           <h2 className="text-xl font-semibold text-foreground mb-2">No recent uploads</h2>
           <p className="text-muted-foreground text-center max-w-sm mb-6">
             Upload documents to see them appear here
           </p>
           <Button onClick={() => openUploadModal('recent-activity')} className="rounded-xl">
-            <Upload className="w-4 h-4 mr-2" strokeWidth={3} />
+            <Upload className="w-4 h-4 mr-2" strokeWidth={1.5} />
             Upload Document
           </Button>
         </div>
