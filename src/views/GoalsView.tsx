@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Plus, Target } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { CreateGoalModal, Goal, GoalType } from '@/components/CreateGoalModal';
 
 const STORAGE_KEY = 'insidepod_goals_v2';
@@ -112,9 +113,9 @@ export function GoalsView() {
               className="bg-card rounded-2xl p-5 shadow-card border border-border/50 hover:border-border transition-colors"
             >
               <div className="flex items-start justify-between gap-3 mb-3">
-                <span className={`px-2 py-0.5 rounded-md text-xs font-bold ${typeColors[goal.type]}`}>
+                <Badge variant="neutral">
                   {goal.type}
-                </span>
+                </Badge>
               </div>
               <h3 className="text-lg font-semibold text-foreground leading-tight">
                 {goal.title}
