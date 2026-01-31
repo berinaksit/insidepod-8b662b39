@@ -472,16 +472,16 @@ export function HomeView({
       {/* Tabs */}
       <section className="px-4 sm:px-6 pb-10 sm:pb-16">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sm:mb-8">
-          <div className="flex items-center gap-0.5 overflow-x-auto pb-2 sm:pb-0 -mx-4 px-4 sm:mx-0 sm:px-0">
+          <div className="flex items-center gap-4 sm:gap-6 overflow-x-auto pb-2 sm:pb-0 -mx-4 px-4 sm:mx-0 sm:px-0">
             {tabs.map(tab => {
               const isActive = currentTab === tab.id;
               return (
                 <button 
                   key={tab.id} 
                   onClick={() => onTabChange(tab.id)} 
-                  className={`px-3 sm:px-4 py-2 sm:py-2.5 border-b-2 transition-colors whitespace-nowrap ${isActive ? 'border-foreground text-foreground' : 'border-transparent text-muted-foreground hover:text-foreground'}`}
+                  className={`py-2 transition-colors whitespace-nowrap ${isActive ? 'text-foreground' : 'text-muted-foreground/60 hover:text-muted-foreground'}`}
                 >
-                  <span className={`text-sm sm:text-base ${isActive ? 'font-medium' : 'font-normal'}`}>{tab.label}</span>
+                  <span className="text-sm font-normal">{tab.label}</span>
                   {tab.id === 'home' && (
                     <span className="ml-1.5 sm:ml-2 px-1 sm:px-1.5 py-0.5 text-xs bg-muted text-muted-foreground rounded">
                       {allInsights.filter(i => i.isNew).length}
