@@ -20,7 +20,7 @@ export function EmptyState({ icon: Icon, title, description, action }: EmptyStat
       className="flex flex-col items-center justify-center py-12 sm:py-16 px-4 sm:px-8 text-center"
     >
       <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-muted flex items-center justify-center mb-4 sm:mb-6">
-        <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" strokeWidth={1.5} />
+        <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" strokeWidth={3} />
       </div>
       
       <h3 className="text-lg sm:text-xl font-medium text-foreground mb-2">
