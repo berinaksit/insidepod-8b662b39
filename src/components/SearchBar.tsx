@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Sparkles, ArrowRight, Plus, X } from 'lucide-react';
 import { AddDocumentsModal, UploadedDocument } from './AddDocumentsModal';
-import { useProjects } from '@/contexts/ProjectsContext';
 
 interface SearchBarProps {
   onSearch?: (query: string, documents: UploadedDocument[]) => void;
@@ -20,22 +19,17 @@ const suggestions = [
 
 export function SearchBar({ onSearch, isProcessing = false, placeholder }: SearchBarProps) {
   const navigate = useNavigate();
-  const { activeProject, activeProjectId } = useProjects();
   const [query, setQuery] = useState('');
   const [isFocused, setIsFocused] = useState(false);
   const [documents, setDocuments] = useState<UploadedDocument[]>([]);
   const [showDocModal, setShowDocModal] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Dynamic placeholder based on project
-  const dynamicPlaceholder = placeholder || 
-    (activeProject ? `Ask anything about ${activeProject.name}...` : 'Ask anything about your project...');
-
   const handleSubmit = async (e?: React.FormEvent) => {
     e?.preventDefault();
     if (query.trim() && !isProcessing) {
       onSearch?.(query.trim(), documents);
-      navigate('/ask', { state: { query: query.trim(), documents } });
+      navigate('/analysis', { state: { query: query.trim(), documents } });
     }
   };
 
@@ -89,7 +83,7 @@ export function SearchBar({ onSearch, isProcessing = false, placeholder }: Searc
               onChange={(e) => setQuery(e.target.value)}
               onFocus={() => setIsFocused(true)}
               onBlur={() => setTimeout(() => setIsFocused(false), 200)}
-              placeholder={dynamicPlaceholder}
+              placeholder={placeholder || "Ask anything about your product..."}
               className="flex-1 bg-transparent text-foreground placeholder:text-muted-foreground focus:outline-none text-sm sm:text-base font-medium"
               disabled={isProcessing}
             />
