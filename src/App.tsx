@@ -7,6 +7,7 @@ import { DocumentsProvider } from "./contexts/DocumentsContext";
 import { ProjectsProvider } from "./contexts/ProjectsContext";
 import Index from "./pages/Index";
 import AnalysisPage from "./pages/AnalysisPage";
+import AskResultsPage from "./pages/AskResultsPage";
 import InsightDetailPage from "./pages/InsightDetailPage";
 import NotFound from "./pages/NotFound";
 
@@ -23,6 +24,7 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/analysis" element={<AnalysisPage />} />
+              <Route path="/ask" element={<AskResultsPage />} />
               <Route path="/insight/:id" element={<InsightDetailPage />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
