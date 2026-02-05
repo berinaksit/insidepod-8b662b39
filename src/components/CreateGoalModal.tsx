@@ -17,14 +17,12 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
+import { Goal } from '@/hooks/useSupabaseData';
+
 export type GoalType = 'KPI' | 'OKR' | 'Success Metric' | 'Custom';
 
-export interface Goal {
-  id: string;
-  title: string;
-  type: GoalType;
-  createdAt: Date;
-}
+// Re-export Goal for convenience
+export type { Goal } from '@/hooks/useSupabaseData';
 
 interface CreateGoalModalProps {
   open: boolean;

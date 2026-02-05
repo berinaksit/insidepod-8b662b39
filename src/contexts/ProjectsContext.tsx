@@ -1,132 +1,62 @@
-import React, { createContext, useContext, useState, useCallback, useEffect, ReactNode } from 'react';
-
-// localStorage keys
-const STORAGE_KEYS = {
-  projects: 'insidepod_projects',
-  activeProjectId: 'insidepod_active_project_id',
-  projectFiles: 'insidepod_project_files',
-};
-
-// Project type
-export interface Project {
-  id: string;
-  name: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-// Project file type
-export interface ProjectFile {
-  id: string;
-  projectId: string;
-  name: string;
-  type: 'pdf' | 'csv' | 'docx';
-  size: number;
-  uploadedAt: Date;
-}
-
-// Helper functions for localStorage
-function loadFromStorage<T>(key: string, defaultValue: T): T {
-  try {
-    const stored = localStorage.getItem(key);
-    if (stored) {
-      return JSON.parse(stored);
-    }
-  } catch (e) {
-    console.warn(`Failed to load ${key} from localStorage:`, e);
-  }
-  return defaultValue;
-}
-
-function saveToStorage<T>(key: string, value: T): void {
-  try {
-    localStorage.setItem(key, JSON.stringify(value));
-  } catch (e) {
-    console.warn(`Failed to save ${key} to localStorage:`, e);
-  }
-}
-
-// Hydrate dates from JSON
-function hydrateDates<T>(obj: T, dateFields: string[]): T {
-  if (Array.isArray(obj)) {
-    return obj.map(item => hydrateDates(item, dateFields)) as T;
-  }
-  if (obj && typeof obj === 'object') {
-    const hydrated = { ...obj } as any;
-    for (const field of dateFields) {
-      if (hydrated[field] && typeof hydrated[field] === 'string') {
-        hydrated[field] = new Date(hydrated[field]);
-      }
-    }
-    return hydrated;
-  }
-  return obj;
-}
+import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
+import {
+  useProjects as useProjectsQuery,
+  useCreateProject,
+  useProjectFiles as useProjectFilesQuery,
+  useAddProjectFile,
+  Project,
+  ProjectFile,
+} from '@/hooks/useSupabaseData';
 
 interface ProjectsContextType {
   // Projects
   projects: Project[];
   activeProject: Project | null;
   activeProjectId: string | null;
-  createProject: (name: string) => Project;
+  createProject: (name: string) => Promise<Project>;
   setActiveProjectId: (id: string | null) => void;
+  isLoading: boolean;
   
   // Project files
   projectFiles: ProjectFile[];
   getFilesForProject: (projectId: string) => ProjectFile[];
-  addFileToProject: (projectId: string, file: Omit<ProjectFile, 'id' | 'projectId' | 'uploadedAt'>) => ProjectFile;
+  addFileToProject: (projectId: string, file: Omit<ProjectFile, 'id' | 'projectId' | 'uploadedAt'>) => Promise<ProjectFile>;
 }
 
 const ProjectsContext = createContext<ProjectsContextType | undefined>(undefined);
 
-// Initialize projects from storage
-function initializeProjects(): Project[] {
-  const stored = loadFromStorage<Project[]>(STORAGE_KEYS.projects, []);
-  return hydrateDates(stored, ['createdAt', 'updatedAt']);
-}
-
-// Initialize project files from storage
-function initializeProjectFiles(): ProjectFile[] {
-  const stored = loadFromStorage<ProjectFile[]>(STORAGE_KEYS.projectFiles, []);
-  return hydrateDates(stored, ['uploadedAt']);
-}
-
 export function ProjectsProvider({ children }: { children: ReactNode }) {
-  const [projects, setProjects] = useState<Project[]>(initializeProjects);
-  const [projectFiles, setProjectFiles] = useState<ProjectFile[]>(initializeProjectFiles);
-  const [activeProjectId, setActiveProjectIdState] = useState<string | null>(() => 
-    loadFromStorage<string | null>(STORAGE_KEYS.activeProjectId, null)
-  );
+  const { user } = useAuth();
+  
+  // Supabase queries
+  const { data: projects = [], isLoading: projectsLoading } = useProjectsQuery();
+  const { data: projectFiles = [], isLoading: filesLoading } = useProjectFilesQuery();
+  
+  // Mutations
+  const createProjectMutation = useCreateProject();
+  const addFileMutation = useAddProjectFile();
+  
+  // Local state for active project (in-memory only, resets on refresh)
+  const [activeProjectId, setActiveProjectIdState] = useState<string | null>(null);
 
-  // Persist projects to localStorage
-  useEffect(() => {
-    saveToStorage(STORAGE_KEYS.projects, projects);
-  }, [projects]);
+  const isLoading = projectsLoading || filesLoading;
 
-  // Persist project files to localStorage
-  useEffect(() => {
-    saveToStorage(STORAGE_KEYS.projectFiles, projectFiles);
-  }, [projectFiles]);
-
-  // Persist active project ID to localStorage
-  useEffect(() => {
-    saveToStorage(STORAGE_KEYS.activeProjectId, activeProjectId);
-  }, [activeProjectId]);
-
-  const createProject = useCallback((name: string): Project => {
-    const now = new Date();
+  const createProjectHandler = useCallback(async (name: string): Promise<Project> => {
+    const result = await createProjectMutation.mutateAsync(name);
+    
     const newProject: Project = {
-      id: `project-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-      name,
-      createdAt: now,
-      updatedAt: now,
+      id: result.id,
+      name: result.name,
+      createdAt: new Date(result.created_at || Date.now()),
+      updatedAt: new Date(result.created_at || Date.now()),
     };
     
-    setProjects(prev => [newProject, ...prev]);
-    setActiveProjectIdState(newProject.id);
+    // Set as active project
+    setActiveProjectIdState(result.id);
     
     return newProject;
-  }, []);
+  }, [createProjectMutation]);
 
   const setActiveProjectId = useCallback((id: string | null) => {
     setActiveProjectIdState(id);
@@ -136,28 +66,21 @@ export function ProjectsProvider({ children }: { children: ReactNode }) {
     return projectFiles.filter(f => f.projectId === projectId);
   }, [projectFiles]);
 
-  const addFileToProject = useCallback((
+  const addFileToProjectHandler = useCallback(async (
     projectId: string, 
     file: Omit<ProjectFile, 'id' | 'projectId' | 'uploadedAt'>
-  ): ProjectFile => {
-    const newFile: ProjectFile = {
-      ...file,
-      id: `file-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-      projectId,
-      uploadedAt: new Date(),
+  ): Promise<ProjectFile> => {
+    const result = await addFileMutation.mutateAsync({ projectId, file });
+    
+    return {
+      id: result.id,
+      projectId: result.project_id || projectId,
+      name: result.name,
+      type: result.type as 'pdf' | 'csv' | 'docx',
+      size: result.size || 0,
+      uploadedAt: new Date(result.uploaded_at),
     };
-    
-    setProjectFiles(prev => [...prev, newFile]);
-    
-    // Update project's updatedAt
-    setProjects(prev => prev.map(p => 
-      p.id === projectId 
-        ? { ...p, updatedAt: new Date() }
-        : p
-    ));
-    
-    return newFile;
-  }, []);
+  }, [addFileMutation]);
 
   // Derived values
   const activeProject = projects.find(p => p.id === activeProjectId) || null;
@@ -166,11 +89,12 @@ export function ProjectsProvider({ children }: { children: ReactNode }) {
     projects,
     activeProject,
     activeProjectId,
-    createProject,
+    createProject: createProjectHandler,
     setActiveProjectId,
+    isLoading,
     projectFiles,
     getFilesForProject,
-    addFileToProject,
+    addFileToProject: addFileToProjectHandler,
   };
 
   return (
@@ -187,3 +111,6 @@ export function useProjects() {
   }
   return context;
 }
+
+// Re-export types for convenience
+export type { Project, ProjectFile } from '@/hooks/useSupabaseData';
