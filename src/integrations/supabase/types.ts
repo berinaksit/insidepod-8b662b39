@@ -22,7 +22,6 @@ export type Database = {
           project_id: string | null
           source_type: string | null
           title: string | null
-          user_id: string | null
         }
         Insert: {
           content: string
@@ -31,7 +30,6 @@ export type Database = {
           project_id?: string | null
           source_type?: string | null
           title?: string | null
-          user_id?: string | null
         }
         Update: {
           content?: string
@@ -40,7 +38,6 @@ export type Database = {
           project_id?: string | null
           source_type?: string | null
           title?: string | null
-          user_id?: string | null
         }
         Relationships: [
           {
@@ -52,51 +49,21 @@ export type Database = {
           },
         ]
       }
-      profiles: {
-        Row: {
-          avatar_url: string | null
-          created_at: string
-          display_name: string | null
-          id: string
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          avatar_url?: string | null
-          created_at?: string
-          display_name?: string | null
-          id?: string
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          avatar_url?: string | null
-          created_at?: string
-          display_name?: string | null
-          id?: string
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
       projects: {
         Row: {
           created_at: string | null
           id: string
           name: string
-          user_id: string | null
         }
         Insert: {
           created_at?: string | null
           id?: string
           name: string
-          user_id?: string | null
         }
         Update: {
           created_at?: string | null
           id?: string
           name?: string
-          user_id?: string | null
         }
         Relationships: []
       }
