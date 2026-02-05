@@ -1,5 +1,7 @@
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface HeaderProps {
   onSettingsClick?: () => void;
@@ -12,6 +14,14 @@ export function Header({
   onLogoClick,
   onProjectsClick
 }: HeaderProps) {
+  const { signOut } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await signOut();
+    navigate('/login');
+  };
+
   return (
     <motion.header 
       initial={{ opacity: 0, y: -20 }} 
@@ -45,7 +55,7 @@ export function Header({
               Settings
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="cursor-pointer text-destructive">
+            <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-destructive">
               Log out
             </DropdownMenuItem>
           </DropdownMenuContent>
