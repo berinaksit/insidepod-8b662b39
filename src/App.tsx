@@ -8,6 +8,8 @@ import { ProjectsProvider } from "./contexts/ProjectsContext";
 import Index from "./pages/Index";
 import AnalysisPage from "./pages/AnalysisPage";
 import InsightDetailPage from "./pages/InsightDetailPage";
+import Signup from "./pages/Signup";
+import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -22,6 +24,8 @@ const App = () => (
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Index />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/login" element={<Login />} />
               <Route path="/analysis" element={<AnalysisPage />} />
               <Route path="/insight/:id" element={<InsightDetailPage />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
