@@ -14,6 +14,72 @@ export type Database = {
   }
   public: {
     Tables: {
+      agents: {
+        Row: {
+          attached_file_name: string | null
+          attached_file_type: string | null
+          created_at: string
+          data_sources: string[] | null
+          description: string | null
+          frequency: string | null
+          id: string
+          is_active: boolean | null
+          is_preset: boolean | null
+          last_run: string | null
+          linked_document_ids: string[] | null
+          name: string
+          next_run: string | null
+          output_count: number | null
+          prompt: string | null
+          status: string | null
+          type: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          attached_file_name?: string | null
+          attached_file_type?: string | null
+          created_at?: string
+          data_sources?: string[] | null
+          description?: string | null
+          frequency?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_preset?: boolean | null
+          last_run?: string | null
+          linked_document_ids?: string[] | null
+          name: string
+          next_run?: string | null
+          output_count?: number | null
+          prompt?: string | null
+          status?: string | null
+          type?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          attached_file_name?: string | null
+          attached_file_type?: string | null
+          created_at?: string
+          data_sources?: string[] | null
+          description?: string | null
+          frequency?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_preset?: boolean | null
+          last_run?: string | null
+          linked_document_ids?: string[] | null
+          name?: string
+          next_run?: string | null
+          output_count?: number | null
+          prompt?: string | null
+          status?: string | null
+          type?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       documents: {
         Row: {
           content: string
@@ -52,6 +118,87 @@ export type Database = {
           },
         ]
       }
+      goals: {
+        Row: {
+          created_at: string
+          id: string
+          title: string
+          type: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          title: string
+          type?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          title?: string
+          type?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      insights: {
+        Row: {
+          confidence: number | null
+          created_at: string
+          evidence_count: number | null
+          id: string
+          is_new: boolean | null
+          priority: string | null
+          related_goals: string[] | null
+          source_id: string | null
+          source_name: string | null
+          source_type: string | null
+          synthesis: string | null
+          timestamp: string
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          confidence?: number | null
+          created_at?: string
+          evidence_count?: number | null
+          id?: string
+          is_new?: boolean | null
+          priority?: string | null
+          related_goals?: string[] | null
+          source_id?: string | null
+          source_name?: string | null
+          source_type?: string | null
+          synthesis?: string | null
+          timestamp?: string
+          title: string
+          type?: string
+          user_id: string
+        }
+        Update: {
+          confidence?: number | null
+          created_at?: string
+          evidence_count?: number | null
+          id?: string
+          is_new?: boolean | null
+          priority?: string | null
+          related_goals?: string[] | null
+          source_id?: string | null
+          source_name?: string | null
+          source_type?: string | null
+          synthesis?: string | null
+          timestamp?: string
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -78,6 +225,44 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      project_files: {
+        Row: {
+          id: string
+          name: string
+          project_id: string | null
+          size: number | null
+          type: string
+          uploaded_at: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          name: string
+          project_id?: string | null
+          size?: number | null
+          type: string
+          uploaded_at?: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          project_id?: string | null
+          size?: number | null
+          type?: string
+          uploaded_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_files_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       projects: {
         Row: {

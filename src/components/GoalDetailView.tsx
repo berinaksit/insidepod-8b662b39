@@ -18,7 +18,9 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Goal, GoalType } from '@/components/CreateGoalModal';
+import { Goal } from '@/hooks/useSupabaseData';
+
+export type GoalType = 'KPI' | 'OKR' | 'Success Metric' | 'Custom';
 
 // Extended Goal type with additional fields for detail view
 export interface GoalDetail extends Goal {

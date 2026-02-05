@@ -1,51 +1,20 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Plus, Target } from 'lucide-react';
+import { Plus, Target, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { CreateGoalModal, Goal, GoalType } from '@/components/CreateGoalModal';
+import { CreateGoalModal } from '@/components/CreateGoalModal';
+import { useGoals, useCreateGoal, Goal } from '@/hooks/useSupabaseData';
 
-const STORAGE_KEY = 'insidepod_goals_v2';
-
-function loadGoals(): Goal[] {
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) {
-      const parsed = JSON.parse(stored);
-      return parsed.map((g: any) => ({
-        ...g,
-        createdAt: new Date(g.createdAt),
-      }));
-    }
-  } catch (e) {
-    console.warn('Failed to load goals from localStorage:', e);
-  }
-  return [];
-}
-
-function saveGoals(goals: Goal[]): void {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(goals));
-  } catch (e) {
-    console.warn('Failed to save goals to localStorage:', e);
-  }
-}
+export type GoalType = 'KPI' | 'OKR' | 'Success Metric' | 'Custom';
 
 export function GoalsView() {
-  const [goals, setGoals] = useState<Goal[]>(() => loadGoals());
+  const { data: goals = [], isLoading } = useGoals();
+  const createGoalMutation = useCreateGoal();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Persist goals whenever they change
-  useEffect(() => {
-    saveGoals(goals);
-  }, [goals]);
-
-  const handleCreateGoal = (goalData: Omit<Goal, 'id' | 'createdAt'>) => {
-    const newGoal: Goal = {
-      ...goalData,
-      id: `goal-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-      createdAt: new Date(),
-    };
-    setGoals((prev) => [...prev, newGoal]);
+  const handleCreateGoal = async (goalData: Omit<Goal, 'id' | 'createdAt'>) => {
+    await createGoalMutation.mutateAsync(goalData);
+    setIsModalOpen(false);
   };
 
   const typeColors: Record<GoalType, string> = {
@@ -54,6 +23,14 @@ export function GoalsView() {
     'Success Metric': 'bg-green-100 text-green-700',
     'Custom': 'bg-muted text-muted-foreground',
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-full px-6 py-8 flex items-center justify-center">
+        <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-full px-6 py-8">
@@ -68,6 +45,7 @@ export function GoalsView() {
         <Button
           onClick={() => setIsModalOpen(true)}
           className="flex items-center gap-2 rounded-xl"
+          disabled={createGoalMutation.isPending}
         >
           <Plus className="w-4 h-4" strokeWidth={1.5} />
           Add Goal

@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { InsightCard } from '@/components/InsightCard';
 import { SearchBar } from '@/components/SearchBar';
@@ -8,11 +8,11 @@ import { EditAgentModal } from '@/components/EditAgentModal';
 import { mockInsights } from '@/data/mockData';
 import { useDocuments } from '@/contexts/DocumentsContext';
 import { Agent } from '@/types';
-import { Sparkles, Target, Bot, Plus, LayoutDashboard, CircleDot, FileText, Link2, Code2, FileUp, Scan, Calendar, Activity, MessageSquare, TrendingUp, MonitorCheck, Search, RefreshCw, Upload, Download } from 'lucide-react';
+import { Sparkles, Target, Bot, Plus, LayoutDashboard, CircleDot, FileText, Link2, Code2, FileUp, Scan, Calendar, Activity, MessageSquare, TrendingUp, MonitorCheck, Search, RefreshCw, Upload, Download, Loader2 } from 'lucide-react';
 import { synthesizePrimaryInsight, synthesizeSuggestedTask, synthesizeSuggestedPrompt, synthesizeRecentGuidance, getDocumentIcon } from '@/utils/documentSynthesis';
 import { View } from '@/pages/Index';
 import { Button } from '@/components/ui/button';
-import { CreateGoalModal, Goal, GoalType } from '@/components/CreateGoalModal';
+import { CreateGoalModal } from '@/components/CreateGoalModal';
 import { GoalDetailView } from '@/components/GoalDetailView';
 import { InsightDetailView } from '@/components/InsightDetailView';
 import { ActionDetailPanel } from '@/components/ActionDetailPanel';
@@ -22,6 +22,10 @@ import { RecentActivityView } from '@/components/RecentActivityView';
 import { AgentsOverviewView } from '@/components/AgentsOverviewView';
 import { ProjectSelector } from '@/components/ProjectSelector';
 import { generateExecutiveSummaryPDF } from '@/components/ExecutiveSummaryExport';
+import { useGoals, useCreateGoal, Goal } from '@/hooks/useSupabaseData';
+
+export type GoalType = 'KPI' | 'OKR' | 'Success Metric' | 'Custom';
+
 interface HomeViewProps {
   currentTab: View;
   onTabChange: (tab: View) => void;
@@ -40,40 +44,13 @@ export function HomeView({
   type DashboardView = 'none' | 'insight' | 'task' | 'sources' | 'prompt' | 'recent' | 'agents';
   const [dashboardView, setDashboardView] = useState<DashboardView>('none');
 
-  // Goals state with localStorage persistence
-  const GOALS_STORAGE_KEY = 'insidepod_goals_v2';
-  const loadGoals = (): Goal[] => {
-    try {
-      const stored = localStorage.getItem(GOALS_STORAGE_KEY);
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        return parsed.map((g: any) => ({
-          ...g,
-          createdAt: new Date(g.createdAt)
-        }));
-      }
-    } catch (e) {
-      console.warn('Failed to load goals from localStorage:', e);
-    }
-    return [];
-  };
-  const [goals, setGoals] = useState<Goal[]>(() => loadGoals());
+  // Goals from Supabase
+  const { data: goals = [], isLoading: goalsLoading } = useGoals();
+  const createGoalMutation = useCreateGoal();
 
-  // Persist goals whenever they change
-  useEffect(() => {
-    try {
-      localStorage.setItem(GOALS_STORAGE_KEY, JSON.stringify(goals));
-    } catch (e) {
-      console.warn('Failed to save goals to localStorage:', e);
-    }
-  }, [goals]);
-  const handleCreateGoal = (goalData: Omit<Goal, 'id' | 'createdAt'>) => {
-    const newGoal: Goal = {
-      ...goalData,
-      id: `goal-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-      createdAt: new Date()
-    };
-    setGoals(prev => [...prev, newGoal]);
+  const handleCreateGoal = async (goalData: Omit<Goal, 'id' | 'createdAt'>) => {
+    await createGoalMutation.mutateAsync(goalData);
+    setIsGoalModalOpen(false);
   };
   const {
     hasDocuments,
