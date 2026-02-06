@@ -1,15 +1,14 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { InsightCard } from '@/components/InsightCard';
 import { SearchBar } from '@/components/SearchBar';
 import { AgentsList } from '@/components/AgentsList';
 import { EmptyState } from '@/components/EmptyState';
 import { EditAgentModal } from '@/components/EditAgentModal';
-import { mockInsights } from '@/data/mockData';
 import { useDocuments } from '@/contexts/DocumentsContext';
 import { Agent } from '@/types';
-import { Sparkles, Target, Bot, Plus, LayoutDashboard, CircleDot, FileText, Link2, Code2, FileUp, Scan, Calendar, Activity, MessageSquare, TrendingUp, MonitorCheck, Search, RefreshCw, Upload, Download, Loader2 } from 'lucide-react';
-import { synthesizePrimaryInsight, synthesizeSuggestedTask, synthesizeSuggestedPrompt, synthesizeRecentGuidance, getDocumentIcon } from '@/utils/documentSynthesis';
+import { Sparkles, Target, Bot, Plus, LayoutDashboard, CircleDot, FileText, Link2, Code2, FileUp, Scan, Calendar, Activity, MessageSquare, TrendingUp, MonitorCheck, Search, RefreshCw, Upload, Download, Loader2, AlertCircle } from 'lucide-react';
+import { getDocumentIcon } from '@/utils/documentSynthesis';
 import { View } from '@/pages/Index';
 import { Button } from '@/components/ui/button';
 import { CreateGoalModal } from '@/components/CreateGoalModal';
@@ -23,6 +22,8 @@ import { AgentsOverviewView } from '@/components/AgentsOverviewView';
 import { ProjectSelector } from '@/components/ProjectSelector';
 import { generateExecutiveSummaryPDF } from '@/components/ExecutiveSummaryExport';
 import { useGoals, useCreateGoal, Goal } from '@/hooks/useSupabaseData';
+import { useRunAI, AIResult } from '@/hooks/useRunAI';
+import { useProjects } from '@/contexts/ProjectsContext';
 
 export type GoalType = 'KPI' | 'OKR' | 'Success Metric' | 'Custom';
 
@@ -30,28 +31,35 @@ interface HomeViewProps {
   currentTab: View;
   onTabChange: (tab: View) => void;
 }
-export function HomeView({
-  currentTab,
-  onTabChange
-}: HomeViewProps) {
+
+export function HomeView({ currentTab, onTabChange }: HomeViewProps) {
   const [isSearching] = useState(false);
   const [editingAgent, setEditingAgent] = useState<Agent | null>(null);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [isGoalModalOpen, setIsGoalModalOpen] = useState(false);
   const [selectedGoal, setSelectedGoal] = useState<Goal | null>(null);
 
-  // Dashboard detail view states
   type DashboardView = 'none' | 'insight' | 'task' | 'sources' | 'prompt' | 'recent' | 'agents';
   const [dashboardView, setDashboardView] = useState<DashboardView>('none');
 
-  // Goals from Supabase
   const { data: goals = [], isLoading: goalsLoading } = useGoals();
   const createGoalMutation = useCreateGoal();
+  const { activeProjectId } = useProjects();
+  const { runAI, isLoading: aiLoading } = useRunAI();
+
+  // Dashboard AI-generated content
+  const [dashboardContent, setDashboardContent] = useState<{
+    primaryInsight: AIResult | null;
+    suggestedTask: AIResult | null;
+    suggestedPrompt: AIResult | null;
+  }>({ primaryInsight: null, suggestedTask: null, suggestedPrompt: null });
+  const [dashboardLoaded, setDashboardLoaded] = useState(false);
 
   const handleCreateGoal = async (goalData: Omit<Goal, 'id' | 'createdAt'>) => {
     await createGoalMutation.mutateAsync(goalData);
     setIsGoalModalOpen(false);
   };
+
   const {
     hasDocuments,
     hasAgents,
@@ -61,43 +69,56 @@ export function HomeView({
     documents
   } = useDocuments();
 
-  // Combine mock insights with generated insights
-  const allInsights = [...generatedInsights, ...mockInsights];
+  // Load dashboard content from AI when docs exist
+  useEffect(() => {
+    if (hasDocuments && !dashboardLoaded && currentTab === 'dashboard') {
+      setDashboardLoaded(true);
+      // Fire all 3 in parallel
+      Promise.all([
+        runAI({
+          projectId: activeProjectId,
+          query: 'Identify the single most important insight from these documents. Focus on pain points, unmet needs, or opportunities. Respond with {"answer": "concise insight (20-25 words)", "confidence": 0.0-1.0, "used_sources": [...], "next_actions": [...]}',
+          mode: 'dashboard',
+        }),
+        runAI({
+          projectId: activeProjectId,
+          query: 'Suggest one actionable task based on these documents. Respond with {"answer": "task title (5-9 words)", "confidence": 0.0-1.0, "used_sources": [...], "next_actions": [...]}',
+          mode: 'dashboard',
+        }),
+        runAI({
+          projectId: activeProjectId,
+          query: 'Suggest one insightful question to explore based on these documents. Respond with {"answer": "question text", "confidence": 0.0-1.0, "used_sources": [...], "next_actions": [...]}',
+          mode: 'dashboard',
+        }),
+      ]).then(([insight, task, prompt]) => {
+        setDashboardContent({
+          primaryInsight: insight,
+          suggestedTask: task,
+          suggestedPrompt: prompt,
+        });
+      });
+    }
+  }, [hasDocuments, dashboardLoaded, currentTab, activeProjectId]);
+
+  // Reset dashboard when project changes
+  useEffect(() => {
+    setDashboardLoaded(false);
+    setDashboardContent({ primaryInsight: null, suggestedTask: null, suggestedPrompt: null });
+  }, [activeProjectId]);
+
   const handleAgentClick = (agent: Agent) => {
     setEditingAgent(agent);
     setEditModalOpen(true);
   };
-  const greeting = () => {
-    const hour = new Date().getHours();
-    if (hour < 12) return 'Good morning';
-    if (hour < 18) return 'Good afternoon';
-    return 'Good evening';
-  };
-  const tabs = [{
-    id: 'home' as View,
-    label: "Today's Insights",
-    icon: Sparkles
-  }, {
-    id: 'goals' as View,
-    label: 'Goals',
-    icon: Target
-  }, {
-    id: 'agents' as View,
-    label: 'Agents',
-    icon: Bot
-  }, {
-    id: 'dashboard' as View,
-    label: 'Dashboard',
-    icon: LayoutDashboard
-  }];
 
-  // Synthesized content from real documents
-  const primaryInsight = useMemo(() => synthesizePrimaryInsight(documents), [documents]);
-  const suggestedTask = useMemo(() => synthesizeSuggestedTask(documents), [documents]);
-  const suggestedPrompt = useMemo(() => synthesizeSuggestedPrompt(documents), [documents]);
-  const recentGuidance = useMemo(() => synthesizeRecentGuidance(documents), [documents]);
+  const tabs = [
+    { id: 'home' as View, label: "Today's Insights", icon: Sparkles },
+    { id: 'goals' as View, label: 'Goals', icon: Target },
+    { id: 'agents' as View, label: 'Agents', icon: Bot },
+    { id: 'dashboard' as View, label: 'Dashboard', icon: LayoutDashboard },
+  ];
 
-  // Get connected sources from real documents only (last 4 for display)
+  // Get connected sources from real documents only
   const connectedSources = useMemo(() => {
     return documents.slice(-4).reverse().map(doc => ({
       name: doc.aiTitle || doc.name,
@@ -121,22 +142,12 @@ export function HomeView({
       icon: agentIcons[agent.type] || Bot
     }));
   }, [agents]);
+
   const handleUploadClick = () => {
     openUploadModal('home');
   };
 
-  // Track used icons to prevent duplicates
-  const [usedIcons, setUsedIcons] = useState<Set<string>>(new Set());
-  const handleIconUsed = (iconName: string) => {
-    setUsedIcons(prev => new Set(prev).add(iconName));
-  };
-
-  // Reset used icons when insights change
-  const resetUsedIcons = () => {
-    setUsedIcons(new Set());
-  };
-
-  // Determine what empty state to show for Today's Insights
+  // Insights: only real generated insights, no mocks
   const renderInsightsContent = () => {
     if (!hasDocuments) {
       return <EmptyState icon={Upload} title="Upload documents to get started" description="Add your first document to start generating insights from your data." action={{
@@ -144,37 +155,32 @@ export function HomeView({
         onClick: handleUploadClick
       }} />;
     }
-    if (!hasAgents && generatedInsights.length === 0) {
-      // Create a local set for this render pass
-      const localUsedIcons = new Set<string>();
-      const handleLocalIconUsed = (iconName: string) => {
-        localUsedIcons.add(iconName);
-      };
-      return <div>
-          <div className="mb-6">
-            <EmptyState icon={Bot} title="Create an agent to generate insights" description="You have documents uploaded. Create an agent to analyze them and surface insights." action={{
-            label: "Create Agent",
-            onClick: () => onTabChange('create-agent')
-          }} />
-          </div>
-          {/* Still show mock insights */}
-          <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-            {mockInsights.map((insight, index) => <InsightCard key={insight.id} insight={insight} index={index} usedIcons={localUsedIcons} onIconUsed={handleLocalIconUsed} onClick={() => {}} />)}
-          </div>
-        </div>;
+    if (generatedInsights.length === 0) {
+      return (
+        <EmptyState 
+          icon={Sparkles} 
+          title="No insights yet for this project" 
+          description="Create and run agents to analyze your documents and generate insights."
+          action={{
+            label: hasAgents ? "View Agents" : "Create Agent",
+            onClick: () => onTabChange(hasAgents ? 'agents' : 'create-agent')
+          }}
+        />
+      );
     }
 
-    // Create a local set for this render pass
     const localUsedIcons = new Set<string>();
-    const handleLocalIconUsed = (iconName: string) => {
-      localUsedIcons.add(iconName);
-    };
-    return <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-        {allInsights.map((insight, index) => <InsightCard key={insight.id} insight={insight} index={index} usedIcons={localUsedIcons} onIconUsed={handleLocalIconUsed} onClick={() => {}} />)}
-      </div>;
+    const handleLocalIconUsed = (iconName: string) => { localUsedIcons.add(iconName); };
+    
+    return (
+      <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+        {generatedInsights.map((insight, index) => (
+          <InsightCard key={insight.id} insight={insight} index={index} usedIcons={localUsedIcons} onIconUsed={handleLocalIconUsed} onClick={() => {}} />
+        ))}
+      </div>
+    );
   };
 
-  // Determine what empty state to show for Agents
   const renderAgentsContent = () => {
     if (!hasDocuments) {
       return <EmptyState icon={Upload} title="Upload documents first" description="Agents need data to analyze. Upload documents to create your first agent." action={{
@@ -183,59 +189,69 @@ export function HomeView({
       }} />;
     }
     return <>
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sm:mb-8">
-          <p className="text-muted-foreground text-sm sm:text-base">AI agents continuously monitoring your product signals</p>
-          <button onClick={() => onTabChange('create-agent')} className="flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg bg-primary text-primary-foreground font-normal hover:bg-primary/90 transition-colors w-full sm:w-auto">
-            <Plus className="w-4 h-4" strokeWidth={1.5} />
-            Add Agent
-          </button>
-        </div>
-        
-        <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 mb-6 sm:mb-8">
-          <div className="bg-card rounded-xl p-5">
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-lg bg-muted/60 flex items-center justify-center">
-                <Bot className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
-              </div>
-              <div>
-                <p className="text-xl font-medium text-foreground">{agents.filter(a => a.isActive).length}</p>
-                <p className="text-sm text-muted-foreground">Active agents</p>
-              </div>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sm:mb-8">
+        <p className="text-muted-foreground text-sm sm:text-base">AI agents continuously monitoring your product signals</p>
+        <button onClick={() => onTabChange('create-agent')} className="flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg bg-primary text-primary-foreground font-normal hover:bg-primary/90 transition-colors w-full sm:w-auto">
+          <Plus className="w-4 h-4" strokeWidth={1.5} />
+          Add Agent
+        </button>
+      </div>
+      
+      <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 mb-6 sm:mb-8">
+        <div className="bg-card rounded-xl p-5">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-lg bg-muted/60 flex items-center justify-center">
+              <Bot className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
             </div>
-          </div>
-          <div className="bg-card rounded-xl p-5">
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-lg bg-muted/60 flex items-center justify-center">
-                <FileUp className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
-              </div>
-              <div>
-                <p className="text-xl font-medium text-foreground">
-                  {agents.reduce((sum, a) => sum + a.outputCount, 0)}
-                </p>
-                <p className="text-sm text-muted-foreground">Total outputs</p>
-              </div>
-            </div>
-          </div>
-          <div className="bg-card rounded-xl p-5">
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-lg bg-muted/60 flex items-center justify-center">
-                <RefreshCw className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
-              </div>
-              <div>
-                <p className="text-xl font-medium text-foreground">
-                  {agents.filter(a => a.status === 'running' && a.isActive).length}
-                </p>
-                <p className="text-sm text-muted-foreground">Currently running</p>
-              </div>
+            <div>
+              <p className="text-xl font-medium text-foreground">{agents.filter(a => a.isActive).length}</p>
+              <p className="text-sm text-muted-foreground">Active agents</p>
             </div>
           </div>
         </div>
-        
+        <div className="bg-card rounded-xl p-5">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-lg bg-muted/60 flex items-center justify-center">
+              <FileUp className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
+            </div>
+            <div>
+              <p className="text-xl font-medium text-foreground">
+                {agents.reduce((sum, a) => sum + a.outputCount, 0)}
+              </p>
+              <p className="text-sm text-muted-foreground">Total outputs</p>
+            </div>
+          </div>
+        </div>
+        <div className="bg-card rounded-xl p-5">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-lg bg-muted/60 flex items-center justify-center">
+              <RefreshCw className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
+            </div>
+            <div>
+              <p className="text-xl font-medium text-foreground">
+                {agents.filter(a => a.status === 'running' && a.isActive).length}
+              </p>
+              <p className="text-sm text-muted-foreground">Currently running</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      {agents.length === 0 ? (
+        <EmptyState
+          icon={Bot}
+          title="No agents yet"
+          description="Create an agent to start analyzing your documents."
+          action={{ label: "Create Agent", onClick: () => onTabChange('create-agent') }}
+        />
+      ) : (
         <div className="bg-card rounded-xl p-4 sm:p-6">
           <AgentsList agents={agents} onAgentClick={handleAgentClick} />
         </div>
-      </>;
+      )}
+    </>;
   };
+
   const typeColors: Record<GoalType, string> = {
     'KPI': 'bg-blue-100 text-blue-700',
     'OKR': 'bg-purple-100 text-purple-700',
@@ -243,108 +259,69 @@ export function HomeView({
     'Custom': 'bg-muted text-muted-foreground'
   };
 
-  // Handle goal card click
   const handleGoalClick = (goal: Goal) => {
     setSelectedGoal(goal);
   };
 
-  // Render Goals content
   const renderGoalsContent = () => {
-    // Show detail view if a goal is selected
     if (selectedGoal) {
       return <GoalDetailView goal={selectedGoal} onClose={() => setSelectedGoal(null)} />;
     }
     return <>
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sm:mb-8">
-          <p className="text-muted-foreground text-sm sm:text-base">Track product outcomes over time</p>
-          <Button onClick={() => setIsGoalModalOpen(true)} className="flex items-center justify-center gap-1.5 rounded-lg font-normal w-full sm:w-auto">
-            <Plus className="w-4 h-4" strokeWidth={1.5} />
-            Add Goal
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sm:mb-8">
+        <p className="text-muted-foreground text-sm sm:text-base">Track product outcomes over time</p>
+        <Button onClick={() => setIsGoalModalOpen(true)} className="flex items-center justify-center gap-1.5 rounded-lg font-normal w-full sm:w-auto">
+          <Plus className="w-4 h-4" strokeWidth={1.5} />
+          Add Goal
+        </Button>
+      </div>
+
+      {goals.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-16 sm:py-24 px-4">
+          <div className="w-12 h-12 rounded-xl bg-muted/60 flex items-center justify-center mb-6">
+            <Target className="w-5 h-5 text-muted-foreground" strokeWidth={1.5} />
+          </div>
+          <h2 className="text-lg font-medium text-foreground mb-2 text-center">No goals yet</h2>
+          <p className="text-muted-foreground text-center max-w-sm mb-8 text-sm sm:text-base">
+            Create goals to track product outcomes over time
+          </p>
+          <Button onClick={() => setIsGoalModalOpen(true)} className="rounded-lg font-normal w-full sm:w-auto">
+            Add your first goal
           </Button>
         </div>
+      ) : (
+        <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+          {goals.map((goal, index) => (
+            <motion.div key={goal.id} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: index * 0.05 }} onClick={() => handleGoalClick(goal)} className="bg-card rounded-xl p-5 hover:shadow-card-hover transition-shadow cursor-pointer">
+              <div className="flex items-start justify-between gap-3 mb-4">
+                <span className={`px-2 py-0.5 rounded text-xs ${typeColors[goal.type]}`}>{goal.type}</span>
+              </div>
+              <h3 className="text-base font-medium text-foreground leading-snug">{goal.title}</h3>
+            </motion.div>
+          ))}
+        </div>
+      )}
 
-        {goals.length === 0 ? <div className="flex flex-col items-center justify-center py-16 sm:py-24 px-4">
-            <div className="w-12 h-12 rounded-xl bg-muted/60 flex items-center justify-center mb-6">
-              <Target className="w-5 h-5 text-muted-foreground" strokeWidth={1.5} />
-            </div>
-            <h2 className="text-lg font-medium text-foreground mb-2 text-center">No goals yet</h2>
-            <p className="text-muted-foreground text-center max-w-sm mb-8 text-sm sm:text-base">
-              Create goals to track product outcomes over time
-            </p>
-            <Button onClick={() => setIsGoalModalOpen(true)} className="rounded-lg font-normal w-full sm:w-auto">
-              Add your first goal
-            </Button>
-          </div> : <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-            {goals.map((goal, index) => <motion.div key={goal.id} initial={{
-          opacity: 0,
-          y: 16
-        }} animate={{
-          opacity: 1,
-          y: 0
-        }} transition={{
-          duration: 0.3,
-          delay: index * 0.05
-        }} onClick={() => handleGoalClick(goal)} className="bg-card rounded-xl p-5 hover:shadow-card-hover transition-shadow cursor-pointer">
-                <div className="flex items-start justify-between gap-3 mb-4">
-                  <span className={`px-2 py-0.5 rounded text-xs ${typeColors[goal.type]}`}>
-                    {goal.type}
-                  </span>
-                </div>
-                <h3 className="text-base font-medium text-foreground leading-snug">
-                  {goal.title}
-                </h3>
-              </motion.div>)}
-          </div>}
-
-        <CreateGoalModal open={isGoalModalOpen} onOpenChange={setIsGoalModalOpen} onCreateGoal={handleCreateGoal} />
-      </>;
+      <CreateGoalModal open={isGoalModalOpen} onOpenChange={setIsGoalModalOpen} onCreateGoal={handleCreateGoal} />
+    </>;
   };
-  return <div className="min-h-full">
+
+  const { primaryInsight, suggestedTask, suggestedPrompt } = dashboardContent;
+
+  return (
+    <div className="min-h-full">
       {/* Hero section */}
-      <motion.section initial={{
-      opacity: 0
-    }} animate={{
-      opacity: 1
-    }} transition={{
-      duration: 0.5
-    }} className="px-4 sm:px-6 py-10 sm:py-16 md:py-24">
+      <motion.section initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }} className="px-4 sm:px-6 py-10 sm:py-16 md:py-24">
         <div className="max-w-2xl mx-auto text-center mb-10 sm:mb-16">
-          <motion.h1 initial={{
-          opacity: 0,
-          y: 16
-        }} animate={{
-          opacity: 1,
-          y: 0
-        }} transition={{
-          duration: 0.5,
-          delay: 0.1
-        }} className="font-display text-2xl sm:text-3xl md:text-4xl text-foreground mb-2 sm:mb-3">
+          <motion.h1 initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }} className="font-display text-2xl sm:text-3xl md:text-4xl text-foreground mb-2 sm:mb-3">
             Clarity at a glance
           </motion.h1>
-          <motion.p initial={{
-          opacity: 0,
-          y: 16
-        }} animate={{
-          opacity: 1,
-          y: 0
-        }} transition={{
-          duration: 0.5,
-          delay: 0.2
-        }} className="text-muted-foreground text-sm sm:text-base">
+          <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2 }} className="text-muted-foreground text-sm sm:text-base">
             Here's what matters for your product today
           </motion.p>
         </div>
 
-        <motion.div initial={{
-        opacity: 0,
-        y: 16
-      }} animate={{
-        opacity: 1,
-        y: 0
-      }} transition={{
-        duration: 0.5,
-        delay: 0.3
-      }}>
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.3 }}>
           <SearchBar isProcessing={isSearching} />
         </motion.div>
       </motion.section>
@@ -354,139 +331,118 @@ export function HomeView({
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 sm:mb-8">
           <div className="flex items-center gap-4 sm:gap-6 overflow-x-auto pb-2 sm:pb-0 -mx-4 px-4 sm:mx-0 sm:px-0">
             {tabs.map(tab => {
-            const isActive = currentTab === tab.id;
-            return <button key={tab.id} onClick={() => onTabChange(tab.id)} className={`py-2 transition-colors whitespace-nowrap ${isActive ? 'text-foreground' : 'text-muted-foreground/60 hover:text-muted-foreground'}`}>
+              const isActive = currentTab === tab.id;
+              return (
+                <button key={tab.id} onClick={() => onTabChange(tab.id)} className={`py-2 transition-colors whitespace-nowrap ${isActive ? 'text-foreground' : 'text-muted-foreground/60 hover:text-muted-foreground'}`}>
                   <span className="text-base font-medium">{tab.label}</span>
-                  {tab.id === 'home' && <span className="ml-1.5 sm:ml-2 px-1 sm:px-1.5 py-0.5 text-xs bg-muted text-muted-foreground rounded">
-                      {allInsights.filter(i => i.isNew).length}
-                    </span>}
-                </button>;
-          })}
+                  {tab.id === 'home' && generatedInsights.length > 0 && (
+                    <span className="ml-1.5 sm:ml-2 px-1 sm:px-1.5 py-0.5 text-xs bg-muted text-muted-foreground rounded">
+                      {generatedInsights.filter(i => i.isNew).length}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
           </div>
 
-          {/* Right aligned controls */}
           <div className="flex items-center gap-3 sm:gap-4">
-            <button onClick={() => generateExecutiveSummaryPDF({
-            insights: allInsights,
-            goals,
-            documents
-          })} className="p-2 rounded-lg hover:bg-muted/50 transition-colors" title="Download executive summary">
+            <button onClick={() => generateExecutiveSummaryPDF({ insights: generatedInsights, goals, documents })} className="p-2 rounded-lg hover:bg-muted/50 transition-colors" title="Download executive summary">
               <Download className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
             </button>
             <ProjectSelector />
           </div>
         </div>
 
-        {/* Tab Content */}
         <AnimatePresence mode="wait">
-          {currentTab === 'home' && <motion.div key="insights" initial={{
-          opacity: 0,
-          y: 10
-        }} animate={{
-          opacity: 1,
-          y: 0
-        }} exit={{
-          opacity: 0,
-          y: -10
-        }}>
+          {currentTab === 'home' && (
+            <motion.div key="insights" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
               {renderInsightsContent()}
-            </motion.div>}
+            </motion.div>
+          )}
 
-          {currentTab === 'goals' && <motion.div key="goals" initial={{
-          opacity: 0,
-          y: 10
-        }} animate={{
-          opacity: 1,
-          y: 0
-        }} exit={{
-          opacity: 0,
-          y: -10
-        }}>
+          {currentTab === 'goals' && (
+            <motion.div key="goals" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
               {renderGoalsContent()}
-            </motion.div>}
+            </motion.div>
+          )}
 
-
-          {currentTab === 'agents' && <motion.div key="agents" initial={{
-          opacity: 0,
-          y: 10
-        }} animate={{
-          opacity: 1,
-          y: 0
-        }} exit={{
-          opacity: 0,
-          y: -10
-        }}>
+          {currentTab === 'agents' && (
+            <motion.div key="agents" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
               {renderAgentsContent()}
-            </motion.div>}
+            </motion.div>
+          )}
 
-          {currentTab === 'dashboard' && <motion.div key="dashboard" initial={{
-          opacity: 0,
-          y: 10
-        }} animate={{
-          opacity: 1,
-          y: 0
-        }} exit={{
-          opacity: 0,
-          y: -10
-        }}>
-              {/* Empty State when no documents */}
-              {!hasDocuments ? <EmptyState icon={Upload} title="Upload documents to get started" description="Add your first document to see insights, tasks, and prompts synthesized from your data." action={{
-            label: "Upload Document",
-            onClick: handleUploadClick
-          }} /> : <>
+          {currentTab === 'dashboard' && (
+            <motion.div key="dashboard" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
+              {!hasDocuments ? (
+                <EmptyState icon={Upload} title="Upload documents to get started" description="Add your first document to see insights, tasks, and prompts synthesized from your data." action={{ label: "Upload Document", onClick: handleUploadClick }} />
+              ) : (
+                <>
                   {/* Detail Views */}
-                  {dashboardView === 'insight' && primaryInsight && <InsightDetailView onClose={() => setDashboardView('none')} insight={{
-              headline: primaryInsight.text,
-              type: 'Signal',
-              source: primaryInsight.sourceLabel,
-              contributorCount: primaryInsight.sourceCount
-            }} />}
+                  {dashboardView === 'insight' && primaryInsight && !primaryInsight.insufficient && (
+                    <InsightDetailView onClose={() => setDashboardView('none')} insight={{
+                      headline: primaryInsight.answer || '',
+                      type: 'Signal',
+                      source: `${primaryInsight.used_sources?.length || 0} documents`,
+                      contributorCount: primaryInsight.used_sources?.length || 0
+                    }} />
+                  )}
 
-                  {dashboardView === 'task' && suggestedTask && <ActionDetailPanel onClose={() => setDashboardView('none')} task={{
-              title: suggestedTask.text
-            }} sourceDocuments={suggestedTask.sourceDocuments} />}
+                  {dashboardView === 'task' && suggestedTask && !suggestedTask.insufficient && (
+                    <ActionDetailPanel onClose={() => setDashboardView('none')} task={{ title: suggestedTask.answer || '' }} sourceDocuments={[]} />
+                  )}
 
                   {dashboardView === 'sources' && <SourcesOverviewView onClose={() => setDashboardView('none')} />}
 
-                  {dashboardView === 'prompt' && suggestedPrompt && <SuggestedPromptView onClose={() => setDashboardView('none')} prompt={suggestedPrompt.text} sourceDocuments={suggestedPrompt.sourceDocuments} />}
+                  {dashboardView === 'prompt' && suggestedPrompt && !suggestedPrompt.insufficient && (
+                    <SuggestedPromptView onClose={() => setDashboardView('none')} prompt={suggestedPrompt.answer || ''} sourceDocuments={[]} />
+                  )}
 
                   {dashboardView === 'recent' && <RecentActivityView onClose={() => setDashboardView('none')} />}
 
                   {dashboardView === 'agents' && <AgentsOverviewView onClose={() => setDashboardView('none')} />}
 
                   {/* Dashboard Cards Grid */}
-                  {dashboardView === 'none' && <div className="grid gap-3 sm:gap-3.5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-                      {/* Featured Insight Card - Purple */}
-                      {primaryInsight && <div onClick={() => setDashboardView('insight')} className="bg-highlight-surface rounded-2xl p-5 text-highlight-foreground cursor-pointer hover:opacity-90 transition-opacity">
+                  {dashboardView === 'none' && (
+                    <div className="grid gap-3 sm:gap-3.5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+                      {/* Featured Insight Card */}
+                      {primaryInsight && !primaryInsight.insufficient ? (
+                        <div onClick={() => setDashboardView('insight')} className="bg-highlight-surface rounded-2xl p-5 text-highlight-foreground cursor-pointer hover:opacity-90 transition-opacity">
                           <div className="w-7 h-7 rounded-full bg-highlight/20 flex items-center justify-center mb-3">
                             <CircleDot className="w-4 h-4" strokeWidth={1.5} />
                           </div>
-                          <p className="text-xl font-semibold mb-5 line-clamp-3">
-                            {primaryInsight.text}
-                          </p>
+                          <p className="text-xl font-semibold mb-5 line-clamp-3">{primaryInsight.answer}</p>
                           <div className="flex items-center gap-2.5">
                             <span className="px-2.5 py-1 bg-highlight/20 rounded-full text-sm font-semibold">
-                              {primaryInsight.sourceLabel}
-                              {primaryInsight.sourceCount > 1 && ` +${primaryInsight.sourceCount - 1}`}
+                              {primaryInsight.used_sources?.length || 0} sources
                             </span>
                           </div>
-                        </div>}
+                        </div>
+                      ) : primaryInsight?.insufficient ? (
+                        <div className="insight-card flex flex-col items-center justify-center p-5 text-center">
+                          <AlertCircle className="w-5 h-5 text-muted-foreground mb-2" strokeWidth={1.5} />
+                          <p className="text-sm text-muted-foreground">Not enough evidence to generate insights.</p>
+                        </div>
+                      ) : aiLoading ? (
+                        <div className="insight-card flex items-center justify-center p-5">
+                          <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
+                        </div>
+                      ) : null}
 
                       {/* Suggested Task Card */}
-                      {suggestedTask && <div onClick={() => setDashboardView('task')} className="insight-card flex flex-col cursor-pointer hover:border-border transition-colors">
+                      {suggestedTask && !suggestedTask.insufficient ? (
+                        <div onClick={() => setDashboardView('task')} className="insight-card flex flex-col cursor-pointer hover:border-border transition-colors">
                           <div className="flex items-center gap-1.5 text-muted-foreground mb-2.5">
                             <FileText className="w-4 h-4" strokeWidth={1.5} />
                             <span className="text-sm font-medium">Suggested task</span>
                           </div>
-                          <h3 className="text-xl font-semibold text-foreground line-clamp-2">
-                            {suggestedTask.text}
-                          </h3>
+                          <h3 className="text-xl font-semibold text-foreground line-clamp-2">{suggestedTask.answer}</h3>
                           <div className="gap-1.5 mt-auto pb-0 text-muted-foreground flex items-end justify-start">
                             <Link2 className="w-4 h-4" strokeWidth={1.5} />
-                            <span className="text-sm font-medium">Used {suggestedTask.sourceCount} source{suggestedTask.sourceCount !== 1 ? 's' : ''}</span>
-                            <span className="text-sm font-medium">›</span>
+                            <span className="text-sm font-medium">Used {suggestedTask.used_sources?.length || 0} source{(suggestedTask.used_sources?.length || 0) !== 1 ? 's' : ''}</span>
                           </div>
-                        </div>}
+                        </div>
+                      ) : null}
 
                       {/* Connected Sources Card */}
                       <div onClick={() => setDashboardView('sources')} className="insight-card flex flex-col cursor-pointer hover:border-border transition-colors">
@@ -494,14 +450,20 @@ export function HomeView({
                           <Link2 className="w-4 h-4" strokeWidth={1.5} />
                           <span className="text-sm font-medium">Connected sources</span>
                         </div>
-                        {connectedSources.length > 0 ? <div className="space-y-2.5 flex-1 max-h-32 overflow-y-auto">
-                            {connectedSources.map(source => <div key={source.name} className="flex items-center gap-2.5">
+                        {connectedSources.length > 0 ? (
+                          <div className="space-y-2.5 flex-1 max-h-32 overflow-y-auto">
+                            {connectedSources.map(source => (
+                              <div key={source.name} className="flex items-center gap-2.5">
                                 <span className="text-base">{source.icon}</span>
                                 <span className="text-foreground font-medium truncate">{source.name}</span>
-                              </div>)}
-                          </div> : <div className="flex-1 flex items-center justify-center text-muted-foreground text-sm">
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <div className="flex-1 flex items-center justify-center text-muted-foreground text-sm">
                             No documents uploaded
-                          </div>}
+                          </div>
+                        )}
                         <div className="relative mt-auto pb-0" onClick={e => e.stopPropagation()}>
                           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
                           <input type="text" placeholder="Search for documents" className="w-full bg-muted/50 rounded-full pl-9 pr-3.5 py-1.5 text-sm placeholder:text-muted-foreground focus:outline-none font-medium" />
@@ -509,37 +471,38 @@ export function HomeView({
                       </div>
 
                       {/* Suggested Prompt Card */}
-                      {suggestedPrompt && <div onClick={() => setDashboardView('prompt')} className="insight-card flex flex-col cursor-pointer hover:border-border transition-colors">
+                      {suggestedPrompt && !suggestedPrompt.insufficient ? (
+                        <div onClick={() => setDashboardView('prompt')} className="insight-card flex flex-col cursor-pointer hover:border-border transition-colors">
                           <div className="flex items-center gap-1.5 text-muted-foreground mb-2.5">
                             <Code2 className="w-4 h-4" strokeWidth={1.5} />
                             <span className="text-sm font-medium">Suggested prompt</span>
                           </div>
-                          <h3 className="text-xl font-semibold text-foreground line-clamp-2">
-                            {suggestedPrompt.text}
-                          </h3>
+                          <h3 className="text-xl font-semibold text-foreground line-clamp-2">{suggestedPrompt.answer}</h3>
                           <div className="flex items-center gap-1.5 mt-auto pb-0 text-muted-foreground">
                             <Link2 className="w-4 h-4" strokeWidth={1.5} />
-                            <span className="text-sm font-medium">Used {suggestedPrompt.sourceCount} source{suggestedPrompt.sourceCount !== 1 ? 's' : ''}</span>
-                            <span className="text-xs font-medium">›</span>
+                            <span className="text-sm font-medium">Used {suggestedPrompt.used_sources?.length || 0} sources</span>
                           </div>
-                        </div>}
+                        </div>
+                      ) : null}
 
                       {/* Recently Uploaded Card */}
-                      {recentGuidance && <div onClick={() => setDashboardView('recent')} className="insight-card flex flex-col cursor-pointer hover:border-border transition-colors">
+                      {documents.length > 0 && (
+                        <div onClick={() => setDashboardView('recent')} className="insight-card flex flex-col cursor-pointer hover:border-border transition-colors">
                           <div className="flex items-center gap-1.5 text-muted-foreground mb-2.5">
                             <FileUp className="w-4 h-4" strokeWidth={1.5} />
                             <span className="text-sm font-medium">Recently uploaded</span>
                           </div>
                           <h3 className="text-xl font-semibold text-foreground line-clamp-2">
-                            {recentGuidance.question}
+                            {documents[0]?.aiTitle || documents[0]?.name || 'Recent document'}
                           </h3>
                           <div className="flex items-center gap-1.5 mt-auto pb-0 text-muted-foreground">
-                            <span>{getDocumentIcon(recentGuidance.document)}</span>
+                            <span>{getDocumentIcon(documents[0])}</span>
                             <span className="text-sm truncate max-w-[200px]">
-                              {recentGuidance.document.aiTitle || recentGuidance.document.name} ›
+                              {documents[0]?.aiTitle || documents[0]?.name} ›
                             </span>
                           </div>
-                        </div>}
+                        </div>
+                      )}
 
                       {/* Active Agents Card */}
                       <div onClick={() => setDashboardView('agents')} className="insight-card cursor-pointer hover:border-border transition-colors">
@@ -547,25 +510,34 @@ export function HomeView({
                           <Bot className="w-4 h-4" strokeWidth={1.5} />
                           <span className="text-sm font-medium">Active Agents</span>
                         </div>
-                        {activeAgents.length > 0 ? <div className="grid grid-cols-2 gap-1.5">
+                        {activeAgents.length > 0 ? (
+                          <div className="grid grid-cols-2 gap-1.5">
                             {activeAgents.map(agent => {
-                    const Icon = agent.icon;
-                    return <div key={agent.name} className="flex items-center gap-1.5 bg-muted/50 rounded-xl text-sm text-foreground font-medium py-[28px] px-[10px]">
+                              const Icon = agent.icon;
+                              return (
+                                <div key={agent.name} className="flex items-center gap-1.5 bg-muted/50 rounded-xl text-sm text-foreground font-medium py-[28px] px-[10px]">
                                   <Icon className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
                                   <span className="truncate">{agent.name}</span>
-                                </div>;
-                  })}
-                          </div> : <div className="flex items-center justify-center py-8 text-muted-foreground text-sm">
+                                </div>
+                              );
+                            })}
+                          </div>
+                        ) : (
+                          <div className="flex items-center justify-center py-8 text-muted-foreground text-sm">
                             No active agents
-                          </div>}
+                          </div>
+                        )}
                       </div>
-                    </div>}
-                </>}
-            </motion.div>}
+                    </div>
+                  )}
+                </>
+              )}
+            </motion.div>
+          )}
         </AnimatePresence>
       </section>
 
-      {/* Edit Agent Modal */}
       <EditAgentModal agent={editingAgent} open={editModalOpen} onOpenChange={setEditModalOpen} />
-    </div>;
+    </div>
+  );
 }
