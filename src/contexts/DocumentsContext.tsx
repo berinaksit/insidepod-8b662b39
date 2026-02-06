@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react';
 import { Insight, Agent, AgentType, AgentFrequency } from '@/types';
+import { mockAgents } from '@/data/mockData';
 import { useAuth } from '@/contexts/AuthContext';
 import {
   useDocuments as useDocumentsQuery,
@@ -74,10 +75,15 @@ export function DocumentsProvider({ children }: { children: ReactNode }) {
 
   const isLoading = docsLoading || agentsLoading || insightsLoading;
 
-  // Use only real DB agents, no mocks
+  // Combine DB agents with preset agents (presets are shown as examples)
   const allAgents = React.useMemo(() => {
-    return agents || [];
-  }, [agents]);
+    const dbAgents = agents || [];
+    // Only add mock agents if user has no agents yet
+    if (dbAgents.length === 0 && !agentsLoading) {
+      return mockAgents;
+    }
+    return dbAgents;
+  }, [agents, agentsLoading]);
 
   const addDocument = useCallback(async (doc: Omit<StoredDocument, 'id' | 'uploadedAt'>): Promise<StoredDocument> => {
     const result = await addDocumentMutation.mutateAsync(doc);

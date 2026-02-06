@@ -14,66 +14,6 @@ export type Database = {
   }
   public: {
     Tables: {
-      agent_outputs: {
-        Row: {
-          agent_id: string | null
-          agent_type: string
-          confidence: number | null
-          created_at: string
-          id: string
-          mode: string
-          output: Json
-          project_id: string | null
-          query: string | null
-          source_titles: string[]
-          sources: string[]
-          user_id: string
-        }
-        Insert: {
-          agent_id?: string | null
-          agent_type: string
-          confidence?: number | null
-          created_at?: string
-          id?: string
-          mode?: string
-          output?: Json
-          project_id?: string | null
-          query?: string | null
-          source_titles?: string[]
-          sources?: string[]
-          user_id: string
-        }
-        Update: {
-          agent_id?: string | null
-          agent_type?: string
-          confidence?: number | null
-          created_at?: string
-          id?: string
-          mode?: string
-          output?: Json
-          project_id?: string | null
-          query?: string | null
-          source_titles?: string[]
-          sources?: string[]
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "agent_outputs_agent_id_fkey"
-            columns: ["agent_id"]
-            isOneToOne: false
-            referencedRelation: "agents"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "agent_outputs_project_id_fkey"
-            columns: ["project_id"]
-            isOneToOne: false
-            referencedRelation: "projects"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       agents: {
         Row: {
           attached_file_name: string | null
