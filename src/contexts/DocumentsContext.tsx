@@ -74,15 +74,10 @@ export function DocumentsProvider({ children }: { children: ReactNode }) {
 
   const isLoading = docsLoading || agentsLoading || insightsLoading;
 
-  // Combine DB agents with preset agents (presets are shown as examples)
+  // Use only real DB agents, no mocks
   const allAgents = React.useMemo(() => {
-    const dbAgents = agents || [];
-    // Only add mock agents if user has no agents yet
-    if (dbAgents.length === 0 && !agentsLoading) {
-      return mockAgents;
-    }
-    return dbAgents;
-  }, [agents, agentsLoading]);
+    return agents || [];
+  }, [agents]);
 
   const addDocument = useCallback(async (doc: Omit<StoredDocument, 'id' | 'uploadedAt'>): Promise<StoredDocument> => {
     const result = await addDocumentMutation.mutateAsync(doc);
