@@ -1,17 +1,12 @@
 import { motion } from 'framer-motion';
 import { AgentsList } from '@/components/AgentsList';
-import { useDocuments } from '@/contexts/DocumentsContext';
+import { mockAgents } from '@/data/mockData';
 import { Bot, Plus, FileText, Wand2 } from 'lucide-react';
 
 export function AgentsView() {
-  const { agents } = useDocuments();
-
-  const totalOutputs = agents.reduce((sum, a) => sum + (a.outputCount || 0), 0);
-  const customCount = agents.filter(a => !a.isPreset).length;
-
   return (
     <div className="min-h-full px-6 py-8">
-      {/* Header */}
+      {/* Header - subtitle only with Run All button */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -28,7 +23,7 @@ export function AgentsView() {
         </button>
       </motion.div>
       
-      {/* Summary cards */}
+      {/* Summary cards - icon left, number right, label below number */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -41,7 +36,7 @@ export function AgentsView() {
               <Bot className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
             </div>
             <div>
-              <p className="text-3xl font-bold text-foreground leading-none">{agents.length}</p>
+              <p className="text-3xl font-bold text-foreground leading-none">{mockAgents.length}</p>
               <p className="text-sm text-muted-foreground font-medium mt-1">Active agents</p>
             </div>
           </div>
@@ -53,7 +48,9 @@ export function AgentsView() {
               <FileText className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
             </div>
             <div>
-              <p className="text-3xl font-bold text-foreground leading-none">{totalOutputs}</p>
+              <p className="text-3xl font-bold text-foreground leading-none">
+                {mockAgents.reduce((sum, a) => sum + a.outputCount, 0)}
+              </p>
               <p className="text-sm text-muted-foreground font-medium mt-1">Total outputs</p>
             </div>
           </div>
@@ -61,11 +58,13 @@ export function AgentsView() {
         
         <div className="bg-card border border-border/30 rounded-2xl p-6">
           <div className="flex items-center gap-4">
-            <div className="w-10 h-10 rounded-xl bg-accent flex items-center justify-center flex-shrink-0">
-              <Wand2 className="w-4 h-4 text-accent-foreground" strokeWidth={1.5} />
+            <div className="w-10 h-10 rounded-xl bg-violet-100 dark:bg-violet-950 flex items-center justify-center flex-shrink-0">
+              <Wand2 className="w-4 h-4 text-violet-600 dark:text-violet-400" strokeWidth={1.5} />
             </div>
             <div>
-              <p className="text-3xl font-bold text-foreground leading-none">{customCount}</p>
+              <p className="text-3xl font-bold text-foreground leading-none">
+                {mockAgents.filter(a => !a.isPreset).length}
+              </p>
               <p className="text-sm text-muted-foreground font-medium mt-1">Custom agents</p>
             </div>
           </div>
@@ -79,7 +78,7 @@ export function AgentsView() {
         transition={{ duration: 0.4, delay: 0.2 }}
         className="bg-card border border-border/30 rounded-3xl p-6 md:p-8"
       >
-        <AgentsList agents={agents} />
+        <AgentsList agents={mockAgents} />
       </motion.div>
     </div>
   );
