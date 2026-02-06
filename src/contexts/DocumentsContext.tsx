@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react';
 import { Insight, Agent, AgentType, AgentFrequency } from '@/types';
-import { mockAgents } from '@/data/mockData';
 import { useAuth } from '@/contexts/AuthContext';
 import {
   useDocuments as useDocumentsQuery,
