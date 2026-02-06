@@ -1,8 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Sparkles, ArrowRight, Plus, X } from 'lucide-react';
+import { Search, Sparkles, ArrowRight, Plus, X, FileText, Loader2 } from 'lucide-react';
 import { AddDocumentsModal, UploadedDocument } from './AddDocumentsModal';
+import { useRunAI, AIResult } from '@/hooks/useRunAI';
+import { useProjects } from '@/contexts/ProjectsContext';
 
 interface SearchBarProps {
   onSearch?: (query: string, documents: UploadedDocument[]) => void;
@@ -10,33 +12,46 @@ interface SearchBarProps {
   placeholder?: string;
 }
 
-const suggestions = [
-  'What is driving the onboarding drop-off?',
-  'Show me churn risk signals from this week',
-  'Which features are underutilized by enterprise?',
-  'Summarize customer feedback on mobile app',
-];
-
-export function SearchBar({ onSearch, isProcessing = false, placeholder }: SearchBarProps) {
+export function SearchBar({ onSearch, isProcessing: externalProcessing = false, placeholder }: SearchBarProps) {
   const navigate = useNavigate();
   const [query, setQuery] = useState('');
   const [isFocused, setIsFocused] = useState(false);
   const [documents, setDocuments] = useState<UploadedDocument[]>([]);
   const [showDocModal, setShowDocModal] = useState(false);
+  const [aiResult, setAiResult] = useState<AIResult | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const { runAI, isLoading } = useRunAI();
+  const { activeProjectId } = useProjects();
+
+  const isProcessing = externalProcessing || isLoading;
 
   const handleSubmit = async (e?: React.FormEvent) => {
     e?.preventDefault();
-    if (query.trim() && !isProcessing) {
-      onSearch?.(query.trim(), documents);
-      navigate('/analysis', { state: { query: query.trim(), documents } });
+    if (!query.trim() || isProcessing) return;
+
+    // Run AI with document-grounded mode
+    const result = await runAI({
+      projectId: activeProjectId,
+      query: query.trim(),
+      mode: 'grounded',
+    });
+
+    if (result) {
+      setAiResult(result);
+      // Navigate to analysis page with real AI result
+      navigate('/analysis', { 
+        state: { 
+          query: query.trim(), 
+          documents, 
+          aiResult: result 
+        } 
+      });
     }
   };
 
   const handleSuggestionClick = (suggestion: string) => {
     setQuery(suggestion);
     setIsFocused(false);
-    // Don't auto-run, just set the query
   };
 
   const handleDocumentsAdded = (newDocs: UploadedDocument[]) => {
@@ -57,6 +72,14 @@ export function SearchBar({ onSearch, isProcessing = false, placeholder }: Searc
     document.addEventListener('keydown', handleKeydown);
     return () => document.removeEventListener('keydown', handleKeydown);
   }, [isFocused, showDocModal]);
+
+  // Dynamic suggestions based on whether docs exist
+  const suggestions = [
+    'What are the main pain points from my documents?',
+    'Summarize key themes across all uploaded data',
+    'What actionable insights can you find?',
+    'What patterns emerge from the data?',
+  ];
 
   return (
     <div className="relative w-full max-w-2xl mx-auto">
@@ -83,7 +106,7 @@ export function SearchBar({ onSearch, isProcessing = false, placeholder }: Searc
               onChange={(e) => setQuery(e.target.value)}
               onFocus={() => setIsFocused(true)}
               onBlur={() => setTimeout(() => setIsFocused(false), 200)}
-              placeholder={placeholder || "Ask anything about your product..."}
+              placeholder={placeholder || "Ask anything about your documents..."}
               className="flex-1 bg-transparent text-foreground placeholder:text-muted-foreground focus:outline-none text-sm sm:text-base font-medium"
               disabled={isProcessing}
             />
@@ -100,6 +123,9 @@ export function SearchBar({ onSearch, isProcessing = false, placeholder }: Searc
                   <ArrowRight className="w-4 h-4" strokeWidth={1.5} />
                 </motion.button>
               )}
+              {isProcessing && (
+                <Loader2 className="w-4 h-4 text-primary animate-spin" />
+              )}
             </AnimatePresence>
             
             {!query && !isFocused && (
@@ -113,7 +139,6 @@ export function SearchBar({ onSearch, isProcessing = false, placeholder }: Searc
 
       {/* Document attachment area */}
       <div className="mt-3 flex items-center gap-2 flex-wrap">
-        {/* Add documents button */}
         <button
           onClick={() => setShowDocModal(true)}
           className="w-8 h-8 rounded-full bg-muted/60 hover:bg-muted flex items-center justify-center transition-colors"
@@ -122,7 +147,6 @@ export function SearchBar({ onSearch, isProcessing = false, placeholder }: Searc
           <Plus className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
         </button>
 
-        {/* Document badges */}
         <AnimatePresence>
           {documents.map((doc) => (
             <motion.div
@@ -144,7 +168,6 @@ export function SearchBar({ onSearch, isProcessing = false, placeholder }: Searc
         </AnimatePresence>
       </div>
 
-      {/* Documents attached indicator */}
       {documents.length > 0 && (
         <p className="mt-2 text-xs text-muted-foreground">
           {documents.length} document{documents.length !== 1 ? 's' : ''} attached
@@ -181,7 +204,6 @@ export function SearchBar({ onSearch, isProcessing = false, placeholder }: Searc
         )}
       </AnimatePresence>
 
-      {/* Document modal */}
       <AddDocumentsModal
         open={showDocModal}
         onOpenChange={setShowDocModal}
