@@ -6,51 +6,80 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
 };
 
-const STRUCTURED_SYSTEM_PROMPT = `You are an expert product analyst. You MUST respond with valid JSON only — no markdown, no explanation, no code fences.
+function buildSystemPrompt(contextPack: { doc_id: string; title: string; type: string; chunks: { chunk_id: string; text: string; start_char: number; end_char: number }[] }[]) {
+  const contextBlock = contextPack.map(doc => {
+    return doc.chunks.map(c =>
+      `[doc_id="${doc.doc_id}" title="${doc.title}" chunk_id="${c.chunk_id}" start=${c.start_char} end=${c.end_char}]\n${c.text}`
+    ).join('\n---\n');
+  }).join('\n===\n');
 
-The JSON must match this exact schema:
+  return `You are an expert product analyst. You MUST answer ONLY using the CONTEXT DOCUMENTS below. You are FORBIDDEN from inventing any data, metrics, quotes, numbers, customer names, company names, or sources not present in the context.
 
+CONTEXT DOCUMENTS:
+${contextBlock || "(No documents available)"}
+
+OUTPUT FORMAT — respond with valid JSON only, no markdown fences, no extra text.
+
+Schema:
 {
-  "mode": "diagnosis" | "answer" | "insufficient_evidence",
-  "title": "string — a short title for the analysis",
-  "summary": "string — 60-90 word executive summary",
-  "sections": [
+  "status": "ok" | "need_more_context" | "unrelated",
+  "answer": {
+    "format": "diagnosis_page" | "chat_with_evidence",
+    "title": "string",
+    "summary": "string",
+    "sections": [
+      { "heading": "string", "content": "string" }
+    ]
+  },
+  "evidence": [
     {
-      "type": "executive_diagnosis" | "evidence_map" | "hypotheses" | "segmentation" | "opportunity_sizing" | "decision_options" | "action_plan" | "confidence_gaps",
-      "heading": "string",
-      "cards": [
-        {
-          "title": "string",
-          "detail": "string",
-          "metrics": [{"name":"string","value":"string"}],
-          "tags": ["string"],
-          "citations": [{"label":"string","chunk_id":"string"}]
-        }
-      ],
-      "items": [{"label":"string","value":"string"}]
+      "doc_id": "string",
+      "doc_title": "string",
+      "chunk_id": "string",
+      "quote": "string (verbatim substring from the context)",
+      "start_char": number,
+      "end_char": number
     }
   ],
-  "citations": [
-    { "document_title":"string", "chunk_id":"string", "quote":"string" }
+  "suggested_prompts": [
+    { "label": "string", "prompt": "string" }
   ],
-  "confidence": { "score": 0-100, "label": "low" | "medium" | "high" }
+  "missing_context": [
+    { "need": "string", "why": "string" }
+  ]
 }
 
-Rules:
-- For "why"/"what's driving"/"decline"/"drop-off" questions: use mode="diagnosis" and include ALL 8 section types: executive_diagnosis, evidence_map, hypotheses, segmentation, opportunity_sizing, decision_options, action_plan, confidence_gaps.
-- For simpler questions: use mode="answer" and include only relevant section types.
-- If you lack data: use mode="insufficient_evidence", still include all section types but with empty cards/items arrays.
-- Every section MUST have both "cards" and "items" arrays (they can be empty).
-- For evidence_map: each card should have title (the claim), detail (a supporting quote), tags (source type, segment), and metrics.
-- For hypotheses: each card should have title (the hypothesis in "If X, then Y, because Z" format), detail (falsification test), and tags (missing data).
-- For segmentation: use items array with label (segment name) and value (finding).
-- For opportunity_sizing: use cards with metrics array for baseline/target/confidence values, and items for assumptions.
-- For decision_options: each card is one option with title, detail (description), metrics (impact, time), and tags (owners).
-- For action_plan: use items with label (category like "Instrumentation") and value (action description with owner and timeline).
-- For confidence_gaps: use items for missing inputs, and cards[0] for overall confidence reasoning.
-- Generate realistic, specific, actionable product analysis content. Be concrete with numbers and specifics.
+STRICT RULES:
+1. If you cannot cite at least 2 evidence items with verbatim quotes from the provided context that directly support your claims, you MUST set status="need_more_context". Do NOT guess or fabricate.
+2. Every "quote" in evidence MUST be a verbatim substring copied from the context text above. Never paraphrase.
+3. "doc_id", "doc_title", "chunk_id", "start_char", "end_char" must match the document metadata exactly.
+4. If the question is unrelated to the documents (e.g., "write a poem", "what's the weather"), set status="unrelated".
+5. If evidence exists but is thin, answer cautiously and list what's missing in missing_context.
+6. For "why/what's driving/decline/drop-off/recommend/metric investigation" questions, use format="diagnosis_page" and include sections: Executive Diagnosis, Evidence Map, Causal Hypotheses, Segmentation Findings, Opportunity Sizing, Decision Options, Action Plan, Confidence & Gaps. Each section heading must match exactly.
+7. For general questions, use format="chat_with_evidence" and include only relevant sections.
+8. Always generate 4-6 suggested_prompts based on the user's intent AND the topics actually present in the documents. Never suggest prompts that require data not in the documents.
+9. If no documents are provided, set status="need_more_context" immediately.
 
-Respond ONLY with the JSON object. No other text.`;
+Respond ONLY with the JSON object.`;
+}
+
+function chunkText(text: string, chunkSize = 2000, overlap = 200): { chunk_id: string; text: string; start_char: number; end_char: number }[] {
+  const chunks: { chunk_id: string; text: string; start_char: number; end_char: number }[] = [];
+  let start = 0;
+  let idx = 0;
+  while (start < text.length) {
+    const end = Math.min(start + chunkSize, text.length);
+    chunks.push({
+      chunk_id: `chunk_${idx}`,
+      text: text.slice(start, end),
+      start_char: start,
+      end_char: end,
+    });
+    idx++;
+    start += chunkSize - overlap;
+  }
+  return chunks;
+}
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -81,27 +110,57 @@ serve(async (req) => {
       });
     }
 
-    console.log("Authenticated user:", user.id);
-
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
-      console.error("LOVABLE_API_KEY is not configured");
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
     const body = await req.json();
-    const { prompt, question, messages, max_tokens = 4096, project_id } = body;
+    const { question, project_id, max_tokens = 4096 } = body;
+    const userPrompt = question || "";
 
-    const userPrompt = question || prompt;
+    // 1) Fetch documents for project
+    let docsQuery = supabaseClient
+      .from('documents')
+      .select('id, title, content, source_type, created_at')
+      .eq('user_id', user.id);
 
-    const chatMessages = messages || [
-      { role: "system", content: STRUCTURED_SYSTEM_PROMPT },
-      { role: "user", content: userPrompt }
+    if (project_id) {
+      docsQuery = docsQuery.eq('project_id', project_id);
+    }
+
+    const { data: docs, error: docsError } = await docsQuery;
+
+    if (docsError) {
+      console.error("Error fetching documents:", docsError);
+    }
+
+    const docList = docs || [];
+    console.log(`[ask] project_id=${project_id || 'none'}, doc_count=${docList.length}`);
+
+    // 2) Build context pack with chunks
+    let totalChars = 0;
+    const contextPack = docList.map(doc => {
+      const text = doc.content || "";
+      totalChars += text.length;
+      return {
+        doc_id: doc.id,
+        title: doc.title || "Untitled",
+        type: doc.source_type || "unknown",
+        chunks: chunkText(text),
+      };
+    });
+
+    console.log(`[ask] extracted_char_count=${totalChars}`);
+
+    // 3) Build messages
+    const systemPrompt = buildSystemPrompt(contextPack);
+    const chatMessages = [
+      { role: "system", content: systemPrompt },
+      { role: "user", content: userPrompt },
     ];
 
-    console.log("Project ID:", project_id || "none");
-    console.log("Calling Lovable AI Gateway with model: google/gemini-3-flash-preview");
-    console.log("Messages count:", chatMessages.length);
+    console.log("[ask] Calling Lovable AI Gateway");
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -119,7 +178,7 @@ serve(async (req) => {
     if (!response.ok) {
       const errorText = await response.text();
       console.error("AI Gateway error:", response.status, errorText);
-      
+
       if (response.status === 429) {
         return new Response(JSON.stringify({ error: "Rate limit exceeded, please try again later." }), {
           status: 429,
@@ -132,37 +191,47 @@ serve(async (req) => {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
-      
+
       return new Response(JSON.stringify({ error: "AI Gateway error", details: errorText }), {
         status: response.status,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    const data = await response.json();
-    console.log("AI Gateway response received successfully");
+    const aiData = await response.json();
+    const rawContent = aiData.choices?.[0]?.message?.content || "";
 
-    const rawContent = data.choices?.[0]?.message?.content || "";
-    
-    // Parse the JSON response from the model
-    let structured;
+    // 4) Parse and validate JSON
+    let structured: any;
     try {
-      // Strip markdown code fences if present
       const cleaned = rawContent.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim();
       structured = JSON.parse(cleaned);
     } catch (parseErr) {
-      console.error("Failed to parse structured JSON from model:", parseErr);
-      console.error("Raw content:", rawContent.substring(0, 500));
-      // Return a fallback structure
+      console.error("[ask] Failed to parse JSON:", parseErr);
+      console.error("[ask] Raw:", rawContent.substring(0, 500));
+      // Return need_more_context as fallback instead of fabricated data
       structured = {
-        mode: "answer",
-        title: "Analysis Result",
-        summary: rawContent.substring(0, 300),
-        sections: [],
-        citations: [],
-        confidence: { score: 50, label: "medium" }
+        status: "need_more_context",
+        answer: { format: "chat_with_evidence", title: "Could not process response", summary: "The AI response could not be parsed. Please try rephrasing your question.", sections: [] },
+        evidence: [],
+        suggested_prompts: [
+          { label: "Summarize all documents", prompt: "Summarize the key themes across all my uploaded documents" },
+          { label: "List main topics", prompt: "What are the main topics covered in my documents?" },
+        ],
+        missing_context: [{ need: "Valid response", why: "The AI output was not in the expected format" }],
       };
     }
+
+    // Ensure required fields
+    if (!structured.status) structured.status = "need_more_context";
+    if (!structured.evidence) structured.evidence = [];
+    if (!structured.suggested_prompts) structured.suggested_prompts = [];
+    if (!structured.missing_context) structured.missing_context = [];
+    if (!structured.answer) {
+      structured.answer = { format: "chat_with_evidence", title: "", summary: "", sections: [] };
+    }
+
+    console.log(`[ask] status=${structured.status}, evidence_count=${structured.evidence.length}, suggested_prompts=${structured.suggested_prompts.length}`);
 
     return new Response(JSON.stringify(structured), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
