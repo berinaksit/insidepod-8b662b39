@@ -4,17 +4,12 @@ import { Search, Sparkles, ArrowRight, Plus, X, AlertCircle, Loader2 } from 'luc
 import { AddDocumentsModal, UploadedDocument } from './AddDocumentsModal';
 import { supabase } from '@/integrations/supabase/client';
 import { useProjects } from '@/contexts/ProjectsContext';
+import { useNavigate } from 'react-router-dom';
 
 interface SearchBarProps {
   onSearch?: (query: string, documents: UploadedDocument[]) => void;
   isProcessing?: boolean;
   placeholder?: string;
-}
-
-interface AskResponse {
-  content: string;
-  usage?: { prompt_tokens: number; completion_tokens: number; total_tokens: number };
-  model?: string;
 }
 
 const suggestions = [
@@ -30,10 +25,10 @@ export function SearchBar({ onSearch, isProcessing = false, placeholder }: Searc
   const [documents, setDocuments] = useState<UploadedDocument[]>([]);
   const [showDocModal, setShowDocModal] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const navigate = useNavigate();
 
   // Ask function state
   const [isLoading, setIsLoading] = useState(false);
-  const [response, setResponse] = useState<AskResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const { activeProjectId } = useProjects();
@@ -45,7 +40,6 @@ export function SearchBar({ onSearch, isProcessing = false, placeholder }: Searc
     const question = query.trim();
     setIsLoading(true);
     setError(null);
-    setResponse(null);
 
     console.log("Calling ask function");
 
@@ -64,7 +58,8 @@ export function SearchBar({ onSearch, isProcessing = false, placeholder }: Searc
       } else if (data?.error) {
         setError(data.error);
       } else {
-        setResponse(data as AskResponse);
+        // Navigate to analysis page with the structured JSON
+        navigate('/analysis', { state: { query: question, analysisData: data, documents } });
       }
     } catch (err: any) {
       console.error("Error calling ask function:", err);
@@ -218,24 +213,6 @@ export function SearchBar({ onSearch, isProcessing = false, placeholder }: Searc
         >
           <AlertCircle className="w-4 h-4 text-destructive mt-0.5 flex-shrink-0" strokeWidth={1.5} />
           <p className="text-sm text-destructive">{error}</p>
-        </motion.div>
-      )}
-
-      {/* Response */}
-      {response && !isLoading && (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mt-6 bg-card rounded-2xl p-6 border border-border"
-        >
-          <div className="prose prose-sm max-w-none text-foreground whitespace-pre-wrap">
-            {response.content}
-          </div>
-          {response.model && (
-            <p className="mt-4 text-xs text-muted-foreground">
-              Model: {response.model}
-            </p>
-          )}
         </motion.div>
       )}
       
