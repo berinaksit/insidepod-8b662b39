@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Sparkles, ArrowRight, Plus, X, AlertCircle, Loader2, FileQuestion, Ban } from 'lucide-react';
+import { Search, Sparkles, ArrowRight, Plus, X, AlertCircle, Loader2 } from 'lucide-react';
 import { AddDocumentsModal, UploadedDocument } from './AddDocumentsModal';
 import { supabase } from '@/integrations/supabase/client';
 import { useProjects } from '@/contexts/ProjectsContext';
@@ -12,11 +12,9 @@ interface SearchBarProps {
 }
 
 interface AskResponse {
-  status: 'ok' | 'need_more_context' | 'unrelated';
-  answer?: string;
-  evidence?: { document_title: string; excerpt: string }[];
-  message?: string;
-  suggested_prompts?: string[];
+  content: string;
+  usage?: { prompt_tokens: number; completion_tokens: number; total_tokens: number };
+  model?: string;
 }
 
 const suggestions = [
@@ -223,85 +221,21 @@ export function SearchBar({ onSearch, isProcessing = false, placeholder }: Searc
         </motion.div>
       )}
 
-      {/* Response: OK state */}
-      {response && !isLoading && response.status === 'ok' && (
+      {/* Response */}
+      {response && !isLoading && (
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           className="mt-6 bg-card rounded-2xl p-6 border border-border"
         >
           <div className="prose prose-sm max-w-none text-foreground whitespace-pre-wrap">
-            {response.answer}
+            {response.content}
           </div>
-          {response.evidence && response.evidence.length > 0 && (
-            <div className="mt-5 space-y-2">
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Sources</p>
-              {response.evidence.map((ev, i) => (
-                <div key={i} className="px-3 py-2 bg-muted/60 rounded-xl border border-border">
-                  <p className="text-xs font-medium text-foreground">{ev.document_title}</p>
-                  <p className="text-xs text-muted-foreground mt-1 italic">"{ev.excerpt}"</p>
-                </div>
-              ))}
-            </div>
+          {response.model && (
+            <p className="mt-4 text-xs text-muted-foreground">
+              Model: {response.model}
+            </p>
           )}
-        </motion.div>
-      )}
-
-      {/* Response: need_more_context state */}
-      {response && !isLoading && response.status === 'need_more_context' && (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mt-6 bg-card rounded-2xl p-6 border border-border"
-        >
-          <div className="flex items-start gap-3">
-            <FileQuestion className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" strokeWidth={1.5} />
-            <div>
-              <p className="text-sm text-foreground font-medium">{response.message}</p>
-              {response.suggested_prompts && response.suggested_prompts.length > 0 && (
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {response.suggested_prompts.map((prompt, i) => (
-                    <button
-                      key={i}
-                      onClick={() => { setQuery(prompt); setResponse(null); }}
-                      className="px-3 py-1.5 text-xs font-medium bg-primary/10 text-primary rounded-full hover:bg-primary/20 transition-colors"
-                    >
-                      {prompt}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-        </motion.div>
-      )}
-
-      {/* Response: unrelated state */}
-      {response && !isLoading && response.status === 'unrelated' && (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mt-6 bg-card rounded-2xl p-6 border border-border"
-        >
-          <div className="flex items-start gap-3">
-            <Ban className="w-5 h-5 text-muted-foreground mt-0.5 flex-shrink-0" strokeWidth={1.5} />
-            <div>
-              <p className="text-sm text-foreground font-medium">{response.message}</p>
-              {response.suggested_prompts && response.suggested_prompts.length > 0 && (
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {response.suggested_prompts.map((prompt, i) => (
-                    <button
-                      key={i}
-                      onClick={() => { setQuery(prompt); setResponse(null); }}
-                      className="px-3 py-1.5 text-xs font-medium bg-muted text-foreground rounded-full hover:bg-muted/80 transition-colors"
-                    >
-                      {prompt}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
         </motion.div>
       )}
       
