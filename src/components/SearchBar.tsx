@@ -12,7 +12,7 @@ interface SearchBarProps {
   placeholder?: string;
 }
 
-const defaultSuggestions = [
+const suggestions = [
   'What is driving the onboarding drop-off?',
   'Show me churn risk signals from this week',
   'Which features are underutilized by enterprise?',
@@ -58,7 +58,7 @@ export function SearchBar({ onSearch, isProcessing = false, placeholder }: Searc
       } else if (data?.error) {
         setError(data.error);
       } else {
-        // Navigate to analysis page with the grounded response
+        // Navigate to analysis page with the structured JSON
         navigate('/analysis', { state: { query: question, analysisData: data, documents } });
       }
     } catch (err: any) {
@@ -231,7 +231,7 @@ export function SearchBar({ onSearch, isProcessing = false, placeholder }: Searc
                 Suggestions
               </p>
               <div className="space-y-0.5">
-                {defaultSuggestions.map((suggestion, i) => (
+                {suggestions.map((suggestion, i) => (
                   <button
                     key={i}
                     onClick={() => handleSuggestionClick(suggestion)}
