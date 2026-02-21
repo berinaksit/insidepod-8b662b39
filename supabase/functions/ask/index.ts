@@ -6,6 +6,52 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
 };
 
+const STRUCTURED_SYSTEM_PROMPT = `You are an expert product analyst. You MUST respond with valid JSON only — no markdown, no explanation, no code fences.
+
+The JSON must match this exact schema:
+
+{
+  "mode": "diagnosis" | "answer" | "insufficient_evidence",
+  "title": "string — a short title for the analysis",
+  "summary": "string — 60-90 word executive summary",
+  "sections": [
+    {
+      "type": "executive_diagnosis" | "evidence_map" | "hypotheses" | "segmentation" | "opportunity_sizing" | "decision_options" | "action_plan" | "confidence_gaps",
+      "heading": "string",
+      "cards": [
+        {
+          "title": "string",
+          "detail": "string",
+          "metrics": [{"name":"string","value":"string"}],
+          "tags": ["string"],
+          "citations": [{"label":"string","chunk_id":"string"}]
+        }
+      ],
+      "items": [{"label":"string","value":"string"}]
+    }
+  ],
+  "citations": [
+    { "document_title":"string", "chunk_id":"string", "quote":"string" }
+  ],
+  "confidence": { "score": 0-100, "label": "low" | "medium" | "high" }
+}
+
+Rules:
+- For "why"/"what's driving"/"decline"/"drop-off" questions: use mode="diagnosis" and include ALL 8 section types: executive_diagnosis, evidence_map, hypotheses, segmentation, opportunity_sizing, decision_options, action_plan, confidence_gaps.
+- For simpler questions: use mode="answer" and include only relevant section types.
+- If you lack data: use mode="insufficient_evidence", still include all section types but with empty cards/items arrays.
+- Every section MUST have both "cards" and "items" arrays (they can be empty).
+- For evidence_map: each card should have title (the claim), detail (a supporting quote), tags (source type, segment), and metrics.
+- For hypotheses: each card should have title (the hypothesis in "If X, then Y, because Z" format), detail (falsification test), and tags (missing data).
+- For segmentation: use items array with label (segment name) and value (finding).
+- For opportunity_sizing: use cards with metrics array for baseline/target/confidence values, and items for assumptions.
+- For decision_options: each card is one option with title, detail (description), metrics (impact, time), and tags (owners).
+- For action_plan: use items with label (category like "Instrumentation") and value (action description with owner and timeline).
+- For confidence_gaps: use items for missing inputs, and cards[0] for overall confidence reasoning.
+- Generate realistic, specific, actionable product analysis content. Be concrete with numbers and specifics.
+
+Respond ONLY with the JSON object. No other text.`;
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
@@ -44,12 +90,12 @@ serve(async (req) => {
     }
 
     const body = await req.json();
-    const { prompt, question, messages, max_tokens = 1024, project_id } = body;
+    const { prompt, question, messages, max_tokens = 4096, project_id } = body;
 
     const userPrompt = question || prompt;
 
     const chatMessages = messages || [
-      { role: "system", content: "You are a helpful AI assistant that analyzes product data and provides actionable insights." },
+      { role: "system", content: STRUCTURED_SYSTEM_PROMPT },
       { role: "user", content: userPrompt }
     ];
 
@@ -96,13 +142,29 @@ serve(async (req) => {
     const data = await response.json();
     console.log("AI Gateway response received successfully");
 
-    const content = data.choices?.[0]?.message?.content || "";
+    const rawContent = data.choices?.[0]?.message?.content || "";
+    
+    // Parse the JSON response from the model
+    let structured;
+    try {
+      // Strip markdown code fences if present
+      const cleaned = rawContent.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim();
+      structured = JSON.parse(cleaned);
+    } catch (parseErr) {
+      console.error("Failed to parse structured JSON from model:", parseErr);
+      console.error("Raw content:", rawContent.substring(0, 500));
+      // Return a fallback structure
+      structured = {
+        mode: "answer",
+        title: "Analysis Result",
+        summary: rawContent.substring(0, 300),
+        sections: [],
+        citations: [],
+        confidence: { score: 50, label: "medium" }
+      };
+    }
 
-    return new Response(JSON.stringify({ 
-      content,
-      usage: data.usage,
-      model: data.model
-    }), {
+    return new Response(JSON.stringify(structured), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
 
