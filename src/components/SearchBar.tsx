@@ -1,13 +1,20 @@
 import { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Sparkles, ArrowRight, Plus, X } from 'lucide-react';
+import { Search, Sparkles, ArrowRight, Plus, X, AlertCircle, Loader2 } from 'lucide-react';
 import { AddDocumentsModal, UploadedDocument } from './AddDocumentsModal';
+import { supabase } from '@/integrations/supabase/client';
+import { useProjects } from '@/contexts/ProjectsContext';
 
 interface SearchBarProps {
   onSearch?: (query: string, documents: UploadedDocument[]) => void;
   isProcessing?: boolean;
   placeholder?: string;
+}
+
+interface AskResponse {
+  content: string;
+  usage?: { prompt_tokens: number; completion_tokens: number; total_tokens: number };
+  model?: string;
 }
 
 const suggestions = [
@@ -18,25 +25,58 @@ const suggestions = [
 ];
 
 export function SearchBar({ onSearch, isProcessing = false, placeholder }: SearchBarProps) {
-  const navigate = useNavigate();
   const [query, setQuery] = useState('');
   const [isFocused, setIsFocused] = useState(false);
   const [documents, setDocuments] = useState<UploadedDocument[]>([]);
   const [showDocModal, setShowDocModal] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  // Ask function state
+  const [isLoading, setIsLoading] = useState(false);
+  const [response, setResponse] = useState<AskResponse | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const { activeProjectId } = useProjects();
+
   const handleSubmit = async (e?: React.FormEvent) => {
     e?.preventDefault();
-    if (query.trim() && !isProcessing) {
-      onSearch?.(query.trim(), documents);
-      navigate('/analysis', { state: { query: query.trim(), documents } });
+    if (!query.trim() || isProcessing || isLoading) return;
+
+    const question = query.trim();
+    setIsLoading(true);
+    setError(null);
+    setResponse(null);
+
+    console.log("Calling ask function");
+
+    try {
+      const { data, error: fnError } = await supabase.functions.invoke("ask", {
+        body: {
+          question,
+          project_id: activeProjectId,
+        },
+      });
+
+      console.log("Response:", data);
+
+      if (fnError) {
+        setError(fnError.message || 'Something went wrong');
+      } else if (data?.error) {
+        setError(data.error);
+      } else {
+        setResponse(data as AskResponse);
+      }
+    } catch (err: any) {
+      console.error("Error calling ask function:", err);
+      setError(err.message || 'An unexpected error occurred');
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleSuggestionClick = (suggestion: string) => {
     setQuery(suggestion);
     setIsFocused(false);
-    // Don't auto-run, just set the query
   };
 
   const handleDocumentsAdded = (newDocs: UploadedDocument[]) => {
@@ -64,7 +104,14 @@ export function SearchBar({ onSearch, isProcessing = false, placeholder }: Searc
         <div className="search-container">
           <div className="flex items-center gap-2 sm:gap-2.5 px-3 sm:px-4 py-3 sm:py-3.5">
             <div className="flex-shrink-0">
-              {isProcessing ? (
+              {isLoading ? (
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
+                >
+                  <Sparkles className="w-4 h-4 text-primary" strokeWidth={1.5} />
+                </motion.div>
+              ) : isProcessing ? (
                 <motion.div
                   animate={{ rotate: 360 }}
                   transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
@@ -85,11 +132,11 @@ export function SearchBar({ onSearch, isProcessing = false, placeholder }: Searc
               onBlur={() => setTimeout(() => setIsFocused(false), 200)}
               placeholder={placeholder || "Ask anything about your product..."}
               className="flex-1 bg-transparent text-foreground placeholder:text-muted-foreground focus:outline-none text-sm sm:text-base font-medium"
-              disabled={isProcessing}
+              disabled={isProcessing || isLoading}
             />
             
             <AnimatePresence>
-              {query.trim() && !isProcessing && (
+              {query.trim() && !isProcessing && !isLoading && (
                 <motion.button
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
@@ -113,7 +160,6 @@ export function SearchBar({ onSearch, isProcessing = false, placeholder }: Searc
 
       {/* Document attachment area */}
       <div className="mt-3 flex items-center gap-2 flex-wrap">
-        {/* Add documents button */}
         <button
           onClick={() => setShowDocModal(true)}
           className="w-8 h-8 rounded-full bg-muted/60 hover:bg-muted flex items-center justify-center transition-colors"
@@ -122,7 +168,6 @@ export function SearchBar({ onSearch, isProcessing = false, placeholder }: Searc
           <Plus className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
         </button>
 
-        {/* Document badges */}
         <AnimatePresence>
           {documents.map((doc) => (
             <motion.div
@@ -144,11 +189,54 @@ export function SearchBar({ onSearch, isProcessing = false, placeholder }: Searc
         </AnimatePresence>
       </div>
 
-      {/* Documents attached indicator */}
       {documents.length > 0 && (
         <p className="mt-2 text-xs text-muted-foreground">
           {documents.length} document{documents.length !== 1 ? 's' : ''} attached
         </p>
+      )}
+
+      {/* Loading state */}
+      {isLoading && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mt-6 bg-card rounded-2xl p-6 border border-border"
+        >
+          <div className="flex items-center gap-3">
+            <Loader2 className="w-5 h-5 text-primary animate-spin" strokeWidth={1.5} />
+            <p className="text-sm text-muted-foreground font-medium">Analyzing your question…</p>
+          </div>
+        </motion.div>
+      )}
+
+      {/* Error state */}
+      {error && !isLoading && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mt-4 flex items-start gap-2 px-4 py-3 bg-destructive/10 border border-destructive/20 rounded-xl"
+        >
+          <AlertCircle className="w-4 h-4 text-destructive mt-0.5 flex-shrink-0" strokeWidth={1.5} />
+          <p className="text-sm text-destructive">{error}</p>
+        </motion.div>
+      )}
+
+      {/* Response */}
+      {response && !isLoading && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mt-6 bg-card rounded-2xl p-6 border border-border"
+        >
+          <div className="prose prose-sm max-w-none text-foreground whitespace-pre-wrap">
+            {response.content}
+          </div>
+          {response.model && (
+            <p className="mt-4 text-xs text-muted-foreground">
+              Model: {response.model}
+            </p>
+          )}
+        </motion.div>
       )}
       
       {/* Suggestions dropdown */}
