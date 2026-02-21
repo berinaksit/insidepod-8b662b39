@@ -21,62 +21,59 @@ import {
   Smartphone,
   Monitor,
   Globe,
-  HelpCircle
+  HelpCircle,
+  Upload,
+  Search,
+  Sparkles
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { useState } from 'react';
+import { GlobalUploadModal } from '@/components/GlobalUploadModal';
+import { supabase } from '@/integrations/supabase/client';
+import { useProjects } from '@/contexts/ProjectsContext';
 
-// ── Types matching the backend JSON contract ──
+// ── Types matching the NEW grounded backend JSON contract ──
 
-interface CardCitation {
-  label: string;
-  chunk_id: string;
-}
-
-interface CardMetric {
-  name: string;
-  value: string;
-}
-
-interface SectionCard {
-  title: string;
-  detail: string;
-  metrics?: CardMetric[];
-  tags?: string[];
-  citations?: CardCitation[];
-}
-
-interface SectionItem {
-  label: string;
-  value: string;
-}
-
-interface AnalysisSection {
-  type: string;
-  heading: string;
-  cards?: SectionCard[];
-  items?: SectionItem[];
-}
-
-interface AnalysisCitation {
-  document_title: string;
+interface EvidenceItem {
+  doc_id: string;
+  doc_title: string;
   chunk_id: string;
   quote: string;
+  start_char: number;
+  end_char: number;
 }
 
-interface AnalysisData {
-  mode: 'diagnosis' | 'answer' | 'insufficient_evidence';
+interface SuggestedPrompt {
+  label: string;
+  prompt: string;
+}
+
+interface MissingContext {
+  need: string;
+  why: string;
+}
+
+interface AnswerSection {
+  heading: string;
+  content: string;
+}
+
+interface AnswerPayload {
+  format: 'diagnosis_page' | 'chat_with_evidence';
   title: string;
   summary: string;
-  sections: AnalysisSection[];
-  citations?: AnalysisCitation[];
-  confidence?: { score: number; label: string };
+  sections: AnswerSection[];
+}
+
+interface GroundedResponse {
+  status: 'ok' | 'need_more_context' | 'unrelated';
+  answer: AnswerPayload;
+  evidence: EvidenceItem[];
+  suggested_prompts: SuggestedPrompt[];
+  missing_context: MissingContext[];
 }
 
 // ── Helpers ──
-
-function getSection(sections: AnalysisSection[], type: string): AnalysisSection | undefined {
-  return sections.find(s => s.type === type);
-}
 
 function EmptySection({ label }: { label: string }) {
   return (
@@ -87,12 +84,54 @@ function EmptySection({ label }: { label: string }) {
   );
 }
 
+// Map section headings to icons
+function getSectionIcon(heading: string) {
+  const lower = heading.toLowerCase();
+  if (lower.includes('diagnosis') || lower.includes('executive')) return Target;
+  if (lower.includes('evidence')) return FileText;
+  if (lower.includes('hypothes')) return Beaker;
+  if (lower.includes('segment')) return Layers;
+  if (lower.includes('opportunit') || lower.includes('sizing')) return TrendingDown;
+  if (lower.includes('decision') || lower.includes('option')) return Target;
+  if (lower.includes('action') || lower.includes('plan')) return CheckCircle2;
+  if (lower.includes('confidence') || lower.includes('gap')) return AlertTriangle;
+  if (lower.includes('summary') || lower.includes('overview')) return BarChart3;
+  return Lightbulb;
+}
+
 export default function AnalysisPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { query, documents, analysisData } = location.state as { query: string; documents: any[]; analysisData?: AnalysisData } || { query: '', documents: [] };
+  const { activeProjectId } = useProjects();
+  const { query, analysisData } = (location.state as { query: string; analysisData?: GroundedResponse }) || { query: '' };
 
-  const data: AnalysisData | null = analysisData || null;
+  const data: GroundedResponse | null = analysisData || null;
+  const [showUploadModal, setShowUploadModal] = useState(false);
+  const [isResubmitting, setIsResubmitting] = useState(false);
+  const [resubmitData, setResubmitData] = useState<GroundedResponse | null>(null);
+
+  // Use resubmit data if available, otherwise use initial data
+  const activeData = resubmitData || data;
+
+  const handleSuggestionClick = async (prompt: string) => {
+    setIsResubmitting(true);
+    console.log("Calling ask function");
+    try {
+      const { data: newData, error } = await supabase.functions.invoke("ask", {
+        body: { question: prompt, project_id: activeProjectId },
+      });
+      console.log("Response:", newData);
+      if (error || newData?.error) {
+        console.error("Error:", error || newData?.error);
+      } else {
+        setResubmitData(newData);
+      }
+    } catch (err) {
+      console.error("Error calling ask function:", err);
+    } finally {
+      setIsResubmitting(false);
+    }
+  };
 
   // Section animation variants
   const sectionVariants = {
@@ -104,15 +143,110 @@ export default function AnalysisPage() {
     })
   };
 
-  const execDiag = data ? getSection(data.sections, 'executive_diagnosis') : undefined;
-  const evidenceMap = data ? getSection(data.sections, 'evidence_map') : undefined;
-  const hypotheses = data ? getSection(data.sections, 'hypotheses') : undefined;
-  const segmentation = data ? getSection(data.sections, 'segmentation') : undefined;
-  const opportunitySizing = data ? getSection(data.sections, 'opportunity_sizing') : undefined;
-  const decisionOptions = data ? getSection(data.sections, 'decision_options') : undefined;
-  const actionPlan = data ? getSection(data.sections, 'action_plan') : undefined;
-  const confidenceGaps = data ? getSection(data.sections, 'confidence_gaps') : undefined;
+  // ── Loading state while resubmitting ──
+  if (isResubmitting) {
+    return (
+      <div className="min-h-screen bg-background">
+        <header className="sticky top-0 z-10 bg-background/80 backdrop-blur-lg border-b border-border">
+          <div className="max-w-4xl mx-auto px-6 py-4">
+            <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors font-medium">
+              <ArrowLeft className="w-4 h-4" strokeWidth={1.5} />
+              <span>Back</span>
+            </button>
+          </div>
+        </header>
+        <main className="max-w-4xl mx-auto px-6 py-10 flex flex-col items-center justify-center min-h-[60vh]">
+          <motion.div animate={{ rotate: 360 }} transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}>
+            <Sparkles className="w-8 h-8 text-primary" strokeWidth={1.5} />
+          </motion.div>
+          <p className="mt-4 text-muted-foreground font-medium">Analyzing your question…</p>
+        </main>
+      </div>
+    );
+  }
 
+  // ── "Need more context" or "Unrelated" state ──
+  if (activeData && (activeData.status === 'need_more_context' || activeData.status === 'unrelated')) {
+    const isUnrelated = activeData.status === 'unrelated';
+    return (
+      <div className="min-h-screen bg-background">
+        <header className="sticky top-0 z-10 bg-background/80 backdrop-blur-lg border-b border-border">
+          <div className="max-w-4xl mx-auto px-6 py-4">
+            <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors font-medium">
+              <ArrowLeft className="w-4 h-4" strokeWidth={1.5} />
+              <span>Back</span>
+            </button>
+          </div>
+        </header>
+        <main className="max-w-4xl mx-auto px-6 py-10 space-y-8">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                {isUnrelated ? <AlertCircle className="w-5 h-5 text-primary" strokeWidth={1.5} /> : <HelpCircle className="w-5 h-5 text-primary" strokeWidth={1.5} />}
+              </div>
+              <h1 className="text-2xl font-display font-semibold text-foreground">
+                {isUnrelated ? "That question doesn't match the data in this project." : "I need a bit more context to answer correctly."}
+              </h1>
+            </div>
+            {activeData.answer?.summary && (
+              <p className="text-muted-foreground">{activeData.answer.summary}</p>
+            )}
+          </motion.div>
+
+          {/* Missing context details */}
+          {activeData.missing_context && activeData.missing_context.length > 0 && (
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="bg-card rounded-2xl p-6 border border-border space-y-3">
+              <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider">What's needed</h3>
+              {activeData.missing_context.map((mc, i) => (
+                <div key={i} className="flex items-start gap-3">
+                  <AlertTriangle className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" strokeWidth={1.5} />
+                  <div>
+                    <p className="text-sm font-medium text-foreground">{mc.need}</p>
+                    <p className="text-sm text-muted-foreground">{mc.why}</p>
+                  </div>
+                </div>
+              ))}
+            </motion.div>
+          )}
+
+          {/* Suggestion chips */}
+          {activeData.suggested_prompts && activeData.suggested_prompts.length > 0 && (
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="space-y-3">
+              <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Try one of these instead</h3>
+              <div className="flex flex-wrap gap-2">
+                {activeData.suggested_prompts.map((sp, i) => (
+                  <button
+                    key={i}
+                    onClick={() => handleSuggestionClick(sp.prompt)}
+                    className="px-4 py-2 bg-card border border-border rounded-xl text-sm text-foreground hover:bg-muted transition-colors font-medium"
+                  >
+                    {sp.label}
+                  </button>
+                ))}
+              </div>
+            </motion.div>
+          )}
+
+          {/* Upload CTA */}
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
+            <button
+              onClick={() => setShowUploadModal(true)}
+              className="flex items-center gap-3 px-6 py-4 bg-primary/5 border border-primary/10 rounded-2xl hover:bg-primary/10 transition-colors w-full"
+            >
+              <Upload className="w-5 h-5 text-primary" strokeWidth={1.5} />
+              <div className="text-left">
+                <p className="text-sm font-semibold text-foreground">Upload documents</p>
+                <p className="text-xs text-muted-foreground">Add research, analytics, or support data to enable grounded analysis</p>
+              </div>
+            </button>
+          </motion.div>
+        </main>
+        <GlobalUploadModal open={showUploadModal} onOpenChange={setShowUploadModal} />
+      </div>
+    );
+  }
+
+  // ── "OK" state — render analysis with evidence ──
   const evidenceIcons = [BarChart3, MessageSquare, Smartphone, Headphones, AlertTriangle];
 
   return (
@@ -141,401 +275,124 @@ export default function AnalysisPage() {
           className="space-y-3"
         >
           <h1 className="text-2xl md:text-3xl font-display font-semibold text-foreground leading-tight">
-            {data?.title || query || 'Analysis Results'}
+            {activeData?.answer?.title || query || 'Analysis Results'}
           </h1>
-          {documents && documents.length > 0 && (
+          {activeData?.answer?.summary && (
+            <p className="text-muted-foreground leading-relaxed">{activeData.answer.summary}</p>
+          )}
+          {activeData?.evidence && activeData.evidence.length > 0 && (
             <div className="flex items-center gap-2 text-muted-foreground">
               <FileText className="w-4 h-4" strokeWidth={1.5} />
               <span className="text-sm font-medium">
-                Based on {documents.length} uploaded document{documents.length !== 1 ? 's' : ''}
+                Grounded in {activeData.evidence.length} evidence citation{activeData.evidence.length !== 1 ? 's' : ''} from {new Set(activeData.evidence.map(e => e.doc_title)).size} document{new Set(activeData.evidence.map(e => e.doc_title)).size !== 1 ? 's' : ''}
               </span>
             </div>
           )}
         </motion.div>
 
-        {/* 1. Executive Diagnosis */}
-        <motion.section
-          custom={1}
-          initial="hidden"
-          animate="visible"
-          variants={sectionVariants}
-          className="bg-primary/5 border border-primary/10 rounded-2xl p-6 md:p-8"
-        >
-          <h2 className="text-sm font-medium text-primary uppercase tracking-wider mb-4 flex items-center gap-2">
-            <Target className="w-4 h-4" strokeWidth={1.5} />
-            Executive Diagnosis
-          </h2>
-          {execDiag && execDiag.cards && execDiag.cards.length > 0 ? (
-            <div className="space-y-4">
-              {execDiag.cards.map((card, i) => (
-                <div key={i}>
-                  <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{card.title}</span>
-                  <p className="text-foreground mt-1">{card.detail}</p>
-                  {card.metrics && card.metrics.length > 0 && (
-                    <div className="flex flex-wrap gap-6 mt-3">
-                      {card.metrics.map((m, j) => (
-                        <div key={j}>
-                          <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{m.name}</span>
-                          <p className="text-foreground mt-1">{m.value}</p>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          ) : (
-            <EmptySection label="Executive Diagnosis" />
-          )}
-        </motion.section>
+        {/* Render sections dynamically */}
+        {activeData?.answer?.sections && activeData.answer.sections.length > 0 ? (
+          activeData.answer.sections.map((section, i) => {
+            const Icon = getSectionIcon(section.heading);
+            const isFirst = i === 0 && activeData.answer.format === 'diagnosis_page';
+            return (
+              <motion.section
+                key={i}
+                custom={i + 1}
+                initial="hidden"
+                animate="visible"
+                variants={sectionVariants}
+                className={isFirst ? "bg-primary/5 border border-primary/10 rounded-2xl p-6 md:p-8" : "space-y-4"}
+              >
+                <h2 className={`text-sm font-medium uppercase tracking-wider flex items-center gap-2 ${isFirst ? 'text-primary mb-4' : 'text-muted-foreground'}`}>
+                  <Icon className="w-4 h-4" strokeWidth={1.5} />
+                  {section.heading}
+                </h2>
+                {section.content ? (
+                  <div className="bg-card rounded-2xl p-5 border border-border">
+                    <p className="text-foreground leading-relaxed whitespace-pre-line">{section.content}</p>
+                  </div>
+                ) : (
+                  <EmptySection label={section.heading} />
+                )}
+              </motion.section>
+            );
+          })
+        ) : (
+          <EmptySection label="Analysis sections" />
+        )}
 
-        {/* 2. Evidence Map */}
-        <motion.section
-          custom={2}
-          initial="hidden"
-          animate="visible"
-          variants={sectionVariants}
-          className="space-y-4"
-        >
-          <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wider flex items-center gap-2">
-            <FileText className="w-4 h-4" strokeWidth={1.5} />
-            Evidence Map
-          </h2>
-          {evidenceMap && evidenceMap.cards && evidenceMap.cards.length > 0 ? (
-            <div className="grid gap-4 md:grid-cols-2">
-              {evidenceMap.cards.map((card, i) => {
-                const Icon = evidenceIcons[i % evidenceIcons.length];
-                const isContradiction = card.tags?.some(t => t.toLowerCase().includes('contradiction'));
+        {/* Evidence Panel */}
+        {activeData?.evidence && activeData.evidence.length > 0 && (
+          <motion.section
+            custom={(activeData?.answer?.sections?.length || 0) + 2}
+            initial="hidden"
+            animate="visible"
+            variants={sectionVariants}
+            className="space-y-4"
+          >
+            <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wider flex items-center gap-2">
+              <FileText className="w-4 h-4" strokeWidth={1.5} />
+              Evidence Sources
+            </h2>
+            <div className="space-y-3">
+              {activeData.evidence.map((ev, i) => {
+                const EvidIcon = evidenceIcons[i % evidenceIcons.length];
                 return (
                   <motion.div
                     key={i}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3 + i * 0.05 }}
-                    className={`bg-card rounded-2xl p-5 border ${isContradiction ? 'border-amber-500/30 bg-amber-500/5' : 'border-border'}`}
+                    className="bg-card rounded-2xl p-5 border border-border"
                   >
                     <div className="flex gap-4">
-                      <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 ${isContradiction ? 'bg-amber-500/10' : 'bg-secondary/10'}`}>
-                        <Icon className={`w-4 h-4 ${isContradiction ? 'text-amber-600' : 'text-secondary'}`} strokeWidth={1.5} />
+                      <div className="w-9 h-9 rounded-xl bg-secondary/10 flex items-center justify-center flex-shrink-0">
+                        <EvidIcon className="w-4 h-4 text-secondary" strokeWidth={1.5} />
                       </div>
                       <div className="flex-1 min-w-0 space-y-2">
-                        <p className="font-semibold text-foreground text-sm leading-snug">{card.title}</p>
-                        {card.detail && <p className="text-sm text-muted-foreground italic">"{card.detail}"</p>}
-                        <div className="flex flex-wrap gap-2 pt-1">
-                          {card.tags?.map((tag, j) => (
-                            <Badge key={j} variant="secondary" className="text-xs font-medium">
-                              {tag}
-                            </Badge>
-                          ))}
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <Badge variant="secondary" className="text-xs font-medium">{ev.doc_title}</Badge>
+                          <span className="text-xs text-muted-foreground">chars {ev.start_char}–{ev.end_char}</span>
                         </div>
+                        <p className="text-sm text-muted-foreground italic border-l-2 border-primary/30 pl-3">"{ev.quote}"</p>
                       </div>
                     </div>
                   </motion.div>
                 );
               })}
             </div>
-          ) : (
-            <EmptySection label="Evidence" />
-          )}
-        </motion.section>
+          </motion.section>
+        )}
 
-        {/* 3. Causal Hypotheses */}
-        <motion.section
-          custom={3}
-          initial="hidden"
-          animate="visible"
-          variants={sectionVariants}
-          className="space-y-4"
-        >
-          <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wider flex items-center gap-2">
-            <Beaker className="w-4 h-4" strokeWidth={1.5} />
-            Causal Hypotheses
-          </h2>
-          {hypotheses && hypotheses.cards && hypotheses.cards.length > 0 ? (
-            <div className="space-y-4">
-              {hypotheses.cards.map((card, i) => (
-                <motion.div
+        {/* Suggested follow-up prompts */}
+        {activeData?.suggested_prompts && activeData.suggested_prompts.length > 0 && (
+          <motion.section
+            custom={(activeData?.answer?.sections?.length || 0) + 3}
+            initial="hidden"
+            animate="visible"
+            variants={sectionVariants}
+            className="space-y-4 pb-10"
+          >
+            <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wider flex items-center gap-2">
+              <Search className="w-4 h-4" strokeWidth={1.5} />
+              Follow-up Questions
+            </h2>
+            <div className="flex flex-wrap gap-2">
+              {activeData.suggested_prompts.map((sp, i) => (
+                <button
                   key={i}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4 + i * 0.05 }}
-                  className="bg-card rounded-2xl p-5 border border-border"
+                  onClick={() => handleSuggestionClick(sp.prompt)}
+                  className="px-4 py-2 bg-card border border-border rounded-xl text-sm text-foreground hover:bg-muted transition-colors font-medium"
                 >
-                  <div className="space-y-3">
-                    <div className="flex items-start gap-3">
-                      <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-bold flex items-center justify-center">
-                        {i + 1}
-                      </span>
-                      <p className="text-foreground font-medium leading-relaxed">{card.title}</p>
-                    </div>
-                    <div className="ml-9 space-y-2">
-                      {card.detail && (
-                        <div className="flex items-start gap-2">
-                          <AlertCircle className="w-3.5 h-3.5 text-accent-foreground mt-0.5 flex-shrink-0" strokeWidth={2} />
-                          <p className="text-sm text-muted-foreground"><span className="font-medium text-foreground/80">Falsification:</span> {card.detail}</p>
-                        </div>
-                      )}
-                      {card.tags && card.tags.length > 0 && (
-                        <div className="flex items-start gap-2">
-                          <HelpCircle className="w-3.5 h-3.5 text-primary mt-0.5 flex-shrink-0" strokeWidth={2} />
-                          <p className="text-sm text-muted-foreground"><span className="font-medium text-foreground/80">Missing data:</span> {card.tags.join('; ')}</p>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </motion.div>
+                  {sp.label}
+                </button>
               ))}
             </div>
-          ) : (
-            <EmptySection label="Hypotheses" />
-          )}
-        </motion.section>
-
-        {/* 4. Segmentation Findings */}
-        <motion.section
-          custom={4}
-          initial="hidden"
-          animate="visible"
-          variants={sectionVariants}
-          className="space-y-4"
-        >
-          <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wider flex items-center gap-2">
-            <Layers className="w-4 h-4" strokeWidth={1.5} />
-            Segmentation Findings
-          </h2>
-          {segmentation && segmentation.items && segmentation.items.length > 0 ? (
-            <div className="bg-card rounded-2xl border border-border overflow-hidden">
-              <div className="divide-y divide-border">
-                {segmentation.items.map((item, i) => {
-                  const segIcons = [Users, Monitor, Globe, Layers, Globe, Activity];
-                  const Icon = segIcons[i % segIcons.length];
-                  const hasData = !item.value.toLowerCase().includes('cannot segment');
-                  return (
-                    <div key={i} className="flex items-start gap-4 p-4">
-                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${hasData ? 'bg-secondary/10' : 'bg-muted/50'}`}>
-                        <Icon className={`w-4 h-4 ${hasData ? 'text-secondary' : 'text-muted-foreground'}`} strokeWidth={1.5} />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="font-semibold text-foreground text-sm">{item.label}</p>
-                        <p className={`text-sm mt-0.5 ${hasData ? 'text-muted-foreground' : 'text-destructive'}`}>{item.value}</p>
-                      </div>
-                      {hasData && <CheckCircle2 className="w-4 h-4 text-secondary flex-shrink-0" strokeWidth={2} />}
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          ) : (
-            <EmptySection label="Segmentation" />
-          )}
-        </motion.section>
-
-        {/* 5. Opportunity Sizing */}
-        <motion.section
-          custom={5}
-          initial="hidden"
-          animate="visible"
-          variants={sectionVariants}
-          className="space-y-4"
-        >
-          <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wider flex items-center gap-2">
-            <TrendingDown className="w-4 h-4" strokeWidth={1.5} />
-            Opportunity Sizing
-          </h2>
-          {opportunitySizing && ((opportunitySizing.cards && opportunitySizing.cards.length > 0) || (opportunitySizing.items && opportunitySizing.items.length > 0)) ? (
-            <div className="bg-card rounded-2xl p-6 border border-border">
-              {/* Metrics grid from cards */}
-              {opportunitySizing.cards && opportunitySizing.cards.length > 0 && (
-                <>
-                  <div className="grid gap-6 md:grid-cols-3 mb-6">
-                    {opportunitySizing.cards[0]?.metrics?.slice(0, 3).map((m, i) => (
-                      <div key={i} className={`text-center p-4 rounded-xl ${i === 1 ? 'bg-primary/5 border border-primary/10' : 'bg-muted/30'}`}>
-                        <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1">{m.name}</p>
-                        <p className={`text-3xl font-display font-bold ${i === 1 ? 'text-primary' : 'text-foreground'}`}>{m.value}</p>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="space-y-4">
-                    {opportunitySizing.cards[0]?.detail && (
-                      <div>
-                        <p className="text-sm font-semibold text-foreground">Expected Benefit</p>
-                        <p className="text-lg text-primary font-medium">{opportunitySizing.cards[0].detail}</p>
-                      </div>
-                    )}
-                  </div>
-                </>
-              )}
-              {/* Assumptions from items */}
-              {opportunitySizing.items && opportunitySizing.items.length > 0 && (
-                <div className="mt-4">
-                  <p className="text-sm font-semibold text-foreground mb-2">Details</p>
-                  <ul className="space-y-1">
-                    {opportunitySizing.items.map((item, i) => (
-                      <li key={i} className="text-sm text-muted-foreground flex items-start gap-2">
-                        <span className="text-muted-foreground/50">•</span>
-                        <span><span className="font-medium text-foreground">{item.label}:</span> {item.value}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
-          ) : (
-            <EmptySection label="Opportunity Sizing" />
-          )}
-        </motion.section>
-
-        {/* 6. Decision Options */}
-        <motion.section
-          custom={6}
-          initial="hidden"
-          animate="visible"
-          variants={sectionVariants}
-          className="space-y-4"
-        >
-          <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wider flex items-center gap-2">
-            <Target className="w-4 h-4" strokeWidth={1.5} />
-            Decision Options
-          </h2>
-          {decisionOptions && decisionOptions.cards && decisionOptions.cards.length > 0 ? (
-            <div className="grid gap-4 md:grid-cols-3">
-              {decisionOptions.cards.map((card, i) => {
-                const labels = ['A', 'B', 'C', 'D', 'E'];
-                return (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.5 + i * 0.05 }}
-                    className="bg-card rounded-2xl p-5 border border-border hover:border-primary/30 transition-colors"
-                  >
-                    <div className="flex items-center gap-2 mb-3">
-                      <span className="w-7 h-7 rounded-full bg-primary/10 text-primary text-sm font-bold flex items-center justify-center">
-                        {labels[i] || i + 1}
-                      </span>
-                      {card.metrics?.find(m => m.name.toLowerCase().includes('time')) && (
-                        <Badge variant="outline" className="text-xs">{card.metrics.find(m => m.name.toLowerCase().includes('time'))!.value}</Badge>
-                      )}
-                    </div>
-                    <h3 className="font-semibold text-foreground mb-2">{card.title}</h3>
-                    <p className="text-sm text-muted-foreground mb-4">{card.detail}</p>
-                    <div className="space-y-2 text-xs">
-                      {card.metrics?.filter(m => !m.name.toLowerCase().includes('time')).map((m, j) => (
-                        <div key={j}>
-                          <span className="font-medium text-foreground">{m.name}:</span>
-                          <span className="text-primary ml-1">{m.value}</span>
-                        </div>
-                      ))}
-                      {card.tags && card.tags.length > 0 && (
-                        <div className="flex flex-wrap gap-1 pt-1">
-                          {card.tags.map((tag, j) => (
-                            <Badge key={j} variant="secondary" className="text-xs">{tag}</Badge>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  </motion.div>
-                );
-              })}
-            </div>
-          ) : (
-            <EmptySection label="Decision Options" />
-          )}
-        </motion.section>
-
-        {/* 7. Action Plan */}
-        <motion.section
-          custom={7}
-          initial="hidden"
-          animate="visible"
-          variants={sectionVariants}
-          className="space-y-4"
-        >
-          <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wider flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4" strokeWidth={1.5} />
-            Action Plan
-          </h2>
-          {actionPlan && actionPlan.items && actionPlan.items.length > 0 ? (
-            <div className="bg-card rounded-2xl border border-border overflow-hidden">
-              {/* Group items by label as category */}
-              {(() => {
-                const categories = new Map<string, string[]>();
-                actionPlan.items.forEach(item => {
-                  const existing = categories.get(item.label) || [];
-                  existing.push(item.value);
-                  categories.set(item.label, existing);
-                });
-                return Array.from(categories.entries()).map(([category, actions], catIndex) => (
-                  <div key={catIndex}>
-                    <div className="bg-muted/30 px-5 py-3 border-b border-border">
-                      <h3 className="text-sm font-semibold text-foreground capitalize">{category}</h3>
-                    </div>
-                    <div className="divide-y divide-border">
-                      {actions.map((action, i) => (
-                        <div key={i} className="flex items-center gap-4 px-5 py-3">
-                          <ChevronRight className="w-4 h-4 text-muted-foreground flex-shrink-0" strokeWidth={1.5} />
-                          <div className="flex-1 min-w-0">
-                            <p className="text-sm text-foreground">{action}</p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ));
-              })()}
-            </div>
-          ) : (
-            <EmptySection label="Action Plan" />
-          )}
-        </motion.section>
-
-        {/* 8. Confidence & Gaps */}
-        <motion.section
-          custom={8}
-          initial="hidden"
-          animate="visible"
-          variants={sectionVariants}
-          className="space-y-4 pb-10"
-        >
-          <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wider flex items-center gap-2">
-            <AlertTriangle className="w-4 h-4" strokeWidth={1.5} />
-            Confidence & Gaps
-          </h2>
-          {(data?.confidence || (confidenceGaps && ((confidenceGaps.cards && confidenceGaps.cards.length > 0) || (confidenceGaps.items && confidenceGaps.items.length > 0)))) ? (
-            <div className="bg-card rounded-2xl p-6 border border-border">
-              {data?.confidence && (
-                <div className="flex items-center gap-4 mb-4">
-                  <div className={`px-4 py-2 rounded-lg font-semibold text-sm ${
-                    data.confidence.label === 'high' ? 'bg-secondary/10 text-secondary' :
-                    data.confidence.label === 'medium' ? 'bg-accent text-accent-foreground' :
-                    'bg-destructive/10 text-destructive'
-                  }`}>
-                    {data.confidence.label.charAt(0).toUpperCase() + data.confidence.label.slice(1)} Confidence ({data.confidence.score}%)
-                  </div>
-                </div>
-              )}
-              {confidenceGaps?.cards?.[0]?.detail && (
-                <p className="text-muted-foreground mb-4">{confidenceGaps.cards[0].detail}</p>
-              )}
-              {confidenceGaps?.items && confidenceGaps.items.length > 0 && (
-                <div>
-                  <p className="text-sm font-semibold text-foreground mb-2">Top Missing Inputs</p>
-                  <ul className="space-y-2">
-                    {confidenceGaps.items.map((item, i) => (
-                      <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
-                        <HelpCircle className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" strokeWidth={2} />
-                        <span><span className="font-medium text-foreground">{item.label}:</span> {item.value}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
-          ) : (
-            <EmptySection label="Confidence & Gaps" />
-          )}
-        </motion.section>
+          </motion.section>
+        )}
       </main>
+      <GlobalUploadModal open={showUploadModal} onOpenChange={setShowUploadModal} />
     </div>
   );
 }
