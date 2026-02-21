@@ -45,13 +45,19 @@ serve(async (req) => {
       throw new Error("OPENAI_API_KEY is not configured");
     }
 
-    const { prompt, messages, model = "gpt-4o-mini", max_tokens = 1024 } = await req.json();
+    const body = await req.json();
+    const { prompt, question, messages, model = "gpt-4o-mini", max_tokens = 1024, project_id } = body;
+
+    // Use question or prompt field
+    const userPrompt = question || prompt;
 
     // Support both simple prompt and full messages array
     const chatMessages = messages || [
-      { role: "system", content: "You are a helpful AI assistant." },
-      { role: "user", content: prompt }
+      { role: "system", content: "You are a helpful AI assistant that analyzes product data and provides actionable insights." },
+      { role: "user", content: userPrompt }
     ];
+
+    console.log("Project ID:", project_id || "none");
 
     console.log("Calling OpenAI with model:", model);
     console.log("Messages count:", chatMessages.length);
