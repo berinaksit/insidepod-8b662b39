@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Sparkles, ArrowRight, Plus, X, AlertCircle, Loader2 } from 'lucide-react';
 import { AddDocumentsModal, UploadedDocument } from './AddDocumentsModal';
@@ -25,6 +26,7 @@ const suggestions = [
 ];
 
 export function SearchBar({ onSearch, isProcessing = false, placeholder }: SearchBarProps) {
+  const navigate = useNavigate();
   const [query, setQuery] = useState('');
   const [isFocused, setIsFocused] = useState(false);
   const [documents, setDocuments] = useState<UploadedDocument[]>([]);
@@ -57,14 +59,22 @@ export function SearchBar({ onSearch, isProcessing = false, placeholder }: Searc
         },
       });
 
-      console.log("Response:", data);
 
       if (fnError) {
         setError(fnError.message || 'Something went wrong');
       } else if (data?.error) {
         setError(data.error);
       } else {
-        setResponse(data as AskResponse);
+        console.log("Response:", data);
+        // Navigate to analysis page with AI response
+        navigate('/analysis', {
+          state: {
+            query: question,
+            documents,
+            aiResponse: data.structured || null,
+            rawContent: data.content,
+          }
+        });
       }
     } catch (err: any) {
       console.error("Error calling ask function:", err);
@@ -221,23 +231,6 @@ export function SearchBar({ onSearch, isProcessing = false, placeholder }: Searc
         </motion.div>
       )}
 
-      {/* Response */}
-      {response && !isLoading && (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mt-6 bg-card rounded-2xl p-6 border border-border"
-        >
-          <div className="prose prose-sm max-w-none text-foreground whitespace-pre-wrap">
-            {response.content}
-          </div>
-          {response.model && (
-            <p className="mt-4 text-xs text-muted-foreground">
-              Model: {response.model}
-            </p>
-          )}
-        </motion.div>
-      )}
       
       {/* Suggestions dropdown */}
       <AnimatePresence>
