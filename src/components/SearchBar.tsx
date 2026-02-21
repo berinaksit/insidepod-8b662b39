@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Sparkles, ArrowRight, Plus, X, AlertCircle, Loader2 } from 'lucide-react';
+import { Search, Sparkles, ArrowRight, Plus, X, AlertCircle, Loader2, FileQuestion, Ban } from 'lucide-react';
 import { AddDocumentsModal, UploadedDocument } from './AddDocumentsModal';
 import { supabase } from '@/integrations/supabase/client';
 import { useProjects } from '@/contexts/ProjectsContext';
@@ -242,6 +242,64 @@ export function SearchBar({ onSearch, isProcessing = false, placeholder }: Searc
         </motion.div>
       )}
 
+      {/* Response: need_more_context state */}
+      {response && !isLoading && response.status === 'need_more_context' && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mt-6 bg-card rounded-2xl p-6 border border-border"
+        >
+          <div className="flex items-start gap-3">
+            <FileQuestion className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" strokeWidth={1.5} />
+            <div>
+              <p className="text-sm text-foreground font-medium">{response.message}</p>
+              {response.suggested_prompts && response.suggested_prompts.length > 0 && (
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {response.suggested_prompts.map((prompt, i) => (
+                    <button
+                      key={i}
+                      onClick={() => { setQuery(prompt); setResponse(null); }}
+                      className="px-3 py-1.5 text-xs font-medium bg-primary/10 text-primary rounded-full hover:bg-primary/20 transition-colors"
+                    >
+                      {prompt}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </motion.div>
+      )}
+
+      {/* Response: unrelated state */}
+      {response && !isLoading && response.status === 'unrelated' && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mt-6 bg-card rounded-2xl p-6 border border-border"
+        >
+          <div className="flex items-start gap-3">
+            <Ban className="w-5 h-5 text-muted-foreground mt-0.5 flex-shrink-0" strokeWidth={1.5} />
+            <div>
+              <p className="text-sm text-foreground font-medium">{response.message}</p>
+              {response.suggested_prompts && response.suggested_prompts.length > 0 && (
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {response.suggested_prompts.map((prompt, i) => (
+                    <button
+                      key={i}
+                      onClick={() => { setQuery(prompt); setResponse(null); }}
+                      className="px-3 py-1.5 text-xs font-medium bg-muted text-foreground rounded-full hover:bg-muted/80 transition-colors"
+                    >
+                      {prompt}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </motion.div>
+      )}
+      
       {/* Suggestions dropdown */}
       <AnimatePresence>
         {isFocused && !query && (
