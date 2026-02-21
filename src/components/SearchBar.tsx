@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Sparkles, ArrowRight, Plus, X, AlertCircle, Loader2, FileQuestion, Ban } from 'lucide-react';
 import { AddDocumentsModal, UploadedDocument } from './AddDocumentsModal';
@@ -13,8 +14,18 @@ interface SearchBarProps {
 
 interface AskResponse {
   status: 'ok' | 'need_more_context' | 'unrelated';
-  answer?: string;
-  evidence?: { document_title: string; excerpt: string }[];
+  // ok fields (8-section analysis)
+  title?: string;
+  doc_count?: number;
+  executive_diagnosis?: any;
+  evidence_map?: any[];
+  causal_hypotheses?: any[];
+  segmentation_findings?: any[];
+  opportunity_sizing?: any;
+  decision_options?: any[];
+  action_plan?: any[];
+  confidence_gaps?: any;
+  // intermediate fields
   message?: string;
   suggested_prompts?: string[];
 }
@@ -32,6 +43,7 @@ export function SearchBar({ onSearch, isProcessing = false, placeholder }: Searc
   const [documents, setDocuments] = useState<UploadedDocument[]>([]);
   const [showDocModal, setShowDocModal] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const navigate = useNavigate();
 
   // Ask function state
   const [isLoading, setIsLoading] = useState(false);
@@ -66,7 +78,14 @@ export function SearchBar({ onSearch, isProcessing = false, placeholder }: Searc
       } else if (data?.error) {
         setError(data.error);
       } else {
-        setResponse(data as AskResponse);
+        const parsed = data as AskResponse;
+        if (parsed.status === 'ok') {
+          // Navigate to analysis page with the full response
+          navigate('/analysis', { state: { query: question, analysisData: parsed } });
+        } else {
+          // Show inline intermediate state
+          setResponse(parsed);
+        }
       }
     } catch (err: any) {
       console.error("Error calling ask function:", err);
@@ -220,30 +239,6 @@ export function SearchBar({ onSearch, isProcessing = false, placeholder }: Searc
         >
           <AlertCircle className="w-4 h-4 text-destructive mt-0.5 flex-shrink-0" strokeWidth={1.5} />
           <p className="text-sm text-destructive">{error}</p>
-        </motion.div>
-      )}
-
-      {/* Response: OK state */}
-      {response && !isLoading && response.status === 'ok' && (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mt-6 bg-card rounded-2xl p-6 border border-border"
-        >
-          <div className="prose prose-sm max-w-none text-foreground whitespace-pre-wrap">
-            {response.answer}
-          </div>
-          {response.evidence && response.evidence.length > 0 && (
-            <div className="mt-5 space-y-2">
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Sources</p>
-              {response.evidence.map((ev, i) => (
-                <div key={i} className="px-3 py-2 bg-muted/60 rounded-xl border border-border">
-                  <p className="text-xs font-medium text-foreground">{ev.document_title}</p>
-                  <p className="text-xs text-muted-foreground mt-1 italic">"{ev.excerpt}"</p>
-                </div>
-              ))}
-            </div>
-          )}
         </motion.div>
       )}
 
