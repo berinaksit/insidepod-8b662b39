@@ -1,0 +1,330 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=DM+Serif+Display&display=swap');
+
+/* ========================================
+   INSIDE PŌD DESIGN SYSTEM
+   ----------------------------------------
+   Calm, editorial, decision-oriented
+   Premium enterprise with visual restraint
+   ======================================== */
+
+/* ========================================
+   ICON SYSTEM
+   ----------------------------------------
+   Consistent iconography:
+   - Default: 16px (w-4 h-4)
+   - Secondary: 20px (w-5 h-5) - rare, focal only
+   - Stroke: 1.5 (refined, matches reference visuals)
+   - Style: Outline only, sharp geometric joins
+   - Color: Inherits text-muted-foreground by default
+   ======================================== */
+
+@layer base {
+  :root {
+    /* Core surfaces - single calm background */
+    --background: 0 0% 98.4%;
+    --foreground: 0 0% 15%;
+
+    /* Card surfaces - pure white, minimal lift */
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 15%;
+
+    /* Popover */
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 15%;
+
+    /* Primary - confident dark */
+    --primary: 0 0% 12%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Primary surface - matches background for calm */
+    --primary-surface: 0 0% 98%;
+    --primary-surface-foreground: 0 0% 15%;
+
+    /* Secondary text - softer for hierarchy */
+    --secondary: 0 0% 55%;
+    --secondary-foreground: 0 0% 100%;
+
+    /* Secondary surface - minimal */
+    --secondary-surface: 0 0% 98%;
+    --secondary-surface-foreground: 0 0% 40%;
+
+    /* Tertiary - very subtle */
+    --tertiary-surface: 0 0% 98%;
+    --tertiary-surface-foreground: 0 0% 45%;
+
+    /* Muted - for subdued elements */
+    --muted: 0 0% 95%;
+    --muted-foreground: 0 0% 50%;
+
+    /* Accent */
+    --accent: 0 0% 96%;
+    --accent-foreground: 0 0% 15%;
+
+    /* Destructive */
+    --destructive: 0 55% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* Borders - very subtle */
+    --border: 0 0% 92%;
+    --input: 0 0% 92%;
+    --ring: 0 0% 15%;
+
+    /* Radius */
+    --radius: 0.75rem;
+
+    /* Sidebar */
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 0 0% 40%;
+    --sidebar-primary: 0 0% 12%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 0% 95%;
+    --sidebar-accent-foreground: 0 0% 15%;
+    --sidebar-border: 0 0% 92%;
+    --sidebar-ring: 0 0% 15%;
+
+    /* Typography */
+    --font-sans: 'DM Sans', system-ui, sans-serif;
+    --font-display: 'DM Serif Display', Georgia, serif;
+
+    /* Transitions */
+    --transition-calm: 280ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-subtle: 180ms cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* Featured cards */
+    --highlight: 0 0% 12%;
+    --highlight-foreground: 0 0% 100%;
+    --highlight-surface: 0 0% 8%;
+  }
+
+  .dark {
+    --background: 220 15% 8%;
+    --foreground: 40 15% 95%;
+
+    --card: 220 15% 10%;
+    --card-foreground: 40 15% 95%;
+
+    --popover: 220 15% 10%;
+    --popover-foreground: 40 15% 95%;
+
+    --primary: 150 30% 55%;
+    --primary-foreground: 220 15% 8%;
+
+    --primary-surface: 150 20% 15%;
+    --primary-surface-foreground: 150 30% 85%;
+
+    --secondary: 15 40% 55%;
+    --secondary-foreground: 220 15% 8%;
+
+    --secondary-surface: 15 25% 15%;
+    --secondary-surface-foreground: 15 40% 85%;
+
+    --tertiary-surface: 210 25% 15%;
+    --tertiary-surface-foreground: 210 35% 85%;
+
+    --muted: 220 15% 15%;
+    --muted-foreground: 220 10% 60%;
+
+    --accent: 220 15% 15%;
+    --accent-foreground: 40 15% 95%;
+
+    --destructive: 0 60% 45%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 15% 18%;
+    --input: 220 15% 18%;
+    --ring: 150 30% 55%;
+
+    --sidebar-background: 220 15% 6%;
+    --sidebar-foreground: 40 15% 90%;
+    --sidebar-primary: 150 30% 55%;
+    --sidebar-primary-foreground: 220 15% 8%;
+    --sidebar-accent: 220 15% 15%;
+    --sidebar-accent-foreground: 40 15% 95%;
+    --sidebar-border: 220 15% 18%;
+    --sidebar-ring: 150 30% 55%;
+
+    /* Highlight for featured cards - dark mode */
+    --highlight: 0 0% 30%;
+    --highlight-foreground: 0 0% 100%;
+    --highlight-surface: 0 0% 15%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-weight: 400;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    line-height: 1.7;
+    letter-spacing: -0.01em;
+  }
+
+  /* Reading flow */
+  p {
+    line-height: 1.75;
+  }
+
+  /* Headings - use medium weight for restraint */
+  h1, h2, h3, h4, h5, h6 {
+    line-height: 1.35;
+    letter-spacing: -0.02em;
+    font-weight: 500;
+  }
+
+  h1 {
+    font-weight: 600;
+  }
+
+  /* Display typography */
+  .font-display {
+    font-family: var(--font-display);
+    font-weight: 400;
+  }
+
+  /* Focus states */
+  *:focus-visible {
+    @apply outline-none ring-1 ring-ring/40 ring-offset-2 ring-offset-background;
+  }
+}
+
+@layer components {
+  /* Card shadow - very subtle */
+  .shadow-card {
+    box-shadow: 0 1px 3px 0 hsl(0 0% 0% / 0.04);
+  }
+
+  /* Hover shadow - minimal lift */
+  .shadow-card-hover {
+    box-shadow: 0 2px 8px -2px hsl(0 0% 0% / 0.06);
+  }
+
+  /* Insight cards */
+  .insight-card {
+    @apply bg-card rounded-xl p-6;
+    box-shadow: 0 1px 3px 0 hsl(0 0% 0% / 0.04);
+    @apply transition-shadow duration-200 ease-out;
+  }
+
+  .insight-card:hover {
+    box-shadow: 0 2px 8px -2px hsl(0 0% 0% / 0.08);
+  }
+
+  /* Analysis panels */
+  .analysis-panel {
+    @apply rounded-xl p-8;
+  }
+
+  .analysis-panel-primary {
+    @apply bg-card;
+  }
+
+  .analysis-panel-secondary {
+    @apply bg-card;
+  }
+
+  .analysis-panel-tertiary {
+    @apply bg-card;
+  }
+
+  /* Search container */
+  .search-container {
+    @apply bg-card rounded-full;
+    box-shadow: 0 1px 3px 0 hsl(0 0% 0% / 0.04);
+    @apply transition-shadow duration-200 ease-out;
+  }
+
+  .search-container:focus-within {
+    box-shadow: 0 2px 8px -2px hsl(0 0% 0% / 0.08);
+  }
+
+  /* Agent list items */
+  .agent-item {
+    @apply flex items-center gap-4 py-4 rounded-lg;
+    @apply transition-colors duration-150 ease-out;
+    @apply hover:bg-muted/30 cursor-pointer;
+  }
+
+  /* Badges - restrained */
+  .badge-pulse {
+    @apply bg-muted text-muted-foreground px-2.5 py-0.5 rounded-md text-xs font-normal;
+  }
+
+  .badge-insight {
+    @apply bg-muted text-muted-foreground px-2.5 py-0.5 rounded-md text-xs font-normal;
+  }
+
+  .badge-signal {
+    @apply bg-muted text-muted-foreground px-2.5 py-0.5 rounded-md text-xs font-normal;
+  }
+
+  /* Source tag */
+  .source-tag {
+    @apply text-xs text-muted-foreground bg-muted/50 px-2.5 py-1 rounded-md font-normal;
+  }
+
+  /* Loading */
+  .loading-pulse {
+    @apply animate-pulse bg-muted/60 rounded;
+  }
+}
+
+@layer utilities {
+  /* Text balance for headlines */
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Calm animations */
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.5s ease-out forwards;
+  }
+
+  .animate-scale-in {
+    animation: scaleIn 0.3s ease-out forwards;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slideUp {
+    from { 
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to { 
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes scaleIn {
+    from { 
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to { 
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+}
